@@ -1112,52 +1112,52 @@ lockCircuit = getArgAsNum("locked", 0);					// {joj 27/11/16}
 //
 // Help
 //
-num showHelp = getArgAsNum("help", 1);				// {joj 4/10/16}
-
-Rectangle r = Rectangle2(helpLayer, 0, 0, whiteBrush, 0, 0, WIDTH, HEIGHT);
-r.setOpacity(0.5);                                  // {joj 20/8/10}
-r.setRounded(10, 10);
-
-Pen helpPen = SolidPen(SOLID, 2, RED, ROUND_START | ROUND_JOIN | ROUND_END);
-Font helpFont = Font("Arial", 12, BOLD);
-
-Txt(helpLayer, HLEFT | VTOP, 12, 290, helpPen, helpFont, "LEFT CLICK on animation background to start and stop clock.\n\nSHIFT LEFT CLICK on background to execute \"single MIPS clock cycle\".");
-if (!lockCircuit) {
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 20, 68, 80, 10); r.setRounded(5, 5);
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 25, 121, 30, 10); r.setRounded(5, 5);
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 60, 121, 14, 10); r.setRounded(5, 5);
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 76, 121, 14, 10); r.setRounded(5, 5);
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 92, 121, 14, 10); r.setRounded(5, 5);
-    Txt(helpLayer, HLEFT | VTOP, 110, 60, helpPen, helpFont, "LEFT CLICK to change\ninitial program.");
-    Txt(helpLayer, HLEFT | VTOP, 110, 105, helpPen, helpFont, "LEFT or RIGHT CLICK to \"rotate\"\ninstructions and operands.\nHold and release to reset value.");
-}
-
-r = Rectangle2(helpLayer, 0, helpPen, 0, 310, 25, 90, 50);
-r.setRounded(10, 10);
-Txt(helpLayer, HLEFT | VTOP, 410, 40, helpPen, helpFont, "LEFT or RIGHT CLICK register\nto increment or decrement value.");
-
-if (!lockCircuit) {
-    r = Rectangle2(helpLayer, 0, helpPen, 0, 110, 455, 550, 30);
-    r.setRounded(10, 10);
-    Txt(helpLayer, HLEFT | VTOP, 180, 435, helpPen, helpFont, "LEFT CLICK on any of the buttons below to change circuit configuration.");
-}
-
-Rectangle closeHelp = Rectangle2(helpLayer, 0, helpPen, yellowBrush, 305, 230, 100, 30, helpPen, helpFont, "CLOSE HELP");
-closeHelp.setRounded(5, 5);
-
-when closeHelp ~> eventEE(num enter, num x, num y) {			// {joj 24/9/17}
-    closeHelp.setBrush(enter ? gray224Brush : yellowBrush);		// {joj 17/10/16}
-}
-
-when closeHelp ~> eventMB(num down, num flags, num x, num y) {	// {joj 24/9/17}
-	if (down && (flags & MB_LEFT)) {
-		setArg("help", "0");   									// {joj 6/11/16}
-		helpLayer.setOpacity(0);
-	}
-	return 0;
-}
-
-if (showHelp == 0)
-    helpLayer.setOpacity(0);
+// num showHelp = getArgAsNum("help", 1);				// {joj 4/10/16}
+//
+// Rectangle r = Rectangle2(helpLayer, 0, 0, whiteBrush, 0, 0, WIDTH, HEIGHT);
+// r.setOpacity(0.5);                                  // {joj 20/8/10}
+// r.setRounded(10, 10);
+//
+// Pen helpPen = SolidPen(SOLID, 2, RED, ROUND_START | ROUND_JOIN | ROUND_END);
+// Font helpFont = Font("Arial", 12, BOLD);
+//
+// Txt(helpLayer, HLEFT | VTOP, 12, 290, helpPen, helpFont, "LEFT CLICK on animation background to start and stop clock.\n\nSHIFT LEFT CLICK on background to execute \"single MIPS clock cycle\".");
+// if (!lockCircuit) {
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 20, 68, 80, 10); r.setRounded(5, 5);
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 25, 121, 30, 10); r.setRounded(5, 5);
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 60, 121, 14, 10); r.setRounded(5, 5);
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 76, 121, 14, 10); r.setRounded(5, 5);
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 92, 121, 14, 10); r.setRounded(5, 5);
+//     Txt(helpLayer, HLEFT | VTOP, 110, 60, helpPen, helpFont, "LEFT CLICK to change\ninitial program.");
+//     Txt(helpLayer, HLEFT | VTOP, 110, 105, helpPen, helpFont, "LEFT or RIGHT CLICK to \"rotate\"\ninstructions and operands.\nHold and release to reset value.");
+// }
+//
+// r = Rectangle2(helpLayer, 0, helpPen, 0, 310, 25, 90, 50);
+// r.setRounded(10, 10);
+// Txt(helpLayer, HLEFT | VTOP, 410, 40, helpPen, helpFont, "LEFT or RIGHT CLICK register\nto increment or decrement value.");
+//
+// if (!lockCircuit) {
+//     r = Rectangle2(helpLayer, 0, helpPen, 0, 110, 455, 550, 30);
+//     r.setRounded(10, 10);
+//     Txt(helpLayer, HLEFT | VTOP, 180, 435, helpPen, helpFont, "LEFT CLICK on any of the buttons below to change circuit configuration.");
+// }
+//
+// Rectangle closeHelp = Rectangle2(helpLayer, 0, helpPen, yellowBrush, 305, 230, 100, 30, helpPen, helpFont, "CLOSE HELP");
+// closeHelp.setRounded(5, 5);
+//
+// when closeHelp ~> eventEE(num enter, num x, num y) {			// {joj 24/9/17}
+//     closeHelp.setBrush(enter ? gray224Brush : yellowBrush);		// {joj 17/10/16}
+// }
+//
+// when closeHelp ~> eventMB(num down, num flags, num x, num y) {	// {joj 24/9/17}
+// 	if (down && (flags & MB_LEFT)) {
+// 		setArg("help", "0");   									// {joj 6/11/16}
+// 		helpLayer.setOpacity(0);
+// 	}
+// 	return 0;
+// }
+//
+// if (showHelp == 0)
+//     helpLayer.setOpacity(0);
 
 // eof
