@@ -467,21 +467,19 @@ function dlx(vplayer) {
 		this.opTypeRdt=instrOpTypeRdt(this.vIns)
 		this.opTypeRs1=instrOpTypeRs1(this.vIns)
 		this.opTypeRs2=instrOpTypeRs2(this.vIns)
-		if (this.opTypeRs2==OP_TYPE_REG)
-		this.vRs2=(this.vRs2%4)
 		if (this.opTypeRdt==OP_TYPE_UNUSED)
 		this.rdt.setTxt("-")
 		else 
-		this.rdt.setTxt("R%d", this.vRdt)
+		this.rdt.setTxt("x%d", this.vRdt)
 		if (this.opTypeRs1==OP_TYPE_UNUSED)
 		this.rs1.setTxt("-")
 		else 
-		this.rs1.setTxt("R%d", this.vRs1)
+		this.rs1.setTxt("x%d", this.vRs1)
 		if (this.opTypeRs2==OP_TYPE_UNUSED)
 		this.rs2.setTxt("-")
 		else 
 		if (this.opTypeRs2==OP_TYPE_REG)
-		this.rs2.setTxt("R%d", this.vRs2)
+		this.rs2.setTxt("x%d", this.vRs2)
 		else 
 		this.rs2.setTxt("%02X", this.vRs2)
 		if (instrIsBranch(this.vIns) || isJorJAL(this.vIns)) {
@@ -549,10 +547,10 @@ function dlx(vplayer) {
 	Instruction.prototype.$eh6 = function(down, flags, x, y) {
 		if (!$g[22] && down && this.opTypeRdt!=OP_TYPE_UNUSED) {
 			if (flags&MB_LEFT) {
-				this.vRdt=(this.vRdt==3) ? 0 : this.vRdt+1
+				this.vRdt=(this.vRdt==31) ? 0 : this.vRdt+1
 			} else
 			if (flags&MB_RIGHT)
-			this.vRdt=(this.vRdt==0) ? 3 : this.vRdt-1
+			this.vRdt=(this.vRdt==0) ? 31 : this.vRdt-1
 			this.initRegs(1)
 		}
 		return 0
@@ -561,10 +559,10 @@ function dlx(vplayer) {
 	Instruction.prototype.$eh7 = function(down, flags, x, y) {
 		if (!$g[22] && down && this.opTypeRdt!=OP_TYPE_UNUSED) {
 			if (flags&MB_LEFT) {
-				this.vRs1=(this.vRs1==3) ? 0 : this.vRs1+1
+				this.vRs1=(this.vRs1==31) ? 0 : this.vRs1+1
 			} else
 			if (flags&MB_RIGHT)
-			this.vRs1=(this.vRs1==0) ? 3 : this.vRs1-1
+			this.vRs1=(this.vRs1==0) ? 31 : this.vRs1-1
 			this.initRegs(1)
 		}
 		return 0
@@ -574,7 +572,7 @@ function dlx(vplayer) {
 		if (!$g[22] && down) {
 			if (flags&MB_LEFT) {
 				if (this.opTypeRs2==OP_TYPE_REG) {
-					this.vRs2=(this.vRs2+1)%4
+					this.vRs2=(this.vRs2+1)%32
 				} else
 				if (this.opTypeRs2==OP_TYPE_IMM) {
 					this.clk=timeMS()
@@ -583,9 +581,9 @@ function dlx(vplayer) {
 			} else
 			if (flags&MB_RIGHT) {
 				if (this.opTypeRs2==OP_TYPE_REG) {
-					this.vRs2=(this.vRs2-1)%4
+					this.vRs2=(this.vRs2-1)%32
 					if (this.vRs2<0)
-					this.vRs2=4+this.vRs2
+					this.vRs2=32+this.vRs2
 				} else
 				if (this.opTypeRs2==OP_TYPE_IMM) {
 					this.clk=timeMS()
