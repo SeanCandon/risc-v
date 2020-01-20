@@ -25,7 +25,7 @@ if (name != "")
 
 Font fTitle = Font("Calibri", 20, SMALLCAPS | ITALIC);
 
-Rectangle title = Rectangle2(0, HLEFT, 0, SolidBrush(DARK_BLUE), 10, 10, 300, 30, whitePen, fTitle, sprintf(" MIPS Animation %s", name));	// {joj 2/10/16}
+Rectangle title = Rectangle2(0, HLEFT, 0, SolidBrush(DARK_BLUE), 10, 10, 200, 30, whitePen, fTitle, sprintf(" RISC-V ANIMATION %s", name));	// {joj 2/10/16}
 
 Pen borderPen = SolidPen(DASH, 1, DARK_BLUE, ROUND_START | ROUND_JOIN | ROUND_END);
 
@@ -49,6 +49,10 @@ const num BUTTON_SF = 4;    // SMDR forwarding
 const num BUTTON_ZF = 5;    // Zero forwarding
 
 const num BUTTON_SP = 6;    // Safe program
+
+const num NUM_REGS = 32;
+const num REG_WIDTH = 20;
+const num REG_HEIGHT = 25;
 
 Pen delimeter = SolidPen(DOT, THIN, BLACK);
 Line2(0, ABSOLUTE, delimeter, 10, 450, 700, 450);
@@ -129,7 +133,8 @@ apBTB_MUX1.addPoint(140, 225);
 apBTB_MUX1.addPoint(170, 225);
 
 AnimPipe apRF_MUX1 = AnimPipe();
-apRF_MUX1.addPoint(315, 50);
+//apRF_MUX1.addPoint(315, 50);
+apRF_MUX1.addPoint(230, 50);
 apRF_MUX1.addPoint(130, 50);
 apRF_MUX1.addPoint(130, 235);
 apRF_MUX1.addPoint(170, 235);
@@ -179,11 +184,26 @@ Register regPC1 = Register(250, 210, 20, 40, TOP, "PC1");
 
 // Register file
 Txt(0, HLEFT | VTOP, 400, 40, 0, font, "Register\nFile");		// {joj}
-Register regFile[4];
-regFile[0] = Register(315, 30, 40, 20, LEFT, "R0"); regFile[0].setFixed();                  // {joj 29/10/06}
-regFile[1] = Register(315, 50, 40, 20, LEFT, "R1");
-regFile[2] = Register(355, 30, 40, 20, RIGHT, "R2");
-regFile[3] = Register(355, 50, 40, 20, RIGHT, "R3");
+// Register regFile[4];
+// regFile[0] = Register(315, 30, 20, 30, TOP, "R0"); regFile[0].setFixed();                  // {joj 29/10/06}
+// regFile[1] = Register(315, 50, 20, 30, TOP, "R1");
+// regFile[2] = Register(355, 30, 20, 30, TOP, "R2");
+// regFile[3] = Register(355, 50, 20, 30, TOP, "R3");
+
+Register regFile[NUM_REGS];
+num xpos = 230;
+num ypos = 25;
+num pos = TOP;
+for (i=0; i<NUM_REGS; i++){
+	if (i == (NUM_REGS/2)) {
+		pos = BOTTOM;
+		xpos = 230;
+		ypos += REG_HEIGHT;
+	}
+	string str = "x" + i.toString();
+	regFile[i] = Register(xpos, ypos, REG_WIDTH, REG_HEIGHT, pos, str);
+	xpos += REG_WIDTH;
+}
 
 // Other components
 Component cMUX3 = Component(275, 170, 50, 10, "mux 3");                                               // {joj}
@@ -270,8 +290,10 @@ apMUX4_BTB.addPoint(250, 120);
 apMUX4_BTB.addPoint(230, 120);
 
 AnimPipe apRF_MUX4 = AnimPipe();
-apRF_MUX4.addPoint(315, 50);
-apRF_MUX4.addPoint(300, 50);
+apRF_MUX4.addPoint(230, 60);
+apRF_MUX4.addPoint(190, 60);
+apRF_MUX4.addPoint(190, 80);
+apRF_MUX4.addPoint(300, 80);
 apRF_MUX4.addPoint(300, 110);
 apRF_MUX4.addPoint(260, 110);
 Rectangle txtRF_MUX1 = Rectangle(activePipesLayer, 0, 0, redBrush, 300,44, -12,0, 24,12, whitePen, font);   // {joj 4/11/12}
@@ -283,14 +305,14 @@ apMUX5_B.addPoint(400, 250);
 
 // Connections from the register file
 AnimPipe apRF_MUX5 = AnimPipe();
-apRF_MUX5.addPoint(340, 70);
+apRF_MUX5.addPoint(340, 75);
 apRF_MUX5.addPoint(340, 245);
 apRF_MUX5.addPoint(370, 245);
 Rectangle txtRF_MUX5 = Rectangle(activePipesLayer, 0, 0, redBrush, 340,82, -12,0, 24,12, whitePen, font, "R0:0");   // {joj 1/4/06, 17/10/16}
 txtRF_MUX5.setRounded(2, 2);	// {joj 17/10/16}
 
 AnimPipe apRF_A = AnimPipe();
-apRF_A.addPoint(370, 70);
+apRF_A.addPoint(370, 75);
 apRF_A.addPoint(370, 210);
 apRF_A.addPoint(400, 210);
 Rectangle txtRF_A = Rectangle(activePipesLayer, 0, 0, redBrush, 370,82, -12,0, 24,12, whitePen, font, "R0:0");      // {joj 1/4/06, 17/10/16}
@@ -473,8 +495,8 @@ AnimPipe apOUT1_RF = AnimPipe();
 apOUT1_RF.addPoint(680, 230);
 apOUT1_RF.addPoint(690, 230);
 apOUT1_RF.addPoint(690, 10);
-apOUT1_RF.addPoint(355, 10);
-apOUT1_RF.addPoint(355, 30);
+apOUT1_RF.addPoint(390, 10);
+apOUT1_RF.addPoint(390, 25);
 
 alu.txtResult.moveToFront();                            // {joj 29/10/06}
 

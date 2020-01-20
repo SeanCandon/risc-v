@@ -46,22 +46,23 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
 
     if (w >= h) {
 
-        //
-        // horizontal
-        //
-        vy = y + 2;
-        vw = w - 14;
-        vh = h - 4;
+      //
+      // horizontal
+      //
+      vy = y + 2;
+      vw = w - 14;
+      vh = h - 4;
 
-        if (labelPos == LEFT) {
-			Rectangle r2 = Rectangle(0, 0, 0, 0, x + 7 - 1, y + h/2, -7, -h/2, 14, h, 0, font, caption);	// {joj 7/10/16}
-			r2.rotate(-90);	// {joj 7/10/16}
-            vx = x + 12;
-        } else if (labelPos == RIGHT) {
-          r2 = Rectangle(0, 0, 0, 0, x + w - 7, y + h/2, -7, -h/2, 14, h, 0, font, caption);
+      if (labelPos == LEFT) {
+			     Rectangle r2 = Rectangle(0, 0, 0, 0, x + 7 - 1, y + h/2, -7, -h/2, 14, h, 0, font, caption);	// {joj 7/10/16}
+			     r2.rotate(-90);	// {joj 7/10/16}
+           vx = x + 12;
+      } else if (labelPos == RIGHT) {
+            r2 = Rectangle(0, 0, 0, 0, x + w - 7, y + h/2, -7, -h/2, 14, h, 0, font, caption);
             r2.rotate(-90);
            	vx = x + 2;
-        }
+      }
+
 
     } else {
 

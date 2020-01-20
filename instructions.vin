@@ -151,7 +151,7 @@ num function isJorJAL(num instr) {							// {joj 3/11/12}
     return ((instr == J) || (instr == JAL)) ? 1 : 0;        // {joj 28/10/06}
 }
 
-num function instrIsJumpR(num instr) {						
+num function instrIsJumpR(num instr) {
     return ((instr == JR) || (instr == JALR)) ? 1 : 0;		// {joj 28/10/06}
 }
 
