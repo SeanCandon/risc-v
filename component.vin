@@ -77,11 +77,17 @@ class Stack(num _x, num _y) {
 	 	addresses[j] = hex[i];
 	 	j++;
 	}
-
+	Register stack[length];
 	for(j=0; j<(length); j++) {
 		Register r = Register(x, y, w, h, LEFT, addresses[j]);
 		r.rotateLabel(90);
+		stack[j] = r;
 		y += h;
+	}
+
+	function store(num pos, num val) {
+		stack[pos].setNewValue(val);
+		stack[pos].update();
 	}
 
 }

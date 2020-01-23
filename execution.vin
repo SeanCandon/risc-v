@@ -669,6 +669,7 @@ function maExec() {													// {joj 14/11/17}
         fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
         apOUT0_Mem.animate(24);
         memory[regOUT0.value % 4].update();
+        stack.store(regOUT0.value % MEMORY_ADDRESSES, regSMDR.value);
 
     } else if (instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) {
 

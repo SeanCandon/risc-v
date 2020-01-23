@@ -468,18 +468,34 @@ apMUX9_OUT1.addPoint(660, 230);
 
 // Connections to and from memory
 
+// AnimPipe apOUT0_Mem = AnimPipe();
+// apOUT0_Mem.addPoint(580, 230);
+// apOUT0_Mem.addPoint(590, 230);
+// apOUT0_Mem.addPoint(590, 70);
+//
+// AnimPipe apSMDR_Mem = AnimPipe();
+// apSMDR_Mem.addPoint(590, 330);
+// apSMDR_Mem.addPoint(600, 330);
+// apSMDR_Mem.addPoint(600, 70);
+//
+// AnimPipe apMem_MUX9 = AnimPipe();
+// apMem_MUX9.addPoint(610, 70);
+// apMem_MUX9.addPoint(610, 220);
+// apMem_MUX9.addPoint(630, 220);
+
 AnimPipe apOUT0_Mem = AnimPipe();
 apOUT0_Mem.addPoint(580, 230);
 apOUT0_Mem.addPoint(590, 230);
-apOUT0_Mem.addPoint(590, 70);
+apOUT0_Mem.addPoint(590, 110);
+apOUT0_Mem.addPoint(720, 110);
 
 AnimPipe apSMDR_Mem = AnimPipe();
 apSMDR_Mem.addPoint(590, 330);
-apSMDR_Mem.addPoint(600, 330);
-apSMDR_Mem.addPoint(600, 70);
+apSMDR_Mem.addPoint(720, 330);
 
 AnimPipe apMem_MUX9 = AnimPipe();
-apMem_MUX9.addPoint(610, 70);
+apMem_MUX9.addPoint(720, 90);
+apMem_MUX9.addPoint(610, 90);
 apMem_MUX9.addPoint(610, 220);
 apMem_MUX9.addPoint(630, 220);
 
