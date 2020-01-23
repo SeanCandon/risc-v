@@ -443,6 +443,9 @@ memory[1] = Register(560, 50, 40, 20, LEFT, "M1");
 memory[2] = Register(600, 30, 40, 20, RIGHT, "M2");
 memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
 
+// Stack
+Stack stack = Stack(720, 70);
+
 //
 // Other components
 //

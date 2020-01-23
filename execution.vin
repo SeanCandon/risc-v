@@ -40,7 +40,7 @@ num function btbIndex(num pc) {
 // ifExec
 //
 // 80 ticks per clock cycle (40 + 40)
-// 
+//
 function ifExec() {																// {joj 24/9/17}
 
 	if ((stall == NO_STALL) || (stall == CTRL_STALL)) {
@@ -305,7 +305,7 @@ function sendBTBOperands() {	// {joj 14/11/17}
 function idExec() {																// {joj 14/11/17}
 
     if (stall == NO_STALL) {
-    	fork(regPC1.update());									
+    	fork(regPC1.update());
         fork(regID.update());
     }
 
@@ -342,14 +342,14 @@ function idExec() {																// {joj 14/11/17}
 	// J, JAL
 	//
 	} else if (isJorJAL(regID.vIns)) {											// {joj 3/11/12}
-	
+
 		if (regID.vIns == JAL) {												// {joj 4/11/12}
 			fork(apPC1_ADD4.animate(16));										// {joj 4/11/12}
     		fork(ap4_ADD4.animate(16));                            				// {joj 4/11/12}
 		}
-		
+
 		if (stall == NO_STALL) {												// {joj 4/11/12}
-		
+
 			fork(apPC1_ADDi.animate(16));                          				// {joj 4/11/12}
         	fork(apID_ADDi.animate(16));                           				// {joj 4/11/12}
         	wait(12);                                           				// {joj 4/11/12}
@@ -359,42 +359,42 @@ function idExec() {																// {joj 14/11/17}
 			fork(apADDi_MUX3.animate(8));                                  		// {joj 4/11/12}
 			txtADDi_MUX3.setTxt("%02X", (regPC1.value + regID.vRs2) & 0xff);	// {joj 4/11/12}
         	txtADDi_MUX3.setOpacity(1, 8, 1, 0);          						// {joj 4/11/12}
-		
+
 		} else {																// {joj 4/11/12}
-		
+
 			wait(24);															// {joj 4/11/12}
-			
+
 		}																		// {joj 4/11/12}
-		
+
 	//
 	// JALR
 	//
 	} else if (regID.vIns == JALR) {											// {joj 4/11/12}
-	
+
 		fork(apPC1_ADD4.animate(32));											// {joj 4/11/12}
     	fork(ap4_ADD4.animate(32));                            					// {joj 4/11/12}
  		wait(24);																// {joj 4/11/12}
-	
+
     } else {
 
         wait(24);
 
     };
-	
+
     wait(9); // register file now updated {joj 4/11/12}
-    
+
     //
     // second half of the clock cycle
     //
     if (instrIsBranchOrJump(regID.vIns))
         calcNewPC();
-	
+
 	//if (instrIsBranch(regID.vIns) && (stall == NO_STALL)) {					// {joj 3/11/12}
 	if (instrIsBranch(regID.vIns)) {											// {joj 9/12/16}
 		txtMUX3_MUX4.setTxt("%02X", newPC); 									// {joj 3/11/12}
 		txtMUX3_MUX4.setOpacity(1, 8, 1, 0);                           			// {joj 3/11/12}
 	}																			// {joj 3/11/12}
-	
+
 	if (instrIsJumpR(regID.vIns) && (stall == NO_STALL)) {						// {joj 4/11/12}
 		txtRF_MUX1.setTxt("%02X", newPC); 										// {joj 4/11/12}
 		txtRF_MUX1.setOpacity(1, 8, 1, 0);                           			// {joj 4/11/12}
@@ -403,7 +403,7 @@ function idExec() {																// {joj 14/11/17}
 	//if (instrIsBranchOrJump(regID.vIns) && (stall == NO_STALL))				// {joj 4/11/12}
 	if (instrIsBranchOrJump(regID.vIns))										// {joj 9/12/16}
        fork(sendBTBOperands());
-	
+
     detectStall();
 	//debug("stall=%d", stall);
 	if (instrIsBranchOrJump(regID.vIns) && (stall != DATA_STALL))				// {joj 10/12/16}
@@ -414,7 +414,7 @@ function idExec() {																// {joj 14/11/17}
     } else {
         regEX.setNewValue(STALL, 0, 0, 0);
     }
-    
+
     wait(7);																	// {joj 4/11/12}
 
     // Send source registers to A and B
@@ -560,7 +560,7 @@ function exExec() {														// {joj 14/11/17}
             regOUT0.setNewTag(regEX.vRdt);
 		}
 
-        regOUT0.setInvalid(0);								
+        regOUT0.setInvalid(0);
 
     } else if (regEX.vIns == NOP) {				// {joj 30/11/16}
 

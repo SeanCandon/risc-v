@@ -37,6 +37,8 @@ const num MARINE = rgba(0.375, 0.625, 0.375);
 const num LIGHT_YELLOW = rgba(1.0, 1.0, 0.75);
 const num ORANGE = 0xffa500;
 
+const num MEMORY_ADDRESSES = 18;
+
 //
 // Pens
 //

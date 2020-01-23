@@ -38,6 +38,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     num useTag = 0, invalid = 0;
     num fixed = 0;                      // for r0 {joj 29/10/06}
     Rectangle label;
+    Rectangle r2;
 
     Rectangle r1 = Rectangle2(0, 0, blackPen, regBrush, x, y, w, h);
 	r1.setRounded(2, 2);	// {joj 16/10/16}
@@ -54,7 +55,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
       vh = h - 4;
 
       if (labelPos == LEFT) {
-			     Rectangle r2 = Rectangle(0, 0, 0, 0, x + 7 - 1, y + h/2, -7, -h/2, 14, h, 0, font, caption);	// {joj 7/10/16}
+			     r2 = Rectangle(0, 0, 0, 0, x + 7 - 1, y + h/2, -7, -h/2, 14, h, 0, font, caption);	// {joj 7/10/16}
 			     r2.rotate(-90);	// {joj 7/10/16}
            vx = x + 12;
       } else if (labelPos == RIGHT) {
@@ -98,6 +99,10 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     //
     function setFixed() {                    // {joj 29/10/06}
         fixed = 1;
+    }
+
+    function rotateLabel(num d) {
+      r2.rotate(d);
     }
 
     //
