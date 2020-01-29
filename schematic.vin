@@ -444,7 +444,8 @@ memory[2] = Register(600, 30, 40, 20, RIGHT, "M2");
 memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
 
 // Stack
-Stack stack = Stack(720, 70);
+Stack stack = Stack(750, 80);
+stack.createFrame(2, 1);
 
 //
 // Other components

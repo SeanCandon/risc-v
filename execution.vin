@@ -648,7 +648,8 @@ function maExec() {													// {joj 14/11/17}
     if ((instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) && (regMA.vIns != ST)) {  // {joj}
 
         if (regMA.vIns == LD) {   // {joj}
-            regOUT1.setNewValue(memory[regOUT0.value % 4].value);
+            //regOUT1.setNewValue(memory[regOUT0.value % 4].value);
+            regOUT1.setNewValue(stack.getVal(regOUT0.value % MEMORY_ADDRESSES));
             regOUT1.setNewTag(regMA.vRdt);
         } else {
             regOUT1.setNewValue(regOUT0.value);
@@ -665,17 +666,18 @@ function maExec() {													// {joj 14/11/17}
 
     if (regMA.vIns == ST) {                                         // {joj}
 
-        memory[regOUT0.value % 4].setNewValue(regSMDR.value);
+        //memory[regOUT0.value % 4].setNewValue(regSMDR.value);
         fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
         apOUT0_Mem.animate(24);
-        memory[regOUT0.value % 4].update();
+        //memory[regOUT0.value % 4].update();
         stack.store(regOUT0.value % MEMORY_ADDRESSES, regSMDR.value);
 
     } else if (instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) {
 
         if (regMA.vIns == LD) {                                     // {joj}
             apOUT0_Mem.animate(24);
-            memory[regOUT0.value % 4].highlight(bhighlight);		// {joj}
+            //memory[regOUT0.value % 4].highlight(bhighlight);		// {joj}
+            stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
             apMem_MUX9.animate(24);
         } else {
             apOUT0_MUX9.animate(48);

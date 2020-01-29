@@ -215,7 +215,7 @@ class Instruction(num _x, num _y, num _w, num _h, num _addr) {
 							vRdt = (vRdt == 0) ? 31 : vRdt - 1;
 			 			initRegs(1);
 				}
-				
+
     }
 
 	when rs1 ~> eventMB(num down, num flags, num x, num y) {			// {joj 24/10/17}

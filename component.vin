@@ -20,7 +20,9 @@
 //
 
 Brush componentBrush = SolidBrush(LIGHT_BLUE);
-Font componentFont = Font("Calibri", 9);          // joj
+Font componentFont = Font("Calibri", 9);
+
+Brush stackBrush = SolidBrush(WHITE);        // joj
 
 class Component(num _x, num _y, num _w, num _h, string caption) {
 
@@ -57,6 +59,15 @@ class Stack(num _x, num _y) {
 	num addr_size = 4;
 	num maxdigits = 3;
 
+	num off = 60;
+
+	num outer_x = x - off/2;
+	num outer_y = y - off/2;
+	num outer_w = w + off + off/2;
+	num outer_h = (h * length) + off;
+
+	Rectangle outer = Rectangle2(0, 0, blackPen, stackBrush, outer_x, outer_y, outer_w, outer_h);
+
 	string hex[length*addr_size];
 	//string chars[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 	string chars[18];
@@ -85,9 +96,42 @@ class Stack(num _x, num _y) {
 		y += h;
 	}
 
-	function store(num pos, num val) {
-		stack[pos].setNewValue(val);
-		stack[pos].update();
+	function store(num addr, num val) {
+		stack[addr].setNewValue(val);
+		stack[addr].update();
+	}
+
+	num function getVal(num addr) {
+		return stack[addr].value;
+	}
+
+	function highlight(num addr) {
+		stack[addr].highlight(bhighlight);
+	}
+
+	function createFrame(num addr, num frame) {
+		Register a = stack[addr];
+		num ax = a._x;
+		num ay = a._y;
+		num aw = a._w;
+		num ah = a._h;
+		num offset = 6 * ah;
+
+		Line arrowDown = Line(valuesLayer, 0, redArrow,
+        0, 0,
+		ax + aw + 2, ay,
+        5, 0,
+        0, 0,
+        0, 0
+    );
+
+		arrowDown.setPt(2, ax+aw+7, ay+offset);
+		arrowDown.setPt(3, ax+aw+2, ay+offset);
+		arrowDown.setOpacity(1);
+
+		Rectangle outer = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+25), (ay+(offset/2)),
+			20, 10, redPen, componentFont, sprintf("subroutine %d", frame));
+
 	}
 
 }

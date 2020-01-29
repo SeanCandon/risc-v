@@ -39,6 +39,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     num fixed = 0;                      // for r0 {joj 29/10/06}
     Rectangle label;
     Rectangle r2;
+    num _x=x; num _y=y; num _w=w; num _h=h;
 
     Rectangle r1 = Rectangle2(0, 0, blackPen, regBrush, x, y, w, h);
 	r1.setRounded(2, 2);	// {joj 16/10/16}
