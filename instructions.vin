@@ -282,13 +282,13 @@ num function instrExecute(num instr, num op1, num op2) {
     else if (instr == SGE || instr == SGEi)
         return op1 >= op2 ? 1 : 0;
     else if (instr == BEQ)
-      return op1 == op2 ? 1 : 0;
+        return op1 == op2 ? 1 : 0;
     else if (instr == BNE)
-      return op1 != op2 ? 1 : 0;
+        return op1 != op2 ? 1 : 0;
     else if (instr == BLT)
-      return op1 < op2 ? 1 : 0;
+        return op2 < op1 ? 1 : 0;
     else if (instr == BGE)
-      return op1 >= op2 ? 1 : 0;
+        return op2 >= op1 ? 1 : 0;
     else if (instr == LD || instr == ST)                 // joj
         return (se8(op1) + se8(op2)) & 0xFF;
     else if (instr == JAL || instr == JALR)

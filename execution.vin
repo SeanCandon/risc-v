@@ -24,7 +24,9 @@ AnimPipe mux1Src, mux3Src, mux4Src;
 num zero;																		// {joj 3/11/12}
 num newPC;																		// {joj 3/11/12}
 //num branchMissPredict;														// {joj 4/11/12}
-AnimPipe newMux1Src;															// {joj 9/12/16}
+AnimPipe newMux1Src;
+
+num takeCondBranch = 0;															// {joj 9/12/16}
 
 //
 // index for tag or -1 if none
@@ -107,10 +109,16 @@ function calcNewPC() {
 
    // AnimPipe newMux1Src;
     if(instrIsNonZeroBranch(regEX.vIns)) {
-
-      mux3Src = apDM1_MUX3;
-      newPC = maybeR.value & 0x7F;
-      newMux1Src = apMUX3_MUX1;
+      if(takeCondBranch == 1){
+        mux3Src = apDM1_MUX3;
+        newPC = maybeR.value & 0x7F;
+        newMux1Src = apMUX3_MUX1;
+        takeCondBranch = 0;
+      }
+      else{
+        mux3Src = apADD4_MUX3;
+        newPC = (regPC1.value + 4) & 0x7F;
+      }
     }
     else {
 
@@ -345,6 +353,7 @@ function idExec() {																// {joj 14/11/17}
 		fork(apADDi_DM1.animate(8));
     wait(4);
     if(instrIsNonZeroBranch(regID.vIns)){
+      clDM1.setPen(controlHLPen);
       fork(apDM1_REGM.animate(8));
       regFile[regID.vRs1].highlight(bhighlight);                             // {joj}
       regA.setNewValue(regFile[regID.vRs1].value);
@@ -553,8 +562,25 @@ function exExec() {														// {joj 14/11/17}
         } else if (instrOpTypeRs2(regEX.vIns) == OP_TYPE_IMM) {
 
           if(instrIsNonZeroBranch(regEX.vIns)) {
+
+            if(afMode == ALU_FORWARDING){
+              if(regOUT0.tagMatches(regEX.vRdt)){
+                mux7Src = apOUT0_MUX7;
+                op2 = regOUT0.value;
+              }
+              else if(regOUT1.tagMatches(regEX.vRdt)){
+                mux7Src = apOUT1_MUX7;
+                op2 = regOUT1.value;
+              }
+              else{
+                mux7Src = apB_MUX7;
+                op2 = regB.value;
+              }
+            }
+            else{
               mux7Src = apB_MUX7;
-              op2 = regEX.vRdt;
+              op2 = regB.value;
+            }
           }
           else{
               mux7Src = apEX_MUX7;
@@ -584,10 +610,16 @@ function exExec() {														// {joj 14/11/17}
         num result = instrExecute(regEX.vIns, op1, op2);
 
         // R0 is always 0
-        if (regEX.vRdt == 0)
+        if ((regEX.vRdt == 0) & (instrIsNonZeroBranch(regEX.vIns)==0))
             result = 0;
 
-        regOUT0.setNewValue(result);
+        if(instrIsNonZeroBranch(regEX.vIns) == 0){
+          regOUT0.setNewValue(result);
+          takeCondBranch = 0;
+        }
+        else{
+          takeCondBranch = result;
+        }
 
         if (instrIsLoadOrStore(regEX.vIns)) {
             regOUT0.setNewTag(-1);				// OUT0 contains the EA, tag should be -1
@@ -656,8 +688,10 @@ function exExec() {														// {joj 14/11/17}
             fork(apMUX6_ALU.animate(10));
         fork(apMUX7_ALU.animate(10));
         if(instrIsNonZeroBranch){
+          clALU1.setPen(controlHLPen);
           wait(5);
-          clALU2.setPen(controlHLPen);
+          if(takeCondBranch == 1)
+            clALU2.setPen(controlHLPen);
         }
         else{
           wait(20);                                                   // {joj 29/10/06}

@@ -610,6 +610,10 @@ function resetWires() {
     //clA.setPen(controlPen);
     //clMUX.setPen(controlPen);
 
+		clALU1.setPen(controlPen);
+		clALU2.setPen(controlPen);
+		clDM1.setPen(controlPen);
+
     //
     // EX
     //
