@@ -24,7 +24,7 @@
 //
 
 // Number of instructions (excluding "stall" instruction)
-const num MAX_INSTR = 35;
+const num MAX_INSTR = 33;
 
 // No-op
 const num NOP = 0;
@@ -60,30 +60,28 @@ const num LD    = 23;   // Load             // joj
 const num ST    = 24;   // Store            // joj
 
 // Control instructions
-const num BEQZ  = 25;   // Branch if equal to zero
-const num BNEZ  = 26;   // Branch if not equal to zero
-const num BEQ = 27;     // Branch if equal to
-const num BNE = 28;     // Branch if not equal to
-const num BLT = 29;     // Branch if less than
-const num BGE = 30;     // Branch if greater than or equal to
+const num BEQ = 25;     // Branch if equal to
+const num BNE = 26;     // Branch if not equal to
+const num BLT = 27;     // Branch if less than
+const num BGE = 28;     // Branch if greater than or equal to
 
-const num J     = 31;   // Jump
-const num JAL   = 32;   // Jump and link
-const num JR    = 33;   // Jump register
-const num JALR  = 34;   // Jump and link register
+const num J     = 29;   // Jump
+const num JAL   = 30;   // Jump and link
+const num JR    = 31;   // Jump register
+const num JALR  = 32;   // Jump and link register
 
 // Halt
-const num HALT  = 35;   // Stop running
+const num HALT  = 33;   // Stop running
 
 // "Stall" and "Empty" instruction (aliases for NOP)
-const num STALL = 36;
-const num EMPTY = 37;
+const num STALL = 34;
+const num EMPTY = 35;
 
 //
 // Instruction names
 //
 
-string instrNames[37];
+string instrNames[35];
 
 // NOP
 instrNames[NOP] = "NOP";
@@ -119,8 +117,6 @@ instrNames[LD]      = "LD";     // Load             // joj
 instrNames[ST]      = "ST";     // Store            // joj
 
 // Control instructions
-instrNames[BEQZ]    = "BEQZ";   // Branch if equal to zero
-instrNames[BNEZ]    = "BNEZ";   // Branch if not equal to zero
 instrNames[BEQ]     = "BEQ";
 instrNames[BNE]     = "BNE";
 instrNames[BLT]     = "BLT";
@@ -154,17 +150,17 @@ num function instrIsArRI(num instr) {
     return ((instr >= ADDi) && (instr <= SGEi)) ? 1 : 0;	// {joj 28/10/06}
 }
 
-num function instrIsZeroBranch(num instr) {
-    return ((instr == BEQZ) || (instr == BNEZ)) ? 1 : 0;
-}
+// num function instrIsZeroBranch(num instr) {
+//     return ((instr == BEQZ) || (instr == BNEZ)) ? 1 : 0;
+// }
 
-num function instrIsNonZeroBranch(num instr) {
+num function instrIsBranch(num instr) {
     return ((instr >= BEQ) && (instr <= BGE)) ? 1 : 0;    // {joj 28/10/06}
 }
 
-num function instrIsBranch(num instr) {
-    return ((instrIsZeroBranch(instr)) || (instrIsNonZeroBranch(instr))) ? 1 : 0;
-}
+// num function instrIsBranch(num instr) {
+//     return ((instrIsZeroBranch(instr)) || (instrIsNonZeroBranch(instr))) ? 1 : 0;
+// }
 
 num function isJorJAL(num instr) {							// {joj 3/11/12}
     return ((instr == J) || (instr == JAL)) ? 1 : 0;        // {joj 28/10/06}
@@ -174,8 +170,12 @@ num function instrIsJumpR(num instr) {
     return ((instr == JR) || (instr == JALR)) ? 1 : 0;		// {joj 28/10/06}
 }
 
+num function instrIsJump(num instr){
+    return (isJorJAL(instr) || instrIsJumpR(instr)) ? 1 : 0;
+}
+
 num function instrIsBranchOrJump(num instr) {
-    return (instrIsZeroBranch(instr) || isJorJAL(instr) || instrIsJumpR(instr)) ? 1 : 0;    // {joj 28/10/06}
+    return (instrIsBranch(instr) || isJorJAL(instr) || instrIsJumpR(instr)) ? 1 : 0;    // {joj 28/10/06}
 }
 
 num function instrIsJumpAndLink(num instr) {
@@ -195,7 +195,7 @@ const num OP_TYPE_IMM = 2;
 
 num function instrOpTypeRdt(num instr) {
     if (instrIsArRR(instr) || instrIsArRI(instr) || instrIsJumpAndLink(instr) ||
-     instrIsLoadOrStore(instr) || instrIsNonZeroBranch(instr))
+     instrIsLoadOrStore(instr) || instrIsBranch(instr))
         return OP_TYPE_REG;
     else
         return OP_TYPE_UNUSED;
@@ -231,9 +231,9 @@ string function instrText(num instr, num rdt, num rs1, num rs2) {				// {joj 28/
        return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2);                     	// {joj 28/10/06}
     else if (instr == ST)                                                		// {joj 28/10/06}
         return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2);                    	// {joj 28/10/06}
-    else if (instrIsZeroBranch(instr))
-        return sprintf("%s x%d,%02X", instrNames[instr], rs1, rs2);          	// {joj 28/10/10}
-    else if (instrIsNonZeroBranch(instr))
+    // else if (instrIsZeroBranch(instr))
+    //     return sprintf("%s x%d,%02X", instrNames[instr], rs1, rs2);          	// {joj 28/10/10}
+    else if (instrIsBranch(instr))
         return sprintf("%s x%d,x%d,%02X", instrNames[instr], rdt, rs1, rs2);
     else if (instr == J)
         return sprintf("%s %02X", instrNames[instr], rs2);                   	// {joj 28/10/10}
