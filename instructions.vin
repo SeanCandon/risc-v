@@ -24,7 +24,7 @@
 //
 
 // Number of instructions (excluding "stall" instruction)
-const num MAX_INSTR = 33;
+const num MAX_INSTR = 36;
 
 // No-op
 const num NOP = 0;
@@ -70,18 +70,22 @@ const num JAL   = 30;   // Jump and link
 const num JR    = 31;   // Jump register
 const num JALR  = 32;   // Jump and link register
 
+const num MUL = 33;
+const num DIV = 34;
+const num REM = 35;
+
 // Halt
-const num HALT  = 33;   // Stop running
+const num HALT  = 36;   // Stop running
 
 // "Stall" and "Empty" instruction (aliases for NOP)
-const num STALL = 34;
-const num EMPTY = 35;
+const num STALL = 37;
+const num EMPTY = 38;
 
 //
 // Instruction names
 //
 
-string instrNames[35];
+string instrNames[38];
 
 // NOP
 instrNames[NOP] = "NOP";
@@ -127,6 +131,9 @@ instrNames[JAL]     = "JAL";    // Jump and link
 instrNames[JR]      = "JR";     // Jump register
 instrNames[JALR]    = "JALR";   // Jump and link register
 
+instrNames[MUL]     = "MUL";
+instrNames[DIV]     = "DIV";
+instrNames[REM]     = "REM";
 
 // Halt
 instrNames[HALT]    = "HALT";
@@ -142,25 +149,21 @@ num function instrIsNop(num instr) {
     return (instr == NOP || instr == STALL || instr == EMPTY || instr == HALT) ? 1 : 0; // {joj 28/10/06}
 }
 
+num function instrIsMulti(num instr){
+    return ((instr >= MUL) && (instr <= REM)) ? 1 : 0;
+}
+
 num function instrIsArRR(num instr) {
-    return (instr >= ADD && instr <= SGE) ? 1 : 0;          // {joj 28/10/06}
+    return ((instr >= ADD && instr <= SGE) || instrIsMulti(instr)) ? 1 : 0;          // {joj 28/10/06}
 }
 
 num function instrIsArRI(num instr) {
     return ((instr >= ADDi) && (instr <= SGEi)) ? 1 : 0;	// {joj 28/10/06}
 }
 
-// num function instrIsZeroBranch(num instr) {
-//     return ((instr == BEQZ) || (instr == BNEZ)) ? 1 : 0;
-// }
-
 num function instrIsBranch(num instr) {
     return ((instr >= BEQ) && (instr <= BGE)) ? 1 : 0;    // {joj 28/10/06}
 }
-
-// num function instrIsBranch(num instr) {
-//     return ((instrIsZeroBranch(instr)) || (instrIsNonZeroBranch(instr))) ? 1 : 0;
-// }
 
 num function isJorJAL(num instr) {							// {joj 3/11/12}
     return ((instr == J) || (instr == JAL)) ? 1 : 0;        // {joj 28/10/06}
@@ -231,8 +234,6 @@ string function instrText(num instr, num rdt, num rs1, num rs2) {				// {joj 28/
        return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2);                     	// {joj 28/10/06}
     else if (instr == ST)                                                		// {joj 28/10/06}
         return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2);                    	// {joj 28/10/06}
-    // else if (instrIsZeroBranch(instr))
-    //     return sprintf("%s x%d,%02X", instrNames[instr], rs1, rs2);          	// {joj 28/10/10}
     else if (instrIsBranch(instr))
         return sprintf("%s x%d,x%d,%02X", instrNames[instr], rdt, rs1, rs2);
     else if (instr == J)

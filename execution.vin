@@ -19,6 +19,9 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
+const num CHECK = 0;
+const num EXEC = 1;
+
 AnimPipe mux1Src, mux3Src, mux4Src;
 
 num zero;																		// {joj 3/11/12}
@@ -27,7 +30,12 @@ num newPC;																		// {joj 3/11/12}
 AnimPipe newMux1Src;
 
 num takeCondBranch = 0;
-num condBranchStall = 0;														// {joj 9/12/16}
+num condBranchStall = 0;
+
+num startMulti = 1;
+num multistage = CHECK;
+num countDown;
+num multiStall = 0;
 
 //
 // index for tag or -1 if none
@@ -123,48 +131,6 @@ function calcNewPC() {
       }
     }
     else {
-
-      // if (instrIsZeroBranch(regID.vIns)) {
-      //
-      //   // conditional branch
-      //   //Pen pen = (stall == NO_STALL) ? controlHLPen : controlPen;	// {joj 4/11/12}
-  		//   Pen pen = controlHLPen;	// {joj 8/12/16}
-      //
-      //   if (zfMode == ZERO_FORWARDING) {
-      //     if ((regEX.vRdt == regID.vRs1) && (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && instrIsLoadOrStore(regEX.vIns) == 0) {	// {joj 8/12/16}
-      //       //clALU.setPen(pen);
-      //       zero = regOUT0.newValue;                            // where ALU result is stored
-      //     } else if (regOUT0.tagMatches(regID.vRs1)) {
-      //       //clOUT0.setPen(pen);
-      //       zero = regOUT0.value;
-      //       //} else if (regOUT1.tagMatches(regID.vRs1)) {			// {joj 9/12/16}
-      //       //    clOUT1.setPen(pen);
-      //       //    zero = regOUT1.value;
-      //     } else {
-  		//       mux1Src = apMUX3_MUX1;                              // {joj 3/11/12}
-      //       //clA.setPen(pen);
-      //       zero = regFile[regID.vRs1].value;
-      //       txtRF_A.setTxt("R%d:%02X", regID.vRs1, zero);       // {joj 29/10/06}
-      //       txtRF_A.setOpacity(1);                            	// {joj 1/2/06}
-      //       fork(apRF_A.animate(24));                      		// {joj 1/2/06}
-      //     }
-      //   } else {
-      //       //clA.setPen(pen);
-      //       zero = regFile[regID.vRs1].value;
-      //   }
-      //
-      //     //clMUX.setPen(pen);
-      //
-      //   if ((regID.vIns == BEQZ) == (zero == 0)) {
-      //       mux3Src = apADDi_DM1;
-      //       newPC = (regPC1.value + regID.vRs2) & 0x7F;
-      //   } else {
-      //       mux3Src = apADD4_MUX3;
-      //       newPC = (regPC1.value + 4) & 0x7F;
-      //   }
-      //
-      //   newMux1Src = apMUX3_MUX1;
-      //   mux4Src = apMUX3_MUX4;
 
       if (isJorJAL(regID.vIns)) {
 
@@ -273,14 +239,6 @@ function detectStall() {
 
     }
 
-    // RAW hazards (conditional branches)
-    // if ((zfMode == ZERO_INTERLOCK) && instrIsZeroBranch(regID.vIns)) {
-    //     if ((instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && (regEX.vRdt == regID.vRs1))
-    //         stall = DATA_STALL;
-    //     if ((instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) && (regMA.vRdt == regID.vRs1))
-    //         stall = DATA_STALL;
-    // }
-
     // RAW hazard (indirect jumps)
     if (instrIsJumpR(regID.vIns) && (instrIsBranch(regEX.vIns)==0)) {
         if ((instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && (regEX.vRdt == regID.vRs2))
@@ -295,6 +253,10 @@ function detectStall() {
             stall = DATA_STALL;
         if ((instrOpTypeRs2(regID.vIns) == OP_TYPE_REG) && (regID.vRs2 == regEX.vRdt))
             stall = DATA_STALL;
+    }
+
+    if(instrIsMulti(regEX.vIns) && (multiStall==1)){
+      stall = DATA_STALL;
     }
 
     // control hazards (real detection for control hazards is done in calcNewPC)
@@ -475,7 +437,7 @@ function idExec() {																// {joj 14/11/17}
 
     if (stall == NO_STALL) {
       regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
-    } else if (condBranchStall==0){
+    } else if (condBranchStall==0 && multiStall==0){
       regEX.setNewValue(STALL, 0, 0, 0);
     }
     //if(instrIsNonZeroBranch(regID.vIns) == 0)
@@ -559,180 +521,303 @@ function exExec() {														// {joj 14/11/17}
   if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
 
     // select correct source for operand 1
-    if (instrIsJumpAndLink(regEX.vIns)) {
 
-        mux6Src = 0;    // Do not use MUX6 at all
-        op1 = 0;
+      if(instrIsMulti(regEX.vIns)){
+          multiStall = 1;
+          if(startMulti == 1){
+            if(afMode == ALU_FORWARDING){
+              if(regOUT0.tagMatches(regEX.vRs1)){
+                op1 = regOUT0.value;
+                fork(apOUT0_A.animate(20));
+                regA.setNewValue(regOUT0.value);
+                regA.update();
+              }
+              else if(regOUT1.tagMatches(regEX.vRs1)){
+                op1 = regOUT1.value;
+                fork(apOUT1_A.animate(20));
+                regA.setNewValue(regOUT1.value);
+                regA.update();
+              }
+              else{
+                op1 = regA.value;
+              }
+              if(regOUT0.tagMatches(regEX.vRs2)){
+                op2 = regOUT0.value;
+                fork(apOUT0_B.animate(20));
+                regB.setNewValue(regOUT0.value);
+                regB.update();
+              }
+              else if(regOUT1.tagMatches(regEX.vRs2)){
+                op2 = regOUT1.value;
+                fork(apOUT1_B.animate(20));
+                regB.setNewValue(regOUT1.value);
+                regB.update();
+              }
+              else{
+                op2 = regB.value;
+              }
 
-    } else if (afMode == ALU_FORWARDING) {
+            }
+            else{
+              op1 = regA.value;
+              op2 = regB.value;
+            }
+            mux6Src = apA_MUX6;
+            //startMulti = 0;
+          }
+          else{
+            if(multistage == CHECK){
+              apS1_MUX10.animate(2);
+              wait(2);
+              fork(apB_INCR.animate(5));
+              fork(apMUX10_INCR.animate(5));
+              wait(2);
+              regB.setNewValue(regB.value - 1);
+              regB.update();
+              op2 = regB.value;
+              apINCR_B.animate(5);
+              mux7Src = apB_MUX7;
+            }
+            else if(multistage == EXEC){
+              mux6Src = apA_MUX6;
+              op1 = regA.value;
+              mux7Src = apOUT1_MUX7;
+              op2 = regOUT1.value;
+            }
+          }
+      }
 
-        if (regOUT0.tagMatches(regEX.vRs1)) {
-            mux6Src = apOUT0_MUX6;
-            op1 = regOUT0.value;
-        } else if (regOUT1.tagMatches(regEX.vRs1)) {
-            mux6Src = apOUT1_MUX6;
-            op1 = regOUT1.value;
-        } else {
+      if (instrIsJumpAndLink(regEX.vIns)) {
+
+          mux6Src = 0;    // Do not use MUX6 at all
+          op1 = 0;
+
+      } else if (afMode == ALU_FORWARDING) {
+        if(instrIsMulti(regEX.vIns)==0){
+            if (regOUT0.tagMatches(regEX.vRs1)) {
+                mux6Src = apOUT0_MUX6;
+                op1 = regOUT0.value;
+            } else if (regOUT1.tagMatches(regEX.vRs1)) {
+                mux6Src = apOUT1_MUX6;
+                op1 = regOUT1.value;
+            } else {
+                mux6Src = apA_MUX6;
+                op1 = regA.value;
+            }
+        }
+
+      } else {
+        if(instrIsMulti(regEX.vIns)==0){
             mux6Src = apA_MUX6;
             op1 = regA.value;
         }
 
-    } else {
-
-        mux6Src = apA_MUX6;
-        op1 = regA.value;
-
-    }
+      }
 
     // Choose correct source for operand 2
-    if (instrIsJumpAndLink(regEX.vIns)) {
+      if (instrIsJumpAndLink(regEX.vIns)) {
 
-        mux7Src = apB_MUX7;
-        op2 = regB.value;
+          mux7Src = apB_MUX7;
+          op2 = regB.value;
 
-    } else if (instrOpTypeRs2(regEX.vIns) == OP_TYPE_IMM) {
+      } else if (instrOpTypeRs2(regEX.vIns) == OP_TYPE_IMM) {
 
-      if(instrIsBranch(regEX.vIns)) {
+          if(instrIsBranch(regEX.vIns)) {
 
-          if(afMode == ALU_FORWARDING){
-              if(regOUT0.tagMatches(regEX.vRdt)){
-                mux7Src = apOUT0_MUX7;
-                op2 = regOUT0.value;
+              if(afMode == ALU_FORWARDING){
+                  if(regOUT0.tagMatches(regEX.vRdt)){
+                    mux7Src = apOUT0_MUX7;
+                    op2 = regOUT0.value;
+                  }
+                  else if(regOUT1.tagMatches(regEX.vRdt)){
+                    mux7Src = apOUT1_MUX7;
+                    op2 = regOUT1.value;
+                  }
+                  else{
+                    mux7Src = apB_MUX7;
+                    op2 = regB.value;
+                  }
               }
-              else if(regOUT1.tagMatches(regEX.vRdt)){
-                mux7Src = apOUT1_MUX7;
-                op2 = regOUT1.value;
-              }
-              else{
+              else {
                 mux7Src = apB_MUX7;
                 op2 = regB.value;
               }
           }
-          else {
+          else{
+              mux7Src = apEX_MUX7;
+              op2 = regEX.vRs2;
+          }
+
+      } else if (afMode == ALU_FORWARDING) {
+
+        if(instrIsMulti(regEX.vIns)==0){
+            if (regOUT0.tagMatches(regEX.vRs2)) {
+                mux7Src = apOUT0_MUX7;
+                op2 = regOUT0.value;
+            } else if (regOUT1.tagMatches(regEX.vRs2)) {
+                mux7Src = apOUT1_MUX7;
+                op2 = regOUT1.value;
+            } else {
+                mux7Src = apB_MUX7;
+                op2 = regB.value;
+            }
+        }
+
+      } else {
+        if(instrIsMulti(regEX.vIns)==0){
             mux7Src = apB_MUX7;
             op2 = regB.value;
+        }
+
+      }
+
+      num result = 0;
+
+      if(instrIsMulti(regEX.vIns)){
+        //if(prevOp1 >= prevOp2){
+          if(regEX.vIns == MUL){
+            if(startMulti==1){
+              result = op1;
+            }
+            else{
+              if(multistage == CHECK){
+                result = instrExecute(SLEi, op2, 0);
+                clALU1.setPen(controlHLPen);
+                if(result == 1){
+                  multiStall = 0;
+                }
+                else{
+                  multiStall = 1;
+                }
+                //multistage = EXEC;
+              }
+              else if(multistage = EXEC){
+                result = instrExecute(ADD, op1, op2);
+                //multistage = CHECK;
+              }
+            }
           }
+          // else if(instr == DIV)
+          //   result = instrExecute(ADDi, )
+        //}
+        // if(op2 <= 1){ multiStall = 0;}
+        // else{ multiStall = 1;}
+        //detectStall();
+      }
+      else
+        result = instrExecute(regEX.vIns, op1, op2);
+
+      // R0 is always 0
+      if ((regEX.vRdt == 0) & (instrIsBranch(regEX.vIns)==0))
+          result = 0;
+
+      if(instrIsBranch(regEX.vIns) == 0){
+        regOUT0.setNewValue(result);
+        takeCondBranch = 0;
       }
       else{
-          mux7Src = apEX_MUX7;
-          op2 = regEX.vRs2;
+        takeCondBranch = result;
       }
 
-    } else if (afMode == ALU_FORWARDING) {
-
-        if (regOUT0.tagMatches(regEX.vRs2)) {
-            mux7Src = apOUT0_MUX7;
-            op2 = regOUT0.value;
-        } else if (regOUT1.tagMatches(regEX.vRs2)) {
-            mux7Src = apOUT1_MUX7;
-            op2 = regOUT1.value;
-        } else {
-            mux7Src = apB_MUX7;
-            op2 = regB.value;
-        }
-
-    } else {
-
-        mux7Src = apB_MUX7;
-        op2 = regB.value;
-
-    }
-
-    num result = instrExecute(regEX.vIns, op1, op2);
-
-    // R0 is always 0
-    if ((regEX.vRdt == 0) & (instrIsBranch(regEX.vIns)==0))
-        result = 0;
-
-    if(instrIsBranch(regEX.vIns) == 0){
-      regOUT0.setNewValue(result);
-      takeCondBranch = 0;
-    }
-    else{
-      takeCondBranch = result;
-    }
-
-    if (instrIsLoadOrStore(regEX.vIns)) {
-        regOUT0.setNewTag(-1);				// OUT0 contains the EA, tag should be -1
-    } else {
-        regOUT0.setNewTag(regEX.vRdt);
-		}
-
-    regOUT0.setInvalid(0);
-
-    } else if (regEX.vIns == NOP) {				// {joj 30/11/16}
-
-		regOUT0.setInvalid(1);					// {joj 30/11/16}
-		regOUT0.updateLabel();					// {joj 30/11/16}
-
-	 }
-
-    // For stores, send correct operand to SMDR
-    if (regEX.vIns == ST) {  // {joj}
-        if (sfMode == FORWARDING_TO_SMDR) {
-            if (regOUT0.tagMatches(regEX.vRdt)) {
-                mux8Src = apOUT0_MUX8;
-                regSMDR.setNewValue(regOUT0.value);
-            } else if (regOUT1.tagMatches(regEX.vRdt)) {
-                mux8Src = apOUT1_MUX8;
-                regSMDR.setNewValue(regOUT1.value);
-            } else {
-                mux8Src = apB_MUX8;
-                regSMDR.setNewValue(regB.value);
-            }
-        } else {
-            mux8Src = apB_MUX8;
-            regSMDR.setNewValue(regB.value);
-        }
-    }
-
-    wait(8);
-
-    fork(apEX_MA.animate(64));
-
-    if (regEX.vIns == ST)                                           // {joj}
-        fork(mux8Src.animate(24));                            	 	// {joj 1/2/06}
-
-    if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
-        if (mux6Src != 0)
-            fork(mux6Src.animate(24));
-        if (mux7Src == apEX_MUX7) {                                 // {joj 29/10/06}
-            txtEX_MUX7.setTxt("%02X", op2);                         // {joj 29/10/06}
-            txtEX_MUX7.setOpacity(1);                             	// {joj 29/10/06}
-        }                                                           // {joj 29/10/06}
-        fork(mux7Src.animate(24));
-    }
-
-    wait(24);
-
-    //
-    // Second half of the clock cycle
-    //
-
-    if (regEX.vIns == ST)                                           // {joj}
-        fork(apMUX8_SMDR.animate(40));                         		// {joj 1/2/06}
-
-    if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
-
-        alu.setTxtOp(regEX.vIns);                                   // {joj 29/10/06}
-        if (mux6Src != 0)
-            fork(apMUX6_ALU.animate(10));
-        fork(apMUX7_ALU.animate(10));
-        if(instrIsBranch(regEX.vIns)){
-          clALU1.setPen(controlHLPen);
-          wait(5);
-          if(takeCondBranch == 1)
-            clALU2.setPen(controlHLPen);
+      if (instrIsLoadOrStore(regEX.vIns)) {
+          regOUT0.setNewTag(-1);				// OUT0 contains the EA, tag should be -1
+      } else {
+        if((instrIsMulti(regEX.vIns)==1) && startMulti==0){
+          if(multistage == CHECK){
+            regOUT0.setNewTag(0);
+            multistage = EXEC;
+          }
+          else{
+            regOUT0.setNewTag(regEX.vRdt);
+            multistage = CHECK;
+          }
         }
         else{
-          wait(20);                                                   // {joj 29/10/06}
-          apALU_OUT0.animate(10);
-          wait(10);
-          alu.txtResult.setTxt("%02X", result);                       // {joj 29/10/06}
-          alu.txtResult.setOpacity(1, 20, 1, 0);                      // {joj 29/10/06}
+          regOUT0.setNewTag(regEX.vRdt);
         }
+  		}
 
-    }
+      regOUT0.setInvalid(0);
+
+  } else if (regEX.vIns == NOP) {				// {joj 30/11/16}
+
+	regOUT0.setInvalid(1);					// {joj 30/11/16}
+	regOUT0.updateLabel();					// {joj 30/11/16}
+
+  }
+
+    // For stores, send correct operand to SMDR
+  if (regEX.vIns == ST) {  // {joj}
+      if (sfMode == FORWARDING_TO_SMDR) {
+          if (regOUT0.tagMatches(regEX.vRdt)) {
+              mux8Src = apOUT0_MUX8;
+              regSMDR.setNewValue(regOUT0.value);
+          } else if (regOUT1.tagMatches(regEX.vRdt)) {
+              mux8Src = apOUT1_MUX8;
+              regSMDR.setNewValue(regOUT1.value);
+          } else {
+              mux8Src = apB_MUX8;
+              regSMDR.setNewValue(regB.value);
+          }
+      } else {
+          mux8Src = apB_MUX8;
+          regSMDR.setNewValue(regB.value);
+      }
+  }
+
+  wait(8);
+
+  fork(apEX_MA.animate(64));
+
+  if (regEX.vIns == ST)                                           // {joj}
+      fork(mux8Src.animate(24));                            	 	// {joj 1/2/06}
+
+  if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
+      if (mux6Src != 0)
+          fork(mux6Src.animate(24));
+      if (mux7Src == apEX_MUX7) {                                 // {joj 29/10/06}
+          txtEX_MUX7.setTxt("%02X", op2);                         // {joj 29/10/06}
+          txtEX_MUX7.setOpacity(1);                             	// {joj 29/10/06}
+      }                                                           // {joj 29/10/06}
+      fork(mux7Src.animate(24));
+  }
+
+  wait(24);
+
+  //
+  // Second half of the clock cycle
+  //
+
+  if (regEX.vIns == ST)                                           // {joj}
+      fork(apMUX8_SMDR.animate(40));                         		// {joj 1/2/06}
+
+  if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
+
+      alu.setTxtOp(regEX.vIns);                                   // {joj 29/10/06}
+      if (mux6Src != 0)
+          fork(apMUX6_ALU.animate(10));
+      if(instrIsMulti(regEX.vIns) && startMulti==1){
+        startMulti = 0;
+      }
+      else{
+        fork(apMUX7_ALU.animate(10));
+      }
+
+      if(instrIsBranch(regEX.vIns)){
+        //clALU1.setPen(controlHLPen);
+        wait(5);
+        if(takeCondBranch == 1)
+          clALU2.setPen(controlHLPen);
+      }
+      else{
+        wait(20);                                                   // {joj 29/10/06}
+        apALU_OUT0.animate(10);
+        wait(10);
+        alu.txtResult.setTxt("%02X", result);                       // {joj 29/10/06}
+        alu.txtResult.setOpacity(1, 20, 1, 0);                      // {joj 29/10/06}
+      }
+
+  }
 
 }
 
@@ -809,7 +894,9 @@ function wbExec() {																// {joj 14/11/17}
     wait(8);
 
     if ((instrOpTypeRdt(regWB.vIns) == OP_TYPE_REG) && (regWB.vIns != ST)) {    // {joj}
-        regFile[regOUT1.tag].setNewValue(regOUT1.value);
+        if(regOUT1.tag != 0){
+            regFile[regOUT1.tag].setNewValue(regOUT1.value);
+        }
 
         wait(8);
 
