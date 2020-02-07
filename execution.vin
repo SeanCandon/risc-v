@@ -567,15 +567,13 @@ function exExec() {														// {joj 14/11/17}
           }
           else{
             if(multistage == CHECK){
-              apS1_MUX10.animate(2);
-              wait(2);
-              fork(apB_INCR.animate(5));
-              fork(apMUX10_INCR.animate(5));
+              fork(apB_SUB1.animate(5));
+              fork(ap1_SUB1.animate(5));
               wait(2);
               regB.setNewValue(regB.value - 1);
               regB.update();
               op2 = regB.value;
-              apINCR_B.animate(5);
+              apSUB1_B.animate(5);
               mux7Src = apB_MUX7;
             }
             else if(multistage == EXEC){
