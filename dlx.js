@@ -896,18 +896,21 @@ function dlx(vplayer) {
 
 	function Stack(_x, _y) {
 		VObj.call(this)
-		this.w = 60
+		this.w = 90
 		this.h = 20
 		this.length = MEMORY_ADDRESSES
 		this.x = _x
 		this.y = _y
 		this.addr_size = 4
 		this.maxdigits = 3
-		this.off = 60
-		this.outer_x = this.x-this.off/2
-		this.outer_y = this.y-this.off/2
-		this.outer_w = this.w+this.off+this.off/2
-		this.outer_h = (this.h*this.length)+this.off
+		this.off = 40
+		this.outer_x = this.x
+		this.outer_y = this.y
+		this.outer_w = this.w
+		this.outer_h = (this.h*this.length+20)
+		this.x=this.x+20
+		this.y=this.y+10
+		this.w=this.w/2
 		this.outer = new Rectangle2($g[0], 0, 0, $g[1], $g[44], this.outer_x, this.outer_y, this.outer_w, this.outer_h)
 		this.hex = newArray(this.length*this.addr_size)
 		this.chars = newArray(18)
@@ -1349,7 +1352,7 @@ function dlx(vplayer) {
 			$g[139].setPoint(2, 390, 205)
 			$g[136].setPoint(1, 390, 240)
 			$g[171].setPoint(0, 385, 250)
-			$g[175].setPoint(3, 580, 230)
+			$g[175].setPoint(3, 560, 240)
 			$g[172].setPoint(1, 560, 330)
 			$g[184].setPoint(1, 680, 230)
 			$g[93].setHead(0)
@@ -1377,7 +1380,7 @@ function dlx(vplayer) {
 			$g[139].setPoint(2, 370, 210)
 			$g[136].setPoint(1, 370, 240)
 			$g[171].setPoint(0, 385, 270)
-			$g[175].setPoint(3, 560, 230)
+			$g[175].setPoint(3, 560, 240)
 			$g[172].setPoint(1, 550, 330)
 			$g[184].setPoint(1, 660, 230)
 			$g[93].setHead(1)
@@ -2205,7 +2208,7 @@ function dlx(vplayer) {
 				$g[179][1]=new Register(560, 50, 40, 20, LEFT, "M1")
 				$g[179][2]=new Register(600, 30, 40, 20, RIGHT, "M2")
 				$g[179][3]=new Register(600, 50, 40, 20, RIGHT, "M3")
-				$g[180] = new Stack(750, 80)
+				$g[180] = new Stack(720, 60)
 				$g[180].createFrame(2, 1)
 				$g[181] = new Component(630, 210, 10, 40, "mux 9")
 				$g[182] = new AnimPipe()

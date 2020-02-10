@@ -57,6 +57,7 @@
 #include "instructionregister.vin"
 #include "register.vin"
 #include "component.vin"
+#include "stack.vin"
 #include "alu.vin"
 #include "animatedpipe.vin"
 #include "animatedclock.vin"

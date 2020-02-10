@@ -555,7 +555,7 @@ memory[2] = Register(600, 30, 40, 20, RIGHT, "M2");
 memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
 
 // Stack
-Stack stack = Stack(750, 80);
+Stack stack = Stack(720, 60);
 stack.createFrame(2, 1);
 
 //
@@ -941,7 +941,7 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
 
         //apMUX6_ALU.setPoint(3, 580, 230);
         //apMUX7_ALU.setPoint(3, 580, 230);
-				apALU_OUT0.setPoint(3, 580, 230);
+				apALU_OUT0.setPoint(3, 560, 240);
 
         apMUX8_SMDR.setPoint(1, 560, 330);
         apMUX9_OUT1.setPoint(1, 680, 230);
@@ -980,7 +980,7 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
 
         //apMUX6_ALU.setPoint(3, 560, 230);
         //apMUX7_ALU.setPoint(3, 560, 230);
-				apALU_OUT0.setPoint(3, 560, 230);
+				apALU_OUT0.setPoint(3, 560, 240);
 
         apMUX8_SMDR.setPoint(1, 550, 330);
         apMUX9_OUT1.setPoint(1, 660, 230);
