@@ -25,19 +25,19 @@ if (name != "")
 
 Font fTitle = Font("Calibri", 20, SMALLCAPS | ITALIC);
 
-Rectangle title = Rectangle2(0, HLEFT, 0, SolidBrush(DARK_BLUE), -50, 10, 200, 30, whitePen, fTitle, sprintf(" RISC-V ANIMATION %s", name));	// {joj 2/10/16}
+Rectangle title = Rectangle2(0, HLEFT, 0, SolidBrush(DARK_BLUE), -80, 10, 200, 30, whitePen, fTitle, sprintf(" RISC-V ANIMATION %s", name));	// {joj 2/10/16}
 
 Pen borderPen = SolidPen(DASH, 1, DARK_BLUE, ROUND_START | ROUND_JOIN | ROUND_END);
 
-Line2(0, ABSOLUTE, borderPen, 80, 80, 700, 80);
-Line2(0, ABSOLUTE, borderPen, 80, 440, 700, 440);
+Line2(0, ABSOLUTE, borderPen, 30, 80, 660, 80);
+Line2(0, ABSOLUTE, borderPen, 30, 440, 660, 440);
 
-Line2(0, ABSOLUTE, borderPen, 80, 80, 80, 440);
-Line b1 = Line2(0, ABSOLUTE, borderPen, 210, 80, 210, 440);
-Line b2 = Line2(0, ABSOLUTE, borderPen, 335, 80, 335, 440);
-Line b3 = Line2(0, ABSOLUTE, borderPen, 540, 80, 540, 440);
-Line b4 = Line2(0, ABSOLUTE, borderPen, 650, 80, 650, 440);
-Line2(0, ABSOLUTE, borderPen, 700, 80, 700, 440);
+Line2(0, ABSOLUTE, borderPen, 30, 80, 30, 440);
+Line b1 = Line2(0, ABSOLUTE, borderPen, 160, 80, 160, 440);
+Line b2 = Line2(0, ABSOLUTE, borderPen, 310, 80, 310, 440);
+Line b3 = Line2(0, ABSOLUTE, borderPen, 510, 80, 510, 440);
+Line b4 = Line2(0, ABSOLUTE, borderPen, 610, 80, 610, 440);
+Line2(0, ABSOLUTE, borderPen, 660, 80, 660, 440);
 
 // Buttons
 
@@ -78,96 +78,96 @@ Image logo = Image(0, 0, 0, "vivio.png", 660,460, 0,0, LOGOW,LOGOH);					// {joj
 
 // Statistics
 
-Txt(0, HLEFT | VTOP, -50, 46, darkGrayPen, font, "instructions executed:");		// {joj 25/7/10}
-Rectangle et = Txt(0, HLEFT | VTOP, -50, 56, darkGrayPen, font, "ticks:");		// {joj}
+Txt(0, HLEFT | VTOP, -80, 46, darkGrayPen, font, "instructions executed:");		// {joj 25/7/10}
+Rectangle et = Txt(0, HLEFT | VTOP, -80, 56, darkGrayPen, font, "ticks:");		// {joj}
 
-Rectangle statIC = Txt(0, HLEFT | VTOP, 40, 46, redPen, font, "0");				// {joj}
-Rectangle statTE = Txt(0, HLEFT | VTOP, 40, 56, redPen, font, "0");				// {joj}
+Rectangle statIC = Txt(0, HLEFT | VTOP, 0, 46, redPen, font, "0");				// {joj}
+Rectangle statTE = Txt(0, HLEFT | VTOP, 0, 56, redPen, font, "0");				// {joj}
 
 // Instruction memory and clock
-Rectangle imLabel = Rectangle2(0, 0, 0, 0, -50, 68, 100, 10, 0, font, "Instruction Cache"); // {joj}
-InstructionMemory im = InstructionMemory(-50, 80, 100, 320);
-AnimatedClock animClock = AnimatedClock(-40, 410, 80, 30);
+Rectangle imLabel = Rectangle2(0, 0, 0, 0, -80, 68, 100, 10, 0, font, "Instruction Cache"); // {joj}
+InstructionMemory im = InstructionMemory(-80, 80, 100, 320);
+AnimatedClock animClock = AnimatedClock(-70, 410, 80, 30);
 
 // IF and PC
-Register regPC = Register(170, 210, 20, 40, TOP, "PC");
+Register regPC = Register(120, 210, 20, 40, TOP, "PC");
 
 // branch target buffer
-Rectangle btbLabel  = Rectangle2(0, 0, 0, 0, 120, 85, 80, 10, 0, font, "Branch Target Buffer");    // {joj}
+Rectangle btbLabel  = Rectangle2(0, 0, 0, 0, 70, 85, 80, 10, 0, font, "Branch Target Buffer");    // {joj}
 Register btbPC[2];										// {joj 2/10/16}
-btbPC[0]  = Register(120, 100, 40, 20, LEFT, "PC");     // {joj 1/2/06}
-btbPC[1]  = Register(120, 120, 40, 20, LEFT, "PC");     // {joj 1/2/06}
+btbPC[0]  = Register(70, 100, 40, 20, LEFT, "PC");     // {joj 1/2/06}
+btbPC[1]  = Register(70, 120, 40, 20, LEFT, "PC");     // {joj 1/2/06}
 Register btbPPC[2];										// {joj 2/10/16}
-btbPPC[0] = Register(160, 100, 40, 20, RIGHT, "PPC");   // {joj 1/2/06}
-btbPPC[1] = Register(160, 120, 40, 20, RIGHT, "PPC");   // {joj 1/2/06}
+btbPPC[0] = Register(110, 100, 40, 20, RIGHT, "PPC");   // {joj 1/2/06}
+btbPPC[1] = Register(110, 120, 40, 20, RIGHT, "PPC");   // {joj 1/2/06}
 
 // Other components
-Component cMUX2 = Component(170, 170, 30, 10, "mux 2");       // {joj}
-Component cMUX1 = Component(140, 205, 10, 50, "mux 1");       // {joj}
-Component cPLUS4 = Component(130, 270, 20, 10, "+4");
+Component cMUX2 = Component(120, 170, 30, 10, "mux 2");       // {joj}
+Component cMUX1 = Component(90, 205, 10, 50, "mux 1");       // {joj}
+Component cPLUS4 = Component(80, 270, 20, 10, "+4");
 
 // connections from and to instruction memory
 AnimPipe apIM_ID = AnimPipe();
-apIM_ID.addPoint(80, 390);
-apIM_ID.addPoint(220, 390);
+apIM_ID.addPoint(30, 390);
+apIM_ID.addPoint(170, 390);
 Rectangle txtIM_ID = Rectangle(activePipesLayer, 0, 0, redBrush, 180,390, -30,-6, 60,12, whitePen, font);	// {joj 1/4/06, 17/10/16}
 txtIM_ID.setRounded(2, 2);	// {joj 17/10/16}
 
 AnimPipe apPC_IM = AnimPipe();
-apPC_IM.addPoint(180, 250);
-apPC_IM.addPoint(180, 320);
-apPC_IM.addPoint(80, 320);
+apPC_IM.addPoint(130, 250);
+apPC_IM.addPoint(130, 320);
+apPC_IM.addPoint(30, 320);
 
 // connections into MUX1
 AnimPipe apMUX3_MUX1 = AnimPipe();
-apMUX3_MUX1.addPoint(270, 170);
-apMUX3_MUX1.addPoint(270, 160);
-apMUX3_MUX1.addPoint(120, 160);
-apMUX3_MUX1.addPoint(120, 215);
-apMUX3_MUX1.addPoint(140, 215);
+apMUX3_MUX1.addPoint(220, 170);
+apMUX3_MUX1.addPoint(220, 160);
+apMUX3_MUX1.addPoint(70, 160);
+apMUX3_MUX1.addPoint(70, 215);
+apMUX3_MUX1.addPoint(90, 215);
 
 AnimPipe apBTB_MUX1 = AnimPipe();
-apBTB_MUX1.addPoint(120, 120);
-apBTB_MUX1.addPoint(110, 120);
-apBTB_MUX1.addPoint(110, 225);
-apBTB_MUX1.addPoint(140, 225);
+apBTB_MUX1.addPoint(70, 120);
+apBTB_MUX1.addPoint(60, 120);
+apBTB_MUX1.addPoint(60, 225);
+apBTB_MUX1.addPoint(90, 225);
 
 AnimPipe apRF_MUX1 = AnimPipe();
 //apRF_MUX1.addPoint(315, 50);
-apRF_MUX1.addPoint(230, 50);
-apRF_MUX1.addPoint(100, 50);
-apRF_MUX1.addPoint(100, 235);
-apRF_MUX1.addPoint(140, 235);
+apRF_MUX1.addPoint(160, 50);
+apRF_MUX1.addPoint(50, 50);
+apRF_MUX1.addPoint(50, 235);
+apRF_MUX1.addPoint(90, 235);
 
 AnimPipe apADD4_MUX1 = AnimPipe();
-apADD4_MUX1.addPoint(130, 275);
-apADD4_MUX1.addPoint(90, 275);
+apADD4_MUX1.addPoint(80, 275);
+apADD4_MUX1.addPoint(40, 275);
+apADD4_MUX1.addPoint(40, 245);
 apADD4_MUX1.addPoint(90, 245);
-apADD4_MUX1.addPoint(140, 245);
 
 // Connections to and from PC
 AnimPipe apMUX1_PC = AnimPipe();
-apMUX1_PC.addPoint(150, 230);
-apMUX1_PC.addPoint(170, 230);
+apMUX1_PC.addPoint(100, 230);
+apMUX1_PC.addPoint(120, 230);
 
 AnimPipe apPC_MUX2 = AnimPipe();
-apPC_MUX2.addPoint(180, 210);
-apPC_MUX2.addPoint(180, 180);
+apPC_MUX2.addPoint(130, 210);
+apPC_MUX2.addPoint(130, 180);
 
 AnimPipe apPC_ADD4 = AnimPipe();
-apPC_ADD4.addPoint(180, 250);
-apPC_ADD4.addPoint(180, 275);
-apPC_ADD4.addPoint(150, 275);
+apPC_ADD4.addPoint(130, 250);
+apPC_ADD4.addPoint(130, 275);
+apPC_ADD4.addPoint(100, 275);
 
 AnimPipe apPC_PC1 = AnimPipe();
-apPC_PC1.addPoint(190, 230);
-apPC_PC1.addPoint(210, 230);
-apPC_PC1.addPoint(220, 230);
+apPC_PC1.addPoint(140, 230);
+apPC_PC1.addPoint(160, 230);
+apPC_PC1.addPoint(160, 230);
 
 // MUX2 to BTB
 AnimPipe apMUX2_BTB = AnimPipe();
-apMUX2_BTB.addPoint(185, 170);
-apMUX2_BTB.addPoint(185, 140);
+apMUX2_BTB.addPoint(135, 170);
+apMUX2_BTB.addPoint(135, 140);
 
 //
 // Instruction Decode
@@ -175,12 +175,12 @@ apMUX2_BTB.addPoint(185, 140);
 // ID to EX
 //
 AnimPipe apID_EX = AnimPipe();
-apID_EX.addPoint(240, 390);
-apID_EX.addPoint(370, 390);
+apID_EX.addPoint(190, 390);
+apID_EX.addPoint(310, 390);
 
 // ID and PC1
-InstructionRegister regID = InstructionRegister(220, 350, 20, 85, "ID");
-Register regPC1 = Register(220, 210, 20, 40, TOP, "PC1");
+InstructionRegister regID = InstructionRegister(170, 350, 20, 85, "ID");
+Register regPC1 = Register(170, 210, 20, 40, TOP, "PC1");
 
 // Register file
 Txt(0, HLEFT | VTOP, 400, 40, 0, font, "Register\nFile");		// {joj}
@@ -191,13 +191,13 @@ Txt(0, HLEFT | VTOP, 400, 40, 0, font, "Register\nFile");		// {joj}
 // regFile[3] = Register(355, 50, 20, 30, TOP, "R3");
 
 Register regFile[NUM_REGS];
-num xpos = 230;
+num xpos = 160;
 num ypos = 25;
 num pos = TOP;
 for (i=0; i<NUM_REGS; i++){
 	if (i == (NUM_REGS/2)) {
 		pos = BOTTOM;
-		xpos = 230;
+		xpos = 160;
 		ypos += REG_HEIGHT;
 	}
 	string str = "x" + i.toString();
@@ -206,13 +206,13 @@ for (i=0; i<NUM_REGS; i++){
 }
 
 // Other components
-Component cMUX3 = Component(245, 170, 50, 10, "mux 3");                                               // {joj}
-Component cADD4 = Component(240, 320, 30, 10, "ADD4");                                                // {joj}
-Component cADDi = Component(270, 320, 30, 10, "ADDi");                                                //
-Component cMUX4 = Component(220, 100, 10, 40, "mux 4");                                               // {joj}
-Component cMUX5 = Component(325, 220, 10, 30, "mux 5");                                               // {joj}
+Component cMUX3 = Component(195, 170, 50, 10, "mux 3");                                               // {joj}
+Component cADD4 = Component(190, 320, 30, 10, "ADD4");                                                // {joj}
+Component cADDi = Component(220, 320, 30, 10, "ADDi");                                                //
+Component cMUX4 = Component(170, 100, 10, 40, "mux 4");                                               // {joj}
+Component cMUX5 = Component(295, 220, 10, 30, "mux 5");                                               // {joj}
 
-Rectangle2(0, 0, 0, 0, 250, 365, 20, 10, 0, font, "4");
+Rectangle2(0, 0, 0, 0, 200, 365, 20, 10, 0, font, "4");
 
 // Control lines for MUX3
 Pen controlPen = SolidPen(SOLID, 0, PURPLE, ARROW60_END);
@@ -229,139 +229,139 @@ Pen muxPen = SolidPen(SOLID, MEDIUM, BLACK);															// {joj}
 //Line cZeroMux = Line2(valuesLayer, ABSOLUTE, muxPen, 314, 160, 336, 160);
 //Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 316, 162, 0, font, "zero");			// {joj}
 
-Line clDM1 = Line2(valuesLayer, ABSOLUTE, controlPen, 320, 390,
-	320, 305,
-	308, 305
-	);
+// Line clDM1 = Line2(valuesLayer, ABSOLUTE, controlPen, 320, 390,
+// 	320, 305,
+// 	308, 305
+// 	);
 
 //zero input to alu for comparison during multiply operation
-Line cZero = Line2(valuesLayer, ABSOLUTE, muxPen, 490, 100, 510, 100);
-Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 492, 90, 0, font, "zero");
-Line clALU1 = Line2(valuesLayer, ABSOLUTE, controlPen, 500, 102, 500, 200);
+Line cZero = Line2(valuesLayer, ABSOLUTE, muxPen, 460, 100, 480, 100);
+Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 462, 90, 0, font, "zero");
+Line clALU1 = Line2(valuesLayer, ABSOLUTE, controlPen, 470, 102, 470, 200);
 
 Line clZeroA = Line2(valuesLayer, ABSOLUTE, controlPen,
-	500, 102,
-	500, 140,
-	355, 140,
-	355, 220,
-	370, 220
+	470, 102,
+	470, 140,
+	325, 140,
+	325, 220,
+	340, 220
 );
 
 //output of ALU which determines whether branch should be taken
-Line clALU2 = Line2(valuesLayer, ABSOLUTE, controlPen, 520, 220,
-	530, 220,
-	530, 150,
-	315, 150,
-	315, 175,
-	295, 175
+Line clALU2 = Line2(valuesLayer, ABSOLUTE, controlPen, 490, 220,
+	500, 220,
+	500, 150,
+	305, 150,
+	305, 175,
+	245, 175
 	);
 
 // Connections from PC1
 AnimPipe apPC1_MUX2 = AnimPipe();
-apPC1_MUX2.addPoint(230, 210);
-apPC1_MUX2.addPoint(230, 200);
-apPC1_MUX2.addPoint(190, 200);
-apPC1_MUX2.addPoint(190, 180);
+apPC1_MUX2.addPoint(180, 210);
+apPC1_MUX2.addPoint(180, 200);
+apPC1_MUX2.addPoint(140, 200);
+apPC1_MUX2.addPoint(140, 180);
 
 AnimPipe apADD4_MUX5 = AnimPipe();
-apADD4_MUX5.addPoint(255, 320);
-apADD4_MUX5.addPoint(255, 240);
-apADD4_MUX5.addPoint(325, 240);
+apADD4_MUX5.addPoint(205, 320);
+apADD4_MUX5.addPoint(205, 240);
+apADD4_MUX5.addPoint(295, 240);
 
 AnimPipe apPC1_ADD4 = AnimPipe();
-apPC1_ADD4.addPoint(230, 250);
-apPC1_ADD4.addPoint(230, 345);
-apPC1_ADD4.addPoint(250, 345);
-apPC1_ADD4.addPoint(250, 330);
+apPC1_ADD4.addPoint(180, 250);
+apPC1_ADD4.addPoint(180, 345);
+apPC1_ADD4.addPoint(210, 345);
+apPC1_ADD4.addPoint(210, 330);
 
 AnimPipe apPC1_ADDi = AnimPipe();
-apPC1_ADDi.addPoint(230, 250);
-apPC1_ADDi.addPoint(230, 345);
-apPC1_ADDi.addPoint(280, 346);
-apPC1_ADDi.addPoint(280, 330);
+apPC1_ADDi.addPoint(180, 250);
+apPC1_ADDi.addPoint(180, 345);
+apPC1_ADDi.addPoint(230, 346);
+apPC1_ADDi.addPoint(230, 330);
 
 // Connections to and from the adders
 AnimPipe ap4_ADD4 = AnimPipe();
-ap4_ADD4.addPoint(260, 360);
-ap4_ADD4.addPoint(260, 330);
+ap4_ADD4.addPoint(210, 360);
+ap4_ADD4.addPoint(210, 330);
 
 AnimPipe apID_ADDi = AnimPipe();
+apID_ADDi.addPoint(190, 390);
 apID_ADDi.addPoint(240, 390);
-apID_ADDi.addPoint(290, 390);
-apID_ADDi.addPoint(290, 330);
+apID_ADDi.addPoint(240, 330);
 Rectangle txtID_ADDi = Rectangle(activePipesLayer, 0, 0, redBrush, 320,376, -12,-6, 24,12, whitePen, font);		// {joj 29/10/06, 17/10/16}
 txtID_ADDi.setRounded(2, 2);	// {joj 17/10/16}
 
 AnimPipe apADD4_MUX3 = AnimPipe();
-apADD4_MUX3.addPoint(255, 320);
-apADD4_MUX3.addPoint(255, 180);
+apADD4_MUX3.addPoint(205, 320);
+apADD4_MUX3.addPoint(205, 180);
 
 Rectangle txtADD4_MUX3 = Rectangle(activePipesLayer, 0, 0, redBrush, 285,200, -12,-6, 24,12, whitePen, font);	// {joj 29/10/06, 15/3/15}
 txtADD4_MUX3.setRounded(2, 2); // {joj 17/10/16}
 
 AnimPipe apADDi_DM1 = AnimPipe();
-apADDi_DM1.addPoint(285, 320);
-apADDi_DM1.addPoint(285, 310);
+apADDi_DM1.addPoint(235, 320);
+apADDi_DM1.addPoint(235, 310);
 
 AnimPipe apDM1_MUX3 = AnimPipe();
-apDM1_MUX3.addPoint(277, 300);
-apDM1_MUX3.addPoint(277, 180);
+apDM1_MUX3.addPoint(227, 300);
+apDM1_MUX3.addPoint(227, 180);
 Rectangle txtDM1_MUX3 = Rectangle(activePipesLayer, 0, 0, redBrush, 315,200, -12,-6, 24,12, whitePen, font);	// {joj 29/10/06, 15/3/15}
 txtDM1_MUX3.setRounded(2, 2);
 
 AnimPipe apDM1_REGM = AnimPipe();
-apDM1_REGM.addPoint(285, 300);
-apDM1_REGM.addPoint(285, 280);
-apDM1_REGM.addPoint(295, 280);
+apDM1_REGM.addPoint(235, 300);
+apDM1_REGM.addPoint(235, 280);
+apDM1_REGM.addPoint(265, 280);
 
 AnimPipe apREGM_MUX3 = AnimPipe();
-apREGM_MUX3.addPoint(310, 270);
-apREGM_MUX3.addPoint(310, 255);
-apREGM_MUX3.addPoint(287, 255);
-apREGM_MUX3.addPoint(287, 180);
+apREGM_MUX3.addPoint(280, 270);
+apREGM_MUX3.addPoint(280, 255);
+apREGM_MUX3.addPoint(237, 255);
+apREGM_MUX3.addPoint(237, 180);
 
-Component cDEMUX1 = Component(267, 300, 40, 10, "demux 1");
-Register maybeR = Register(295, 270, 30, 20, LEFT, "M");
+Component cDEMUX1 = Component(217, 300, 40, 10, "demux 1");
+Register maybeR = Register(265, 270, 30, 20, LEFT, "M");
 maybeR.rotateLabel(90);                                           // {joj}
 
 // Connection to BTB
 AnimPipe apMUX3_MUX4 = AnimPipe();
-apMUX3_MUX4.addPoint(270, 170);
-apMUX3_MUX4.addPoint(270, 130);
-apMUX3_MUX4.addPoint(230, 130);
+apMUX3_MUX4.addPoint(220, 170);
+apMUX3_MUX4.addPoint(220, 130);
+apMUX3_MUX4.addPoint(180, 130);
 Rectangle txtMUX3_MUX4 = Rectangle(activePipesLayer, 0, 0, redBrush, 300,160, -12,-6, 24,12, whitePen, font);	// {joj 29/10/06, 15/3/15}
 txtMUX3_MUX4.setRounded(2, 2); // {joj 17/10/16}
 
 AnimPipe apMUX4_BTB = AnimPipe();
-apMUX4_BTB.addPoint(220, 120);
-apMUX4_BTB.addPoint(200, 120);
+apMUX4_BTB.addPoint(170, 120);
+apMUX4_BTB.addPoint(150, 120);
 
 AnimPipe apRF_MUX4 = AnimPipe();
-apRF_MUX4.addPoint(230, 60);
-apRF_MUX4.addPoint(190, 60);
-apRF_MUX4.addPoint(190, 80);
-apRF_MUX4.addPoint(270, 80);
-apRF_MUX4.addPoint(270, 110);
-apRF_MUX4.addPoint(230, 110);
+apRF_MUX4.addPoint(160, 60);
+apRF_MUX4.addPoint(140, 60);
+apRF_MUX4.addPoint(140, 83);
+apRF_MUX4.addPoint(200, 83);
+apRF_MUX4.addPoint(200, 110);
+apRF_MUX4.addPoint(180, 110);
 Rectangle txtRF_MUX1 = Rectangle(activePipesLayer, 0, 0, redBrush, 300,44, -12,0, 24,12, whitePen, font);   // {joj 4/11/12}
 
 // MUX5 to A
 AnimPipe apMUX5_B = AnimPipe();
-apMUX5_B.addPoint(335, 240);
-apMUX5_B.addPoint(370, 240);
+apMUX5_B.addPoint(305, 240);
+apMUX5_B.addPoint(340, 240);
 
 // Connections from the register file
 AnimPipe apRF_MUX5 = AnimPipe();
-apRF_MUX5.addPoint(310, 75);
-apRF_MUX5.addPoint(310, 230);
-apRF_MUX5.addPoint(325, 230);
+apRF_MUX5.addPoint(280, 75);
+apRF_MUX5.addPoint(280, 230);
+apRF_MUX5.addPoint(295, 230);
 Rectangle txtRF_MUX5 = Rectangle(activePipesLayer, 0, 0, redBrush, 340,82, -12,0, 24,12, whitePen, font, "R0:0");   // {joj 1/4/06, 17/10/16}
 txtRF_MUX5.setRounded(2, 2);	// {joj 17/10/16}
 
 AnimPipe apRF_A = AnimPipe();
-apRF_A.addPoint(325, 75);
-apRF_A.addPoint(325, 210);
-apRF_A.addPoint(370, 210);
+apRF_A.addPoint(295, 75);
+apRF_A.addPoint(295, 210);
+apRF_A.addPoint(340, 210);
 Rectangle txtRF_A = Rectangle(activePipesLayer, 0, 0, redBrush, 370,82, -12,0, 24,12, whitePen, font, "R0:0");      // {joj 1/4/06, 17/10/16}
 txtRF_A.setRounded(2, 2);	// {joj 17/10/16}
 
@@ -370,178 +370,178 @@ txtRF_A.setRounded(2, 2);	// {joj 17/10/16}
 //
 // EX, A and B
 //
-InstructionRegister regEX = InstructionRegister(370, 350, 20, 85, "EX");
-Register regA = Register(370, 190, 20, 40, TOP, "A");
-Register regB = Register(370, 230, 20, 40, BOTTOM, "B");
+InstructionRegister regEX = InstructionRegister(310, 350, 20, 85, "EX");
+Register regA = Register(340, 190, 20, 40, TOP, "A");
+Register regB = Register(340, 230, 20, 40, BOTTOM, "B");
 
-Component cDECR = Component(357, 290, 23, 10, "SUB");
-Component cINCR = Component(357, 120, 23, 10, "ADD");
+Component cDECR = Component(328, 290, 23, 10, "SUB");
+Component cINCR = Component(337, 120, 23, 10, "ADD");
 
 AnimPipe apB_SUB1 = AnimPipe();
-apB_SUB1.addPoint(370, 260);
 apB_SUB1.addPoint(340, 260);
-apB_SUB1.addPoint(340, 295);
-apB_SUB1.addPoint(357, 295);
+apB_SUB1.addPoint(315, 260);
+apB_SUB1.addPoint(315, 295);
+apB_SUB1.addPoint(328, 295);
 
 AnimPipe apA_ADD1 = AnimPipe();
-apA_ADD1.addPoint(370, 200);
 apA_ADD1.addPoint(340, 200);
-apA_ADD1.addPoint(340, 125);
-apA_ADD1.addPoint(357, 125);
+apA_ADD1.addPoint(315, 200);
+apA_ADD1.addPoint(315, 125);
+apA_ADD1.addPoint(337, 125);
 
-Rectangle2(0, 0, 0, 0, 350, 315, 20, 10, 0, font, "-1");
-Rectangle2(0, 0, 0, 0, 350, 95, 20, 10, 0, font, "+1");
+Rectangle2(0, 0, 0, 0, 320, 315, 20, 10, 0, font, "-1");
+Rectangle2(0, 0, 0, 0, 320, 95, 20, 10, 0, font, "+1");
 
 AnimPipe ap1_SUB1 = AnimPipe();
-ap1_SUB1.addPoint(368, 320);
-ap1_SUB1.addPoint(375, 320);
-ap1_SUB1.addPoint(375, 300);
+ap1_SUB1.addPoint(338, 320);
+ap1_SUB1.addPoint(345, 320);
+ap1_SUB1.addPoint(345, 300);
 
 AnimPipe ap1_ADD1 = AnimPipe();
-ap1_ADD1.addPoint(368, 100);
-ap1_ADD1.addPoint(375, 100);
-ap1_ADD1.addPoint(375, 120);
+ap1_ADD1.addPoint(338, 100);
+ap1_ADD1.addPoint(345, 100);
+ap1_ADD1.addPoint(345, 120);
 
 AnimPipe apSUB1_B = AnimPipe();
-apSUB1_B.addPoint(375, 290);
-apSUB1_B.addPoint(375, 270);
+apSUB1_B.addPoint(345, 290);
+apSUB1_B.addPoint(345, 270);
 
 AnimPipe apADD1_A = AnimPipe();
-apADD1_A.addPoint(375, 130);
-apADD1_A.addPoint(375, 190);
+apADD1_A.addPoint(345, 130);
+apADD1_A.addPoint(345, 190);
 
 // Other components
-Component cMUX6 = Component(450, 180, 10, 50, "mux 6");   // {joj}
-Component cMUX7 = Component(450, 230, 10, 50, "mux 7");   // {joj}
-Component cMUX8 = Component(450, 310, 10, 40, "mux 8");   // {joj}
-ALU alu = ALU(480, 190, 40, 80);
+Component cMUX6 = Component(420, 180, 10, 50, "mux 6");   // {joj}
+Component cMUX7 = Component(420, 230, 10, 50, "mux 7");   // {joj}
+Component cMUX8 = Component(420, 310, 10, 40, "mux 8");   // {joj}
+ALU alu = ALU(450, 190, 40, 80);
 
 // EX to MA
 AnimPipe apEX_MA = AnimPipe();
-apEX_MA.addPoint(390, 390);
-apEX_MA.addPoint(560, 390);
+apEX_MA.addPoint(330, 390);
+apEX_MA.addPoint(530, 390);
 
 // Connections numo MUX6
 AnimPipe apOUT0_MUX6 = AnimPipe();
-apOUT0_MUX6.addPoint(570, 210);
-apOUT0_MUX6.addPoint(570, 170);
-apOUT0_MUX6.addPoint(420, 170);
+apOUT0_MUX6.addPoint(530, 210);
+apOUT0_MUX6.addPoint(530, 170);
+apOUT0_MUX6.addPoint(390, 170);
+apOUT0_MUX6.addPoint(390, 190);
 apOUT0_MUX6.addPoint(420, 190);
-apOUT0_MUX6.addPoint(450, 190);
 
 AnimPipe apOUT0_A = AnimPipe();
-apOUT0_A.addPoint(570, 210);
-apOUT0_A.addPoint(570, 170);
-apOUT0_A.addPoint(385, 170);
-apOUT0_A.addPoint(385, 190);
+apOUT0_A.addPoint(530, 210);
+apOUT0_A.addPoint(530, 170);
+apOUT0_A.addPoint(355, 170);
+apOUT0_A.addPoint(355, 190);
 
 AnimPipe apOUT1_MUX6 = AnimPipe();
-apOUT1_MUX6.addPoint(670, 210);
-apOUT1_MUX6.addPoint(670, 160);
-apOUT1_MUX6.addPoint(410, 160);
-apOUT1_MUX6.addPoint(410, 200);
-apOUT1_MUX6.addPoint(450, 200);
+apOUT1_MUX6.addPoint(630, 210);
+apOUT1_MUX6.addPoint(630, 160);
+apOUT1_MUX6.addPoint(380, 160);
+apOUT1_MUX6.addPoint(380, 200);
+apOUT1_MUX6.addPoint(420, 200);
 
 AnimPipe apOUT1_A = AnimPipe();
-apOUT1_A.addPoint(670, 210);
-apOUT1_A.addPoint(670, 160);
-apOUT1_A.addPoint(385, 160);
-apOUT1_A.addPoint(385, 190);
+apOUT1_A.addPoint(630, 210);
+apOUT1_A.addPoint(630, 160);
+apOUT1_A.addPoint(355, 160);
+apOUT1_A.addPoint(355, 190);
 
 AnimPipe apA_MUX6 = AnimPipe();
-apA_MUX6.addPoint(390, 220);
-apA_MUX6.addPoint(450, 220);
+apA_MUX6.addPoint(360, 220);
+apA_MUX6.addPoint(420, 220);
 
 // Connections numo MUX7
 AnimPipe apB_MUX7 = AnimPipe();
-apB_MUX7.addPoint(390, 240);
-apB_MUX7.addPoint(450, 240);
+apB_MUX7.addPoint(360, 240);
+apB_MUX7.addPoint(420, 240);
 
 AnimPipe apEX_MUX7 = AnimPipe();
-apEX_MUX7.addPoint(390, 390);
-apEX_MUX7.addPoint(400, 390);
-apEX_MUX7.addPoint(400, 250);
-apEX_MUX7.addPoint(460, 250);
+apEX_MUX7.addPoint(330, 390);
+apEX_MUX7.addPoint(370, 390);
+apEX_MUX7.addPoint(370, 250);
+apEX_MUX7.addPoint(420, 250);
 Rectangle txtEX_MUX7 = Rectangle(activePipesLayer, 0, 0, redBrush, 432,370, -10,0, 20,12, whitePen, font, "IMM");	// {joj 1/4/06, 17/10/16}
 txtEX_MUX7.setRounded(2, 2);	// {joj 17/10/16}
 
 AnimPipe apOUT1_MUX7 = AnimPipe();
-apOUT1_MUX7.addPoint(670, 250);
-apOUT1_MUX7.addPoint(670, 300);
-apOUT1_MUX7.addPoint(410, 300);
-apOUT1_MUX7.addPoint(410, 260);
-apOUT1_MUX7.addPoint(450, 260);
+apOUT1_MUX7.addPoint(630, 250);
+apOUT1_MUX7.addPoint(630, 300);
+apOUT1_MUX7.addPoint(380, 300);
+apOUT1_MUX7.addPoint(380, 260);
+apOUT1_MUX7.addPoint(420, 260);
 
 AnimPipe apOUT1_B = AnimPipe();
-apOUT1_B.addPoint(670, 250);
-apOUT1_B.addPoint(670, 300);
-apOUT1_B.addPoint(385, 300);
-apOUT1_B.addPoint(385, 270);
+apOUT1_B.addPoint(630, 250);
+apOUT1_B.addPoint(630, 300);
+apOUT1_B.addPoint(355, 300);
+apOUT1_B.addPoint(355, 270);
 
 AnimPipe apOUT0_MUX7 = AnimPipe();
-apOUT0_MUX7.addPoint(570, 250);
-apOUT0_MUX7.addPoint(570, 290);
-apOUT0_MUX7.addPoint(420, 290);
+apOUT0_MUX7.addPoint(530, 250);
+apOUT0_MUX7.addPoint(530, 290);
+apOUT0_MUX7.addPoint(390, 290);
+apOUT0_MUX7.addPoint(390, 270);
 apOUT0_MUX7.addPoint(420, 270);
-apOUT0_MUX7.addPoint(450, 270);
 
 AnimPipe apOUT0_B = AnimPipe();
-apOUT0_B.addPoint(570, 250);
-apOUT0_B.addPoint(570, 290);
-apOUT0_B.addPoint(385, 290);
-apOUT0_B.addPoint(385, 270);
+apOUT0_B.addPoint(530, 250);
+apOUT0_B.addPoint(530, 290);
+apOUT0_B.addPoint(355, 290);
+apOUT0_B.addPoint(355, 270);
 
 // Connectings to and from MUX8
 AnimPipe apOUT0_MUX8 = AnimPipe();
-apOUT0_MUX8.addPoint(570, 250);
-apOUT0_MUX8.addPoint(570, 290);
-apOUT0_MUX8.addPoint(420, 290);
+apOUT0_MUX8.addPoint(530, 250);
+apOUT0_MUX8.addPoint(530, 290);
+apOUT0_MUX8.addPoint(390, 290);
+apOUT0_MUX8.addPoint(390, 320);
 apOUT0_MUX8.addPoint(420, 320);
-apOUT0_MUX8.addPoint(450, 320);
 
 AnimPipe apOUT1_MUX8 = AnimPipe();
-apOUT1_MUX8.addPoint(670, 250);
-apOUT1_MUX8.addPoint(670, 300);
-apOUT1_MUX8.addPoint(410, 300);
-apOUT1_MUX8.addPoint(410, 330);
-apOUT1_MUX8.addPoint(450, 330);
+apOUT1_MUX8.addPoint(630, 250);
+apOUT1_MUX8.addPoint(630, 300);
+apOUT1_MUX8.addPoint(380, 300);
+apOUT1_MUX8.addPoint(380, 330);
+apOUT1_MUX8.addPoint(420, 330);
 
 AnimPipe apB_MUX8 = AnimPipe();
-apB_MUX8.addPoint(385, 270);
-apB_MUX8.addPoint(385, 340);
-apB_MUX8.addPoint(450, 340);
+apB_MUX8.addPoint(355, 270);
+apB_MUX8.addPoint(355, 340);
+apB_MUX8.addPoint(420, 340);
 
 AnimPipe apMUX8_SMDR = AnimPipe();
-apMUX8_SMDR.addPoint(460, 330);
-apMUX8_SMDR.addPoint(550, 330);
+apMUX8_SMDR.addPoint(430, 330);
+apMUX8_SMDR.addPoint(520, 330);
 
 //
 // Connections from MUX6 through the ALU to OUT0
 //
 AnimPipe apMUX6_ALU = AnimPipe();
-apMUX6_ALU.addPoint(460, 205);
-apMUX6_ALU.addPoint(480, 205);
+apMUX6_ALU.addPoint(430, 205);
+apMUX6_ALU.addPoint(450, 205);
 // apMUX6_ALU.addPoint(510, 230);
 // apMUX6_ALU.addPoint(560, 230);
 
 AnimPipe apMUX7_ALU = AnimPipe();
-apMUX7_ALU.addPoint(460, 255);
-apMUX7_ALU.addPoint(480, 255);
+apMUX7_ALU.addPoint(430, 255);
+apMUX7_ALU.addPoint(450, 255);
 // apMUX7_ALU.addPoint(510, 230);
 // apMUX7_ALU.addPoint(560, 230);
 
 AnimPipe apALU_OUT0 = AnimPipe();
+apALU_OUT0.addPoint(490, 240);
 apALU_OUT0.addPoint(520, 240);
-apALU_OUT0.addPoint(560, 240);
 
 //
 // Memory access
 //
 // MA, SMDR and OUT0
 //
-InstructionRegister regMA = InstructionRegister(560, 350, 20, 85, "MA");
-Register regOUT0 = Register(560, 210, 20, 40, TOP, "O0");
-Register regSMDR = Register(550, 320, 40, 20, RIGHT, "SMR");
+InstructionRegister regMA = InstructionRegister(530, 350, 20, 85, "MA");
+Register regOUT0 = Register(520, 210, 20, 40, TOP, "O0");
+Register regSMDR = Register(520, 320, 40, 20, RIGHT, "SMR");
 Txt(valuesLayer, HLEFT | VTOP, 553, 100, 0, font, "memory\naddress");        // {joj}
 Txt(valuesLayer, HLEFT | VTOP, 605, 320, 0, font, "memory\ndata-in");        // {joj}
 Txt(valuesLayer, HLEFT | VTOP, 615, 100, 0, font, "memory\ndata-out");       // {joj}
@@ -555,28 +555,28 @@ memory[2] = Register(600, 30, 40, 20, RIGHT, "M2");
 memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
 
 // Stack
-Stack stack = Stack(720, 60);
-stack.createFrame(2, 1);
+Stack stack = Stack(680, 60);
+//stack.createFrame(2, 1);
 
 //
 // Other components
 //
-Component cMUX9 = Component(630, 210, 10, 40, "mux 9");                                                   // {joj}
+Component cMUX9 = Component(590, 210, 10, 40, "mux 9");                                                   // {joj}
 
 // MA to WB
 AnimPipe apMA_WB = AnimPipe();
-apMA_WB.addPoint(580, 390);
-apMA_WB.addPoint(660, 390);
+apMA_WB.addPoint(550, 390);
+apMA_WB.addPoint(620, 390);
 
 // OUT0 to MUX 8/OUT1
 //
 AnimPipe apOUT0_MUX9 = AnimPipe();
-apOUT0_MUX9.addPoint(580, 230);
-apOUT0_MUX9.addPoint(630, 230);
+apOUT0_MUX9.addPoint(540, 230);
+apOUT0_MUX9.addPoint(590, 230);
 
 AnimPipe apMUX9_OUT1 = AnimPipe();
-apMUX9_OUT1.addPoint(640, 230);
-apMUX9_OUT1.addPoint(660, 230);
+apMUX9_OUT1.addPoint(600, 230);
+apMUX9_OUT1.addPoint(620, 230);
 
 // Connections to and from memory
 
@@ -596,20 +596,20 @@ apMUX9_OUT1.addPoint(660, 230);
 // apMem_MUX9.addPoint(630, 220);
 
 AnimPipe apOUT0_Mem = AnimPipe();
-apOUT0_Mem.addPoint(580, 230);
-apOUT0_Mem.addPoint(590, 230);
-apOUT0_Mem.addPoint(590, 110);
-apOUT0_Mem.addPoint(720, 110);
+apOUT0_Mem.addPoint(540, 230);
+apOUT0_Mem.addPoint(550, 230);
+apOUT0_Mem.addPoint(550, 110);
+apOUT0_Mem.addPoint(680, 110);
 
 AnimPipe apSMDR_Mem = AnimPipe();
-apSMDR_Mem.addPoint(590, 330);
-apSMDR_Mem.addPoint(720, 330);
+apSMDR_Mem.addPoint(560, 330);
+apSMDR_Mem.addPoint(680, 330);
 
 AnimPipe apMem_MUX9 = AnimPipe();
-apMem_MUX9.addPoint(720, 90);
-apMem_MUX9.addPoint(610, 90);
-apMem_MUX9.addPoint(610, 220);
-apMem_MUX9.addPoint(630, 220);
+apMem_MUX9.addPoint(680, 90);
+apMem_MUX9.addPoint(570, 90);
+apMem_MUX9.addPoint(570, 220);
+apMem_MUX9.addPoint(590, 220);
 
 //
 // Write Back
@@ -617,15 +617,15 @@ apMem_MUX9.addPoint(630, 220);
 
 // WB and OUT1
 
-InstructionRegister regWB = InstructionRegister(660, 350, 20, 85, "WB");
-Register regOUT1 = Register(660, 210, 20, 40, TOP, "O1");
+InstructionRegister regWB = InstructionRegister(620, 350, 20, 85, "WB");
+Register regOUT1 = Register(620, 210, 20, 40, TOP, "O1");
 
 // Connections from OUT1 to the register file
 
 AnimPipe apOUT1_RF = AnimPipe();
-apOUT1_RF.addPoint(680, 230);
-apOUT1_RF.addPoint(690, 230);
-apOUT1_RF.addPoint(690, 10);
+apOUT1_RF.addPoint(640, 230);
+apOUT1_RF.addPoint(650, 230);
+apOUT1_RF.addPoint(650, 10);
 apOUT1_RF.addPoint(390, 10);
 apOUT1_RF.addPoint(390, 25);
 
@@ -684,7 +684,7 @@ function resetWires() {
 		clALU1.setPen(controlPen);
 		clZeroA.setPen(controlPen);
 		clALU2.setPen(controlPen);
-		clDM1.setPen(controlPen);
+		//clDM1.setPen(controlPen);
 
     //
     // EX
@@ -830,27 +830,27 @@ function showALUForwarding(num opacity) {  // {joj 20/8/10}
         //
         // NOT pipelined
         //
-        apA_MUX6.setPoint(0, 390, 205);
-        apA_MUX6.setPoint(1, 451, 205);
+        apA_MUX6.setPoint(0, 360, 205);
+        apA_MUX6.setPoint(1, 421, 205);
 
-        apB_MUX7.setPoint(0, (afMode) ? 390 : 380, 250);    // {joj 28/10/06}
-        apB_MUX7.setPoint(1, 440, 250);
+        apB_MUX7.setPoint(0, (afMode) ? 360 : 350, 250);    // {joj 28/10/06}
+        apB_MUX7.setPoint(1, 410, 250);
 
-        apEX_MUX7.setPoint(2, 400, 260);
-        apEX_MUX7.setPoint(3, 440, 260);
+        apEX_MUX7.setPoint(2, 370, 260);
+        apEX_MUX7.setPoint(3, 410, 260);
 
         apA_MUX6.setHead(0);
 
     } else {
 
-        apA_MUX6.setPoint(0, 390, 220);
-        apA_MUX6.setPoint(1, 450, 220);
+        apA_MUX6.setPoint(0, 360, 220);
+        apA_MUX6.setPoint(1, 420, 220);
 
-        apB_MUX7.setPoint(0, 390, 240);
-        apB_MUX7.setPoint(1, 450, 240);
+        apB_MUX7.setPoint(0, 360, 240);
+        apB_MUX7.setPoint(1, 420, 240);
 
-        apEX_MUX7.setPoint(2, 400, 250);
-        apEX_MUX7.setPoint(3, 450, 250);
+        apEX_MUX7.setPoint(2, 370, 250);
+        apEX_MUX7.setPoint(3, 420, 250);
 
         apA_MUX6.setHead(1);
 
@@ -872,14 +872,14 @@ function showSMDRForwarding(num opacity) { // {joj 20/8/10}
 
     if (opacity == 0) {
 
-        apB_MUX8.setPoint(1, 385, 330);
-        apB_MUX8.setPoint(2, 450, 330);
+        apB_MUX8.setPoint(1, 355, 330);
+        apB_MUX8.setPoint(2, 420, 330);
         apB_MUX8.setHead(0);
 
     } else {
 
-        apB_MUX8.setPoint(1, 385, 340);
-        apB_MUX8.setPoint(2, 450, 340);
+        apB_MUX8.setPoint(1, 355, 340);
+        apB_MUX8.setPoint(2, 420, 340);
         apB_MUX8.setHead(1);
 
     }
@@ -926,25 +926,25 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         //
         // not pipelined
         //
-        apPC_PC1.setPoint(1, 230, 230);
-        apPC_PC1.setPoint(2, 230, 240);
+        apPC_PC1.setPoint(1, 180, 230);
+        apPC_PC1.setPoint(2, 180, 240);
 
-        apPC1_ADD4.setPoint(0, 230, 230);
-        apPC1_ADDi.setPoint(0, 230, 230);
+        apPC1_ADD4.setPoint(0, 180, 230);
+        apPC1_ADDi.setPoint(0, 180, 230);
 
-        apID_EX.setPoint(1, 360, 390);
+        apID_EX.setPoint(1, 300, 390);
 
-        apRF_A.setPoint(1, 325, 205);
-        apRF_A.setPoint(2, 390, 205);
-        apMUX5_B.setPoint(1, 390, 240);             // {joj 28/10/06}
-        apB_MUX8.setPoint(0, 385, 250);
+        apRF_A.setPoint(1, 295, 205);
+        apRF_A.setPoint(2, 360, 205);
+        apMUX5_B.setPoint(1, 360, 240);             // {joj 28/10/06}
+        apB_MUX8.setPoint(0, 355, 250);
 
         //apMUX6_ALU.setPoint(3, 580, 230);
         //apMUX7_ALU.setPoint(3, 580, 230);
-				apALU_OUT0.setPoint(3, 560, 240);
+				apALU_OUT0.setPoint(3, 520, 240);
 
-        apMUX8_SMDR.setPoint(1, 560, 330);
-        apMUX9_OUT1.setPoint(1, 680, 230);
+        apMUX8_SMDR.setPoint(1, 530, 330);
+        apMUX9_OUT1.setPoint(1, 640, 230);
 
         apID_EX.setHead(0);
         apPC_PC1.setHead(0);
@@ -965,25 +965,25 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
 
     } else {
 
-        apPC_PC1.setPoint(1, 210, 230);
-        apPC_PC1.setPoint(2, 220, 230);
+        apPC_PC1.setPoint(1, 160, 230);
+        apPC_PC1.setPoint(2, 170, 230);
 
-        apPC1_ADD4.setPoint(0, 230, 250);
-        apPC1_ADDi.setPoint(0, 230, 250);
+        apPC1_ADD4.setPoint(0, 180, 250);
+        apPC1_ADDi.setPoint(0, 180, 250);
 
-        apID_EX.setPoint(1, 370, 390);
+        apID_EX.setPoint(1, 310, 390);
 
-        apRF_A.setPoint(1, 325, 210);
-        apRF_A.setPoint(2, 370, 210);
-        apMUX5_B.setPoint(1, 370, 240);
-        apB_MUX8.setPoint(0, 385, 270);
+        apRF_A.setPoint(1, 295, 210);
+        apRF_A.setPoint(2, 340, 210);
+        apMUX5_B.setPoint(1, 340, 240);
+        apB_MUX8.setPoint(0, 355, 270);
 
         //apMUX6_ALU.setPoint(3, 560, 230);
         //apMUX7_ALU.setPoint(3, 560, 230);
-				apALU_OUT0.setPoint(3, 560, 240);
+				apALU_OUT0.setPoint(3, 520, 240);
 
-        apMUX8_SMDR.setPoint(1, 550, 330);
-        apMUX9_OUT1.setPoint(1, 660, 230);
+        apMUX8_SMDR.setPoint(1, 520, 330);
+        apMUX9_OUT1.setPoint(1, 620, 230);
 
         apID_EX.setHead(1);
         apPC_PC1.setHead(1);

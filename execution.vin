@@ -343,7 +343,7 @@ function idExec() {																// {joj 14/11/17}
 		fork(apADDi_DM1.animate(8));
     wait(2);
     //if(instrIsBranch(regID.vIns)){
-    clDM1.setPen(controlHLPen);
+    //clDM1.setPen(controlHLPen);
     fork(apDM1_REGM.animate(8));
     regFile[regID.vRs1].highlight(bhighlight);                             // {joj}
     regA.setNewValue(regFile[regID.vRs1].value);
@@ -737,6 +737,7 @@ function exExec() {														// {joj 14/11/17}
                 result = instrExecute(SLT, op1, op2);
                 if(result == 1){
                     divDone = 1;
+                    if(regEX.vIns == REM) multiStall = 0;
                 }
               }
               else{
