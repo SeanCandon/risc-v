@@ -374,41 +374,41 @@ InstructionRegister regEX = InstructionRegister(310, 350, 20, 85, "EX");
 Register regA = Register(340, 190, 20, 40, TOP, "A");
 Register regB = Register(340, 230, 20, 40, BOTTOM, "B");
 
-Component cDECR = Component(328, 290, 23, 10, "SUB");
-Component cINCR = Component(337, 120, 23, 10, "ADD");
+// Component cDECR = Component(328, 290, 23, 10, "SUB");
+// Component cINCR = Component(337, 120, 23, 10, "ADD");
 
-AnimPipe apB_SUB1 = AnimPipe();
-apB_SUB1.addPoint(340, 260);
-apB_SUB1.addPoint(315, 260);
-apB_SUB1.addPoint(315, 295);
-apB_SUB1.addPoint(328, 295);
+// AnimPipe apB_SUB1 = AnimPipe();
+// apB_SUB1.addPoint(340, 260);
+// apB_SUB1.addPoint(315, 260);
+// apB_SUB1.addPoint(315, 295);
+// apB_SUB1.addPoint(328, 295);
+//
+// AnimPipe apA_ADD1 = AnimPipe();
+// apA_ADD1.addPoint(340, 200);
+// apA_ADD1.addPoint(315, 200);
+// apA_ADD1.addPoint(315, 125);
+// apA_ADD1.addPoint(337, 125);
 
-AnimPipe apA_ADD1 = AnimPipe();
-apA_ADD1.addPoint(340, 200);
-apA_ADD1.addPoint(315, 200);
-apA_ADD1.addPoint(315, 125);
-apA_ADD1.addPoint(337, 125);
+// Rectangle2(0, 0, 0, 0, 320, 315, 20, 10, 0, font, "-1");
+// Rectangle2(0, 0, 0, 0, 320, 95, 20, 10, 0, font, "+1");
 
-Rectangle2(0, 0, 0, 0, 320, 315, 20, 10, 0, font, "-1");
-Rectangle2(0, 0, 0, 0, 320, 95, 20, 10, 0, font, "+1");
-
-AnimPipe ap1_SUB1 = AnimPipe();
-ap1_SUB1.addPoint(338, 320);
-ap1_SUB1.addPoint(345, 320);
-ap1_SUB1.addPoint(345, 300);
-
-AnimPipe ap1_ADD1 = AnimPipe();
-ap1_ADD1.addPoint(338, 100);
-ap1_ADD1.addPoint(345, 100);
-ap1_ADD1.addPoint(345, 120);
-
-AnimPipe apSUB1_B = AnimPipe();
-apSUB1_B.addPoint(345, 290);
-apSUB1_B.addPoint(345, 270);
-
-AnimPipe apADD1_A = AnimPipe();
-apADD1_A.addPoint(345, 130);
-apADD1_A.addPoint(345, 190);
+// AnimPipe ap1_SUB1 = AnimPipe();
+// ap1_SUB1.addPoint(338, 320);
+// ap1_SUB1.addPoint(345, 320);
+// ap1_SUB1.addPoint(345, 300);
+//
+// AnimPipe ap1_ADD1 = AnimPipe();
+// ap1_ADD1.addPoint(338, 100);
+// ap1_ADD1.addPoint(345, 100);
+// ap1_ADD1.addPoint(345, 120);
+//
+// AnimPipe apSUB1_B = AnimPipe();
+// apSUB1_B.addPoint(345, 290);
+// apSUB1_B.addPoint(345, 270);
+//
+// AnimPipe apADD1_A = AnimPipe();
+// apADD1_A.addPoint(345, 130);
+// apADD1_A.addPoint(345, 190);
 
 // Other components
 Component cMUX6 = Component(420, 180, 10, 50, "mux 6");   // {joj}
@@ -429,11 +429,11 @@ apOUT0_MUX6.addPoint(390, 170);
 apOUT0_MUX6.addPoint(390, 190);
 apOUT0_MUX6.addPoint(420, 190);
 
-AnimPipe apOUT0_A = AnimPipe();
-apOUT0_A.addPoint(530, 210);
-apOUT0_A.addPoint(530, 170);
-apOUT0_A.addPoint(355, 170);
-apOUT0_A.addPoint(355, 190);
+// AnimPipe apOUT0_A = AnimPipe();
+// apOUT0_A.addPoint(530, 210);
+// apOUT0_A.addPoint(530, 170);
+// apOUT0_A.addPoint(355, 170);
+// apOUT0_A.addPoint(355, 190);
 
 AnimPipe apOUT1_MUX6 = AnimPipe();
 apOUT1_MUX6.addPoint(630, 210);
@@ -442,11 +442,11 @@ apOUT1_MUX6.addPoint(380, 160);
 apOUT1_MUX6.addPoint(380, 200);
 apOUT1_MUX6.addPoint(420, 200);
 
-AnimPipe apOUT1_A = AnimPipe();
-apOUT1_A.addPoint(630, 210);
-apOUT1_A.addPoint(630, 160);
-apOUT1_A.addPoint(355, 160);
-apOUT1_A.addPoint(355, 190);
+// AnimPipe apOUT1_A = AnimPipe();
+// apOUT1_A.addPoint(630, 210);
+// apOUT1_A.addPoint(630, 160);
+// apOUT1_A.addPoint(355, 160);
+// apOUT1_A.addPoint(355, 190);
 
 AnimPipe apA_MUX6 = AnimPipe();
 apA_MUX6.addPoint(360, 220);
@@ -472,11 +472,11 @@ apOUT1_MUX7.addPoint(380, 300);
 apOUT1_MUX7.addPoint(380, 260);
 apOUT1_MUX7.addPoint(420, 260);
 
-AnimPipe apOUT1_B = AnimPipe();
-apOUT1_B.addPoint(630, 250);
-apOUT1_B.addPoint(630, 300);
-apOUT1_B.addPoint(355, 300);
-apOUT1_B.addPoint(355, 270);
+// AnimPipe apOUT1_B = AnimPipe();
+// apOUT1_B.addPoint(630, 250);
+// apOUT1_B.addPoint(630, 300);
+// apOUT1_B.addPoint(355, 300);
+// apOUT1_B.addPoint(355, 270);
 
 AnimPipe apOUT0_MUX7 = AnimPipe();
 apOUT0_MUX7.addPoint(530, 250);
@@ -485,11 +485,11 @@ apOUT0_MUX7.addPoint(390, 290);
 apOUT0_MUX7.addPoint(390, 270);
 apOUT0_MUX7.addPoint(420, 270);
 
-AnimPipe apOUT0_B = AnimPipe();
-apOUT0_B.addPoint(530, 250);
-apOUT0_B.addPoint(530, 290);
-apOUT0_B.addPoint(355, 290);
-apOUT0_B.addPoint(355, 270);
+// AnimPipe apOUT0_B = AnimPipe();
+// apOUT0_B.addPoint(530, 250);
+// apOUT0_B.addPoint(530, 290);
+// apOUT0_B.addPoint(355, 290);
+// apOUT0_B.addPoint(355, 270);
 
 // Connectings to and from MUX8
 AnimPipe apOUT0_MUX8 = AnimPipe();
@@ -692,8 +692,8 @@ function resetWires() {
     apEX_MA.reset();
     apOUT0_MUX6.reset();
     apOUT1_MUX6.reset();
-		apOUT0_A.reset();
-		apOUT1_A.reset();
+		//apOUT0_A.reset();
+		//apOUT1_A.reset();
     apA_MUX6.reset();
     apB_MUX7.reset();
     apEX_MUX7.reset(); txtEX_MUX7.setOpacity(0);        // {joj 29/10/06}
@@ -702,18 +702,18 @@ function resetWires() {
     apOUT0_MUX8.reset();
     apOUT1_MUX8.reset();
     apB_MUX8.reset();
-		apB_SUB1.reset();
-		ap1_SUB1.reset();
-		apSUB1_B.reset();
-		apA_ADD1.reset();
-		ap1_ADD1.reset();
-		apADD1_A.reset();
+		//apB_SUB1.reset();
+		//ap1_SUB1.reset();
+		//apSUB1_B.reset();
+		//apA_ADD1.reset();
+		//ap1_ADD1.reset();
+		//apADD1_A.reset();
     apMUX8_SMDR.reset();
     apMUX6_ALU.reset();
     apMUX7_ALU.reset();
 		apALU_OUT0.reset();
-		apOUT1_B.reset();
-		apOUT0_B.reset();
+		//apOUT1_B.reset();
+		//apOUT0_B.reset();
     alu.txtOp.setOpacity(0);                            // hide ALU txtOp {joj 29/10/06}
     alu.txtResult.setOpacity(0);                        // hide ALU txtResult {joj 29/10/06}
 

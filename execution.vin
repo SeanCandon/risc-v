@@ -656,109 +656,130 @@ function exExec() {														// {joj 14/11/17}
   if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
 
     // select correct source for operand 1
+    if(instrIsMulti(regEX.vIns)){
 
-    if(regEX.vIns == MUL){
-      multiStall = 1;
-      if(startMulti == 0){
-        mux6Src = 0;
-        //fork(apOUT0_MUX6.animate(20));
-      }
+        if(regEX.vIns == MUL){
+          multiStall = 1;
+          if(startMulti == 0){
+            mux6Src = 0;
+            //fork(apOUT0_MUX6.animate(20));
+          }
+        }
+        else{
+          if(startMulti == 0){
+            if(multistage == CHECK){
+               mux6Src = apOUT0_MUX6;
+               op1 = regOUT0.value;
+            }
+            else if(multistage == EXEC){
+              if(divDone == 0){
+                mux6Src = apOUT1_MUX6;
+                op1 = regOUT1.value;
+              }
+              else{
+                mux6Src = 0;
+              }
+            }
+          }
+        }
     }
 
-      // if(instrIsMulti(regEX.vIns)){
-      //     multiStall = 1;
-      //     if(startMulti == 1){
-      //       if(regEX.vIns != MUL) divDone = 0;
-      //       if(afMode == ALU_FORWARDING){
-      //         if(regOUT0.tagMatches(regEX.vRs1)){
-      //           op1 = regOUT0.value;
-      //           fork(apOUT0_A.animate(20));
-      //           regA.setNewValue(regOUT0.value);
-      //           regA.update();
-      //         }
-      //         else if(regOUT1.tagMatches(regEX.vRs1)){
-      //           op1 = regOUT1.value;
-      //           fork(apOUT1_A.animate(20));
-      //           regA.setNewValue(regOUT1.value);
-      //           regA.update();
-      //         }
-      //         else{
-      //           op1 = regA.value;
-      //         }
-      //         if(regOUT0.tagMatches(regEX.vRs2)){
-      //           op2 = regOUT0.value;
-      //           fork(apOUT0_B.animate(20));
-      //           regB.setNewValue(regOUT0.value);
-      //           regB.update();
-      //         }
-      //         else if(regOUT1.tagMatches(regEX.vRs2)){
-      //           op2 = regOUT1.value;
-      //           fork(apOUT1_B.animate(20));
-      //           regB.setNewValue(regOUT1.value);
-      //           regB.update();
-      //         }
-      //         else{
-      //           op2 = regB.value;
-      //         }
-      //
-      //       }
-      //       else{
-      //         op1 = regA.value;
-      //         op2 = regB.value;
-      //       }
-      //       mux6Src = apA_MUX6;
-      //     }
-      //     else{
-      //       if(multistage == CHECK){
-      //         if(regEX.vIns == MUL){
-      //           fork(apB_SUB1.animate(5));
-      //           fork(ap1_SUB1.animate(5));
-      //           regB.setNewValue(regB.value - 1);
-      //           wait(2);
-      //           regB.update();
-      //           apSUB1_B.animate(5);
-      //         }
-      //         else{
-      //           mux6Src = apOUT0_MUX6;
-      //           // fork(apA_ADD1.animate(5));
-      //           // fork(ap1_ADD1.animate(5));
-      //           // regA.setNewValue(regA.value + 1);
-      //           // wait(2);
-      //           // regA.update();
-      //           // apADD1_A.animate(5);
-      //           op1 = regOUT0.value;
-      //         }
-      //         op2 = regB.value;
-      //         mux7Src = apB_MUX7;
-      //       }
-      //       else if(multistage == EXEC){
-      //         if(regEX.vIns == MUL){
-      //           mux6Src = apA_MUX6;
-      //           op1 = regA.value;
-      //           mux7Src = apOUT1_MUX7;
-      //           op2 = regOUT1.value;
-      //         }
-      //         else{
-      //           if(divDone == 0){
-      //             mux6Src = apOUT1_MUX6;
-      //             op1 = regOUT1.value;
-      //             mux7Src = apB_MUX7;
-      //             op2 = regB.value;
-      //             fork(apA_ADD1.animate(5));
-      //             fork(ap1_ADD1.animate(5));
-      //             regA.setNewValue(regA.value + 1);
-      //             wait(2);
-      //             regA.update();
-      //             apADD1_A.animate(5);
-      //           }
-      //           else{
-      //             mux6Src = apA_MUX6;
-      //             op1 = regA.value;
-      //           }
-      //         }
-      //       }
-      //     }
-      // }
+
+
+    // if(instrIsMulti(regEX.vIns)){
+    //     multiStall = 1;
+    //     if(startMulti == 1){
+    //       if(regEX.vIns != MUL) divDone = 0;
+    //       if(afMode == ALU_FORWARDING){
+    //         if(regOUT0.tagMatches(regEX.vRs1)){
+    //           op1 = regOUT0.value;
+    //           fork(apOUT0_A.animate(20));
+    //           regA.setNewValue(regOUT0.value);
+    //           regA.update();
+    //         }
+    //         else if(regOUT1.tagMatches(regEX.vRs1)){
+    //           op1 = regOUT1.value;
+    //           fork(apOUT1_A.animate(20));
+    //           regA.setNewValue(regOUT1.value);
+    //           regA.update();
+    //         }
+    //         else{
+    //           op1 = regA.value;
+    //         }
+    //         if(regOUT0.tagMatches(regEX.vRs2)){
+    //           op2 = regOUT0.value;
+    //           fork(apOUT0_B.animate(20));
+    //           regB.setNewValue(regOUT0.value);
+    //           regB.update();
+    //         }
+    //         else if(regOUT1.tagMatches(regEX.vRs2)){
+    //           op2 = regOUT1.value;
+    //           fork(apOUT1_B.animate(20));
+    //           regB.setNewValue(regOUT1.value);
+    //           regB.update();
+    //         }
+    //         else{
+    //           op2 = regB.value;
+    //         }
+    //
+    //       }
+    //       else{
+    //         op1 = regA.value;
+    //         op2 = regB.value;
+    //       }
+    //       mux6Src = apA_MUX6;
+    //     }
+    //     else{
+    //       if(multistage == CHECK){
+    //         if(regEX.vIns == MUL){
+    //           fork(apB_SUB1.animate(5));
+    //           fork(ap1_SUB1.animate(5));
+    //           regB.setNewValue(regB.value - 1);
+    //           wait(2);
+    //           regB.update();
+    //           apSUB1_B.animate(5);
+    //         }
+    //         else{
+    //           mux6Src = apOUT0_MUX6;
+    //           // fork(apA_ADD1.animate(5));
+    //           // fork(ap1_ADD1.animate(5));
+    //           // regA.setNewValue(regA.value + 1);
+    //           // wait(2);
+    //           // regA.update();
+    //           // apADD1_A.animate(5);
+    //           op1 = regOUT0.value;
+    //         }
+    //         op2 = regB.value;
+    //         mux7Src = apB_MUX7;
+    //       }
+    //       else if(multistage == EXEC){
+    //         if(regEX.vIns == MUL){
+    //           mux6Src = apA_MUX6;
+    //           op1 = regA.value;
+    //           mux7Src = apOUT1_MUX7;
+    //           op2 = regOUT1.value;
+    //         }
+    //         else{
+    //           if(divDone == 0){
+    //             mux6Src = apOUT1_MUX6;
+    //             op1 = regOUT1.value;
+    //             mux7Src = apB_MUX7;
+    //             op2 = regB.value;
+    //             fork(apA_ADD1.animate(5));
+    //             fork(ap1_ADD1.animate(5));
+    //             regA.setNewValue(regA.value + 1);
+    //             wait(2);
+    //             regA.update();
+    //             apADD1_A.animate(5);
+    //           }
+    //           else{
+    //             mux6Src = apA_MUX6;
+    //             op1 = regA.value;
+    //           }
+    //         }
+    //       }
+    //     }
+    // }
 
       if (instrIsJumpAndLink(regEX.vIns)) {
 
@@ -849,6 +870,7 @@ function exExec() {														// {joj 14/11/17}
       num result = 0;
 
       if(instrIsMulti(regEX.vIns)){
+
         if(regEX.vIns == MUL){
           if(startMulti == 1){
             if((op1 > 0x0F) || (op2 > 0x0F)){
@@ -857,6 +879,7 @@ function exExec() {														// {joj 14/11/17}
             else{
               bit4mul = 1;
             }
+            clALU1.setPen(controlHLPen);
             p1 = op1;
             p2 = 0;
             a = op2;
@@ -878,6 +901,40 @@ function exExec() {														// {joj 14/11/17}
             if(noCycles <= 0){
               multiStall = 0;
             }
+          }
+
+        }
+        else{
+          if(startMulti == 1){
+            clALU1.setPen(controlHLPen);
+            p1 = 0;
+            a = op2;
+            result = op1;
+            startMulti = 0;
+            multiStall = 1;
+            multistage = CHECK;
+          }
+          else if (divDone == 0){
+            if(multistage == CHECK){
+              result = instrExecute(SLT, op1, a);
+              if(result == 1){
+                  divDone = 1;
+                  if(regEX.vIns == REM) multiStall = 0;
+              }
+              multistage = EXEC;
+              //p1 = 0;
+            }
+            else{
+              result = instrExecute(SUB, op1, a);
+              multistage = CHECK;
+              p1 += 1;
+            }
+          }
+          else{
+            if(regEX.vIns == DIV){
+              result = p1;
+            }
+            multiStall = 0;
           }
 
         }
@@ -946,19 +1003,24 @@ function exExec() {														// {joj 14/11/17}
       if (instrIsLoadOrStore(regEX.vIns)) {
           regOUT0.setNewTag(-1);				// OUT0 contains the EA, tag should be -1
       } else {
-        // if((instrIsMulti(regEX.vIns)==1) && startMulti==0){
-        //   if(multistage == CHECK){
-        //     regOUT0.setNewTag(0);
-        //     multistage = EXEC;
-        //   }
-        //   else{
-        //     regOUT0.setNewTag(regEX.vRdt);
-        //     multistage = CHECK;
-        //   }
-        // }
-        //else{
+        if((regEX.vIns==DIV || regEX.vIns==REM) && startMulti==0){
+           if(multistage == EXEC){
+             if(divDone == 0){
+               regOUT0.setNewTag(0);
+             }
+             else{
+               regOUT0.setNewTag(regEX.vRdt);
+             }
+             //multistage = EXEC;
+           }
+          else{
+            regOUT0.setNewTag(regEX.vRdt);
+            //multistage = CHECK;
+          }
+        }
+        else{
           regOUT0.setNewTag(regEX.vRdt);
-        //}
+        }
   		}
 
       regOUT0.setInvalid(0);
@@ -1047,11 +1109,11 @@ function exExec() {														// {joj 14/11/17}
       }
       else{
         if(((regEX.vIns == DIV) || (regEX.vIns == REM)) && (startMulti == 1)){
-          startMulti = 0;
-          clZeroA.setPen(controlHLPen);
-          regA.setNewValue(0);
-          wait(5);
-          regA.update();
+          //startMulti = 0;
+          //clZeroA.setPen(controlHLPen);
+          //regA.setNewValue(0);
+          //wait(5);
+          //regA.update();
         }
         wait(20);                                                   // {joj 29/10/06}
         apALU_OUT0.animate(10);
