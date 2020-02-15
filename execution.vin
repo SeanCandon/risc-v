@@ -40,8 +40,10 @@ num divDone = 0;
 
 num noCycles;
 num q1;
-num prevOp1; num prevOp2;
+num p1, p2;
+num a;
 num boothCyc = 1;
+num bit4mul;
 
 //
 // index for tag or -1 if none
@@ -135,58 +137,112 @@ function calcNoCycles(num op1) {
   else{
     c += 2;
   }
-
   if(b2 == b1){
     c++;
   }
   else{
     c += 2;
   }
-
   if (b2 == b3){
     c++;
   }
   else{
     c += 2;
   }
-
   if(b3 == b4){
     c++;
   }
   else{
     c += 2;
   }
+  if(bit4mul==0){
+    num b5 = op1 & 0x10;
+    num b6 = op1 & 0x20;
+    b6 = b6 >> 1;
+    num b7 = op1 & 0x40;
+    b7 = b7 >> 2;
+    num b8 = op1 & 0x80;
+    b8 = b8 >> 4;
+
+    if(b5 == b4){
+      c++;
+    }
+    else{
+      c += 2;
+    }
+    if(b6 == b5){
+      c++;
+    }
+    else{
+      c += 2;
+    }
+    if (b7 == b6){
+      c++;
+    }
+    else{
+      c += 2;
+    }
+    if(b8 == b7){
+      c++;
+    }
+    else{
+      c += 2;
+    }
+  }
 
   noCycles = c;
 
 }
 
-num function booth(num op1, num op2){
+function booth8(){
 
-  num b1 = op1 & 1;
+  num b1 = p1 & 1;
   if(b1 != q1 && boothCyc!=2){
-    num q = op1 & 0x0F;
-    num a = op1 & 0xF0;
-    a = a >> 4;
     if(b1 > q1){
-      a = (se8(a) - se8(op2)) & 0xFF;
+      p2 = (se8(p2) - se8(a)) & 0xFF;
     }
     else{
-      a = (se8(a) + se8(op2)) & 0xFF;
+      p2 = (se8(p2) + se8(a)) & 0xFF;
     }
-    a = a << 4;
-    a = a & 0xF0;
-    op1 = a | q;
     boothCyc = 2;
-    return op1;
   }
   else{
     boothCyc = 1;
-    num lb = op1 & 0x80;
-    op1 = (op1 >> 1) & 0xFF;
-    op1 = op1 | lb;
+    num p21 = p2 & 0x01;
+    p21 = p21 << 7;
+    num p2m = p2 & 0x80;
+    p1 = (p1 >> 1) & 0xFF;
+    p1 = p1 | p21;
+    p2 = (p2 >> 1) & 0xFF;
+    p2 = p2 | p2m;
     q1 = b1;
-    return op1;
+  }
+}
+
+function booth(){
+
+  num b1 = p1 & 1;
+  if(b1 != q1 && boothCyc!=2){
+    num p3 = p1 & 0x0F;
+    num q = p1 & 0xF0;
+    q = q >> 4;
+    if(b1 > q1){
+      q = (se8(q) - se8(a)) & 0xFF;
+    }
+    else{
+      q = (se8(q) + se8(a)) & 0xFF;
+    }
+    q = q << 4;
+    q = q & 0xF0;
+    p1 = q | p3;
+    boothCyc = 2;
+  }
+  else{
+    boothCyc = 1;
+    num lb = p1 & 0x80;
+    p1 = (p1 >> 1) & 0xFF;
+    p1 = p1 | lb;
+    q1 = b1;
   }
 }
 
@@ -604,10 +660,8 @@ function exExec() {														// {joj 14/11/17}
     if(regEX.vIns == MUL){
       multiStall = 1;
       if(startMulti == 0){
-        //op1 = prevOp1;
-        op2 = prevOp2;
-        op1 = regOUT0.value;
-        fork(apOUT0_MUX6.animate(20));
+        mux6Src = 0;
+        //fork(apOUT0_MUX6.animate(20));
       }
     }
 
@@ -797,17 +851,33 @@ function exExec() {														// {joj 14/11/17}
       if(instrIsMulti(regEX.vIns)){
         if(regEX.vIns == MUL){
           if(startMulti == 1){
+            if((op1 > 0x0F) || (op2 > 0x0F)){
+              bit4mul = 0;
+            }
+            else{
+              bit4mul = 1;
+            }
+            p1 = op1;
+            p2 = 0;
+            a = op2;
             calcNoCycles(op1);
             startMulti = 0;
             q1 = 0;
+            result = op1;
           }
-          op1 = booth(op1, op2);
-          result = op1;
-          prevOp1 = op1;
-          prevOp2 = op2;
-          noCycles--;
-          if(noCycles <= 0){
-            multiStall = 0;
+          else{
+            if(bit4mul==1){
+              booth();
+              result = p1;
+            }
+            else{
+              booth8();
+              result = p1;
+            }
+            noCycles--;
+            if(noCycles <= 0){
+              multiStall = 0;
+            }
           }
 
         }
@@ -965,7 +1035,7 @@ function exExec() {														// {joj 14/11/17}
         if(regEX.vIns == MUL)
           startMulti = 0;
       }
-      else{
+      else if(!instrIsMulti(regEX.vIns)){
         fork(apMUX7_ALU.animate(10));
       }
 
