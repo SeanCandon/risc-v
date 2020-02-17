@@ -29,6 +29,10 @@ num newPC;																		// {joj 3/11/12}
 //num branchMissPredict;														// {joj 4/11/12}
 AnimPipe newMux1Src;
 
+//x1 is stack pointer, initially points to top of stack
+regFile[2].setValue(0x44);
+stack.setSP(17);
+
 num takeCondBranch = 0;
 num condBranchStall = 0;
 
@@ -573,7 +577,12 @@ function idExec() {																// {joj 14/11/17}
     if (stall == NO_STALL) {
       regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
     } else if (condBranchStall==0 && multiStall==0){
-      regEX.setNewValue(STALL, 0, 0, 0);
+      if(regID.vIns == JAL){
+        regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
+      }
+      else{
+        regEX.setNewValue(STALL, 0, 0, 0);
+      }
     }
     //if(instrIsNonZeroBranch(regID.vIns) == 0)
     wait(7);																	// {joj 4/11/12}
@@ -584,11 +593,18 @@ function idExec() {																// {joj 14/11/17}
       if (instrOpTypeRdt(regID.vIns) == OP_TYPE_REG) {
 
           if (instrIsJumpAndLink(regID.vIns)) {
-
-              regA.setNewValue(0);
-              regB.setNewValue((regPC1.value + 4) & 0x7F);
-              apADD4_MUX5.animate(18);
-              apMUX5_B.animate(6);
+            if(stall ==NO_STALL){
+                regA.setNewValue(0);
+                regB.setNewValue((regPC1.value + 4) & 0x7F);
+                apADD4_MUX5.animate(18);
+                apMUX5_B.animate(6);
+            }
+            else{
+                regA.setNewValue(0);
+                regB.setNewValue((regPC1.value + regID.vRs2) & 0x7F);
+                apDM1_MUX5.animate(18);
+                apMUX5_B.animate(6);
+            }
 
           } else {
 
@@ -1019,7 +1035,12 @@ function exExec() {														// {joj 14/11/17}
           }
         }
         else{
-          regOUT0.setNewTag(regEX.vRdt);
+          if((regEX.vIns == JAL) && (stall == CTRL_STALL)) {
+            regOUT0.setNewTag(8);
+          }
+          else{
+            regOUT0.setNewTag(regEX.vRdt);
+          }
         }
   		}
 
@@ -1035,6 +1056,14 @@ function exExec() {														// {joj 14/11/17}
     //   //regOUT0.updateLabel();
     // }
 
+  }
+
+  // take care of change to stack visualisation
+  if(regEX.vIns == JAL){
+    if(stall = CTRL_STALL){
+      num spa = stack.spAddr;
+      stack.setFP(spa);
+    }
   }
 
     // For stores, send correct operand to SMDR

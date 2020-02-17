@@ -4,7 +4,7 @@
 
 class Stack(num _x, num _y) {
 
-	num w = 90;
+	num w = 100;
 	num h = 20;
 	num length = MEMORY_ADDRESSES;
 	num x = _x;
@@ -14,12 +14,20 @@ class Stack(num _x, num _y) {
 
 	num off = 40;
 
+	AnimPipe apSP = AnimPipe();
+	Rectangle spText;
+	num spAddr;
+
+	AnimPipe apFP = AnimPipe();
+	Rectangle fpText;
+	num fpAddr;
+
 	num outer_x = x;
 	num outer_y = y;
 	num outer_w = w;
 	num outer_h = (h * length + 20);
 
-	x = x + 20;
+	x = x + 10;
 	y = y + 10;
 	w = w/2;
 
@@ -46,7 +54,7 @@ class Stack(num _x, num _y) {
 	 	j++;
 	}
 	Register stack[length];
-	for(j=0; j<(length); j++) {
+	for(j=(length-1); j>=0; j--) {
 		Register r = Register(x, y, w, h, LEFT, addresses[j]);
 		r.rotateLabel(90);
 		stack[j] = r;
@@ -88,8 +96,50 @@ class Stack(num _x, num _y) {
 
 		Rectangle outer = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+25), (ay+(offset/2)),
 			20, 10, redPen, componentFont, sprintf("subroutine %d", frame));
-
 	}
+
+	function setSP(num addr){
+		Register a = stack[addr];
+		spAddr = addr;
+		num ax = a._x;
+		num ay = a._y;
+		num aw = a._w;
+		num ah = a._h;
+
+		spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
+			20, 8, redPen, componentFont, sprintf("SP"));
+
+		apSP.setOpacity(0);
+		apSP.reset();
+		apSP.addPoint(ax+aw+15, ay+10);
+		apSP.addPoint(ax+aw+2, ay+10);
+		apSP.setOpacity(1);
+	}
+
+	function setFP(num addr){
+		Register a = stack[addr];
+		fpAddr = addr;
+		num ax = a._x;
+		num ay = a._y;
+		num aw = a._w;
+		num ah = a._h;
+
+		if(spAddr != fpAddr){
+			fpText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
+				20, 8, redPen, componentFont, sprintf("FP"));
+		}
+		else{
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
+				15, 8, redPen, componentFont, sprintf("SP/FP"));
+		}
+
+		apSP.setOpacity(0);
+		apSP.reset();
+		apSP.addPoint(ax+aw+15, ay+10);
+		apSP.addPoint(ax+aw+2, ay+10);
+		apSP.setOpacity(1);
+	}
+
 
 }
 
