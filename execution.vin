@@ -31,7 +31,7 @@ AnimPipe newMux1Src;
 
 //x1 is stack pointer, initially points to top of stack
 regFile[2].setValue(0x44);
-stack.setSP(17);
+stack.setSP(0x44);
 
 num takeCondBranch = 0;
 num condBranchStall = 0;
@@ -1065,6 +1065,11 @@ function exExec() {														// {joj 14/11/17}
       stack.setFP(spa);
     }
   }
+  if((instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && (regEX.vIns != ST)){
+    if(regEX.vRdt == 2){
+      stack.setSP(result);
+    }
+  }
 
     // For stores, send correct operand to SMDR
   if (regEX.vIns == ST) {  // {joj}
@@ -1197,7 +1202,7 @@ function maExec() {													// {joj 14/11/17}
         fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
         apOUT0_Mem.animate(24);
         //memory[regOUT0.value % 4].update();
-        stack.store(regOUT0.value % MEMORY_ADDRESSES, regSMDR.value);
+        stack.store(regOUT0.value, regSMDR.value);
 
     } else if (instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) {
 

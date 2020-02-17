@@ -32,6 +32,7 @@ function dlx(vplayer) {
 	var $g = vplayer.$g
 	var addWaitToEventQ = vplayer.addWaitToEventQ
 	var checkPoint = vplayer.checkPoint
+	var floor = vplayer.floor
 	var Font = vplayer.Font
 	var fork = vplayer.fork
 	var getArg = vplayer.getArg
@@ -905,11 +906,11 @@ function dlx(vplayer) {
 		this.maxdigits = 3
 		this.off = 40
 		this.apSP = new AnimPipe()
-		this.spText
-		this.spAddr
+		this.spText = new Rectangle2($g[0], 0, 0, $g[4], $g[44], 120, 120, 20, 8, $g[4], $g[43], sprintf(""))
+		this.spAddr = -1
 		this.apFP = new AnimPipe()
-		this.fpText
-		this.fpAddr
+		this.fpText = new Rectangle2($g[0], 0, 0, $g[4], $g[44], 120, 120, 20, 8, $g[4], $g[43], sprintf(""))
+		this.fpAddr = -2
 		this.outer_x = this.x
 		this.outer_y = this.y
 		this.outer_w = this.w
@@ -948,7 +949,8 @@ function dlx(vplayer) {
 	Stack.prototype = Object.create(VObj.prototype)
 
 	Stack.prototype.getVal = function(addr) {
-		return this.stack[addr].value
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		return this.stack[pos].value
 	}
 
 	Stack.prototype.highlight = function(addr) {
@@ -970,37 +972,57 @@ function dlx(vplayer) {
 	}
 
 	Stack.prototype.setSP = function(addr) {
-		let a = this.stack[addr]
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		let a = this.stack[pos]
+		if (this.spAddr==this.fpAddr) {
+			let tpos = floor((this.spAddr/4))%MEMORY_ADDRESSES
+			let ta = this.stack[tpos]
+			let tax = ta._x
+			let tay = ta._y
+			let taw = ta._w
+			let tah = ta._h
+			this.fpText.setOpacity(0)
+			this.fpText=new Rectangle2($g[0], 0, 0, $g[4], $g[44], (tax+taw+13), (tay+6), 20, 8, $g[3], $g[43], sprintf("FP"))
+		}
 		this.spAddr=addr
 		let ax = a._x
 		let ay = a._y
 		let aw = a._w
 		let ah = a._h
+		this.spText.setOpacity(0)
 		this.spText=new Rectangle2($g[0], 0, 0, $g[4], $g[44], (ax+aw+13), (ay+6), 20, 8, $g[3], $g[43], sprintf("SP"))
 		this.apSP.setOpacity(0)
 		this.apSP.reset()
-		this.apSP.addPoint(ax+aw+15, ay+10)
-		this.apSP.addPoint(ax+aw+2, ay+10)
+		this.apSP.setPoint(0, ax+aw+15, ay+10)
+		this.apSP.setPoint(1, ax+aw+2, ay+10)
 		this.apSP.setOpacity(1)
 	}
 
 	Stack.prototype.setFP = function(addr) {
-		let a = this.stack[addr]
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		let a = this.stack[pos]
 		this.fpAddr=addr
 		let ax = a._x
 		let ay = a._y
 		let aw = a._w
 		let ah = a._h
 		if (this.spAddr!=this.fpAddr) {
+			this.fpText.setOpacity(0)
 			this.fpText=new Rectangle2($g[0], 0, 0, $g[4], $g[44], (ax+aw+13), (ay+6), 20, 8, $g[3], $g[43], sprintf("FP"))
 		} else {
+			this.spText.setOpacity(0)
 			this.spText=new Rectangle2($g[0], 0, 0, $g[4], $g[44], (ax+aw+20), (ay+6), 15, 8, $g[3], $g[43], sprintf("SP/FP"))
 		}
 		this.apSP.setOpacity(0)
 		this.apSP.reset()
-		this.apSP.addPoint(ax+aw+15, ay+10)
-		this.apSP.addPoint(ax+aw+2, ay+10)
+		this.apSP.setPoint(0, ax+aw+15, ay+10)
+		this.apSP.setPoint(1, ax+aw+2, ay+10)
 		this.apSP.setOpacity(1)
+		this.apFP.setOpacity(0)
+		this.apFP.reset()
+		this.apFP.setPoint(0, ax+aw+15, ay+10)
+		this.apFP.setPoint(1, ax+aw+2, ay+10)
+		this.apFP.setOpacity(1)
 	}
 
 	function countHex(h, index, length, digits, chars, pref) {
@@ -2409,12 +2431,14 @@ function dlx(vplayer) {
 				}
 				$g[72].setValue(0, ADDi, 18, 0, 4)
 				$g[72].setValue(4, ADDi, 19, 0, 5)
-				$g[72].setValue(8, JAL, 1, 0, 20)
-				$g[72].setValue(12, XOR, 0, 0, 0)
-				$g[72].setValue(28, SUB, 20, 19, 18)
-				$g[72].setValue(32, NOP, 0, 0, 0)
-				$g[72].setValue(36, NOP, 0, 0, 0)
-				$g[72].setValue(40, JALR, 0, 0, 1)
+				$g[72].setValue(8, SUBi, 2, 2, 4)
+				$g[72].setValue(12, ST, 18, 2, 0)
+				$g[72].setValue(16, JAL, 1, 0, 20)
+				$g[72].setValue(20, XOR, 0, 0, 0)
+				$g[72].setValue(36, SUB, 20, 19, 18)
+				$g[72].setValue(40, SUBi, 2, 2, 4)
+				$g[72].setValue(44, NOP, 0, 0, 0)
+				$g[72].setValue(48, JALR, 0, 0, 1)
 				$g[72].setValue(44, HALT, 0, 0, 0)
 				$g[96][2].setValue(9)
 				$g[96][3].setValue(8)
@@ -2425,15 +2449,7 @@ function dlx(vplayer) {
 					$pc = 20
 					continue
 				}
-				$g[72].setValue(0, ADD, 1, 2, 3)
-				$g[72].setValue(4, SUB, 3, 1, 2)
-				$g[72].setValue(8, AND, 2, 1, 3)
-				$g[72].setValue(12, XOR, 2, 1, 3)
-				$g[72].setValue(16, ADD, 2, 1, 0)
-				$g[72].setValue(20, HALT, 0, 0, 0)
-				$g[96][1].setValue(1)
-				$g[96][2].setValue(2)
-				setTPS(50)
+				$g[72].setValue(0, ADDi, 2, 0, 4)
 				$pc = 26
 				continue
 			case 20:
@@ -2519,7 +2535,7 @@ function dlx(vplayer) {
 				setPEMode($g[26])
 				$g[22]=getArgAsNum("locked", 0)
 				$g[96][2].setValue(68)
-				$g[168].setSP(17)
+				$g[168].setSP(68)
 				$g[189] = 0
 				$g[190] = 0
 				$g[191] = 1
@@ -2538,7 +2554,7 @@ function dlx(vplayer) {
 				$g[52].addEventHandler("eventMB", this, $eh20)
 				$g[71].addEventHandler("eventEE", this, $eh21)
 				$g[71].addEventHandler("eventMB", this, $eh22)
-				callf(358, $obj)
+				callf(360, $obj)
 				continue
 			case 33:
 				returnf(0)
@@ -2575,9 +2591,10 @@ function dlx(vplayer) {
 				returnf(0)
 				continue
 			case 38:
-				enterf(0);	// store
-				$obj.stack[$stack[$fp-3]].setNewValue($stack[$fp-4])
-				callf(36, $obj.stack[$stack[$fp-3]])
+				enterf(1);	// store
+				$stack[$fp+1] = floor(($stack[$fp-3]/4))%MEMORY_ADDRESSES
+				$obj.stack[$stack[$fp+1]].setNewValue($stack[$fp-4])
+				callf(36, $obj.stack[$stack[$fp+1]])
 				continue
 			case 39:
 				returnf(2)
@@ -3537,451 +3554,464 @@ function dlx(vplayer) {
 			case 205:
 				$pc = 206
 			case 206:
-				if (!($g[141].vIns==ST)) {
-					$pc = 213
-					continue
-				}
-				if (!($g[30]==FORWARDING_TO_SMDR)) {
-					$pc = 211
-					continue
-				}
-				if (!($g[165].tagMatches($g[141].vRdt))) {
-					$pc = 207
-					continue
-				}
-				$stack[$fp+3]=$g[157]
-				$g[166].setNewValue($g[165].value)
-				$pc = 210
-				continue
-			case 207:
-				if (!($g[177].tagMatches($g[141].vRdt))) {
+				if (!((instrOpTypeRdt($g[141].vIns)==OP_TYPE_REG) && ($g[141].vIns!=ST))) {
 					$pc = 208
 					continue
 				}
-				$stack[$fp+3]=$g[158]
-				$g[166].setNewValue($g[177].value)
-				$pc = 209
-				continue
+				if (!($g[141].vRdt==2)) {
+					$pc = 207
+					continue
+				}
+				$g[168].setSP($stack[$fp+6])
+				$pc = 207
+			case 207:
+				$pc = 208
 			case 208:
-				$stack[$fp+3]=$g[159]
-				$g[166].setNewValue($g[143].value)
-				$pc = 209
-			case 209:
-				$pc = 210
-			case 210:
-				$pc = 212
-				continue
-			case 211:
-				$stack[$fp+3]=$g[159]
-				$g[166].setNewValue($g[143].value)
-				$pc = 212
-			case 212:
-				$pc = 213
-			case 213:
-				if (wait(8))
-				return
-				$pc = 214
-			case 214:
-				fork(40, $g[148], 64)
 				if (!($g[141].vIns==ST)) {
 					$pc = 215
 					continue
 				}
-				fork(40, $stack[$fp+3], 24)
+				if (!($g[30]==FORWARDING_TO_SMDR)) {
+					$pc = 213
+					continue
+				}
+				if (!($g[165].tagMatches($g[141].vRdt))) {
+					$pc = 209
+					continue
+				}
+				$stack[$fp+3]=$g[157]
+				$g[166].setNewValue($g[165].value)
+				$pc = 212
+				continue
+			case 209:
+				if (!($g[177].tagMatches($g[141].vRdt))) {
+					$pc = 210
+					continue
+				}
+				$stack[$fp+3]=$g[158]
+				$g[166].setNewValue($g[177].value)
+				$pc = 211
+				continue
+			case 210:
+				$stack[$fp+3]=$g[159]
+				$g[166].setNewValue($g[143].value)
+				$pc = 211
+			case 211:
+				$pc = 212
+			case 212:
+				$pc = 214
+				continue
+			case 213:
+				$stack[$fp+3]=$g[159]
+				$g[166].setNewValue($g[143].value)
+				$pc = 214
+			case 214:
 				$pc = 215
 			case 215:
+				if (wait(8))
+				return
+				$pc = 216
+			case 216:
+				fork(40, $g[148], 64)
+				if (!($g[141].vIns==ST)) {
+					$pc = 217
+					continue
+				}
+				fork(40, $stack[$fp+3], 24)
+				$pc = 217
+			case 217:
 				if (!(instrOpTypeRdt($g[141].vIns)==OP_TYPE_REG)) {
-					$pc = 218
+					$pc = 220
 					continue
 				}
 				if (!($stack[$fp+1]!=0)) {
-					$pc = 216
+					$pc = 218
 					continue
 				}
 				fork(40, $stack[$fp+1], 24)
-				$pc = 216
-			case 216:
+				$pc = 218
+			case 218:
 				if (!($stack[$fp+2]==$g[153])) {
-					$pc = 217
+					$pc = 219
 					continue
 				}
 				$g[154].setTxt("%02X", $stack[$fp+5])
 				$g[154].setOpacity(1)
-				$pc = 217
-			case 217:
-				fork(40, $stack[$fp+2], 24)
-				$pc = 218
-			case 218:
-				if (wait(24))
-				return
 				$pc = 219
 			case 219:
+				fork(40, $stack[$fp+2], 24)
+				$pc = 220
+			case 220:
+				if (wait(24))
+				return
+				$pc = 221
+			case 221:
 				if (!($g[141].vIns==ST)) {
-					$pc = 220
+					$pc = 222
 					continue
 				}
 				fork(40, $g[160], 40)
-				$pc = 220
-			case 220:
+				$pc = 222
+			case 222:
 				if (!(instrOpTypeRdt($g[141].vIns)==OP_TYPE_REG)) {
-					$pc = 236
+					$pc = 238
 					continue
 				}
 				if (!($g[141].vIns==MUL)) {
-					$pc = 221
+					$pc = 223
 					continue
 				}
 				$g[147].txtOp.setTxt($g[196].toString())
 				$g[147].txtOp.setOpacity(1)
-				$pc = 222
+				$pc = 224
 				continue
-			case 221:
-				$g[147].setTxtOp($g[141].vIns)
-				$pc = 222
-			case 222:
-				if (!($stack[$fp+1]!=0)) {
-					$pc = 223
-					continue
-				}
-				fork(40, $g[161], 10)
-				$pc = 223
 			case 223:
-				if (!(instrIsMulti($g[141].vIns) && $g[191]==1)) {
+				$g[147].setTxtOp($g[141].vIns)
+				$pc = 224
+			case 224:
+				if (!($stack[$fp+1]!=0)) {
 					$pc = 225
 					continue
 				}
-				if (!($g[141].vIns==MUL)) {
-					$pc = 224
+				fork(40, $g[161], 10)
+				$pc = 225
+			case 225:
+				if (!(instrIsMulti($g[141].vIns) && $g[191]==1)) {
+					$pc = 227
 					continue
 				}
-				$g[191]=0
-				$pc = 224
-			case 224:
-				$pc = 227
-				continue
-			case 225:
-				if (!(!instrIsMulti($g[141].vIns))) {
+				if (!($g[141].vIns==MUL)) {
 					$pc = 226
 					continue
 				}
-				fork(40, $g[162], 10)
+				$g[191]=0
 				$pc = 226
 			case 226:
-				$pc = 227
+				$pc = 229
+				continue
 			case 227:
+				if (!(!instrIsMulti($g[141].vIns))) {
+					$pc = 228
+					continue
+				}
+				fork(40, $g[162], 10)
+				$pc = 228
+			case 228:
+				$pc = 229
+			case 229:
 				if (!(instrIsBranch($g[141].vIns))) {
-					$pc = 230
+					$pc = 232
 					continue
 				}
 				if (wait(5))
 				return
-				$pc = 228
-			case 228:
-				if (!($g[189]==1)) {
-					$pc = 229
-					continue
-				}
-				$g[113].setPen($g[107])
-				$pc = 229
-			case 229:
-				$pc = 235
-				continue
+				$pc = 230
 			case 230:
-				if (!((($g[141].vIns==DIV) || ($g[141].vIns==REM)) && ($g[191]==1))) {
+				if (!($g[189]==1)) {
 					$pc = 231
 					continue
 				}
+				$g[113].setPen($g[107])
 				$pc = 231
 			case 231:
-				if (wait(20))
-				return
-				$pc = 232
-			case 232:
-				callf(40, $g[163], 10)
+				$pc = 237
 				continue
+			case 232:
+				if (!((($g[141].vIns==DIV) || ($g[141].vIns==REM)) && ($g[191]==1))) {
+					$pc = 233
+					continue
+				}
+				$pc = 233
 			case 233:
-				if (wait(10))
+				if (wait(20))
 				return
 				$pc = 234
 			case 234:
-				$g[147].txtResult.setTxt("%02X", $stack[$fp+6])
-				$g[147].txtResult.setOpacity(1, 20, 1, 0)
-				$pc = 235
+				callf(40, $g[163], 10)
+				continue
 			case 235:
+				if (wait(10))
+				return
 				$pc = 236
 			case 236:
+				$g[147].txtResult.setTxt("%02X", $stack[$fp+6])
+				$g[147].txtResult.setOpacity(1, 20, 1, 0)
+				$pc = 237
+			case 237:
+				$pc = 238
+			case 238:
 				returnf(0)
 				continue
-			case 237:
+			case 239:
 				enterf(0);	// maExec
 				fork(34, $g[164])
 				if (!(instrOpTypeRdt($g[164].nIns)==OP_TYPE_REG)) {
-					$pc = 238
+					$pc = 240
 					continue
 				}
 				fork(36, $g[165])
-				$pc = 238
-			case 238:
+				$pc = 240
+			case 240:
 				if (!($g[164].nIns==ST)) {
-					$pc = 239
+					$pc = 241
 					continue
 				}
 				fork(36, $g[166])
-				$pc = 239
-			case 239:
+				$pc = 241
+			case 241:
 				if (wait(8))
 				return
-				$pc = 240
-			case 240:
+				$pc = 242
+			case 242:
 				$g[176].setNewValue($g[164].vIns, $g[164].vRdt, $g[164].vRs1, $g[164].vRs2)
 				if (!((instrOpTypeRdt($g[164].vIns)==OP_TYPE_REG) && ($g[164].vIns!=ST))) {
-					$pc = 243
+					$pc = 245
 					continue
 				}
 				if (!($g[164].vIns==LD)) {
-					$pc = 241
+					$pc = 243
 					continue
 				}
 				$g[177].setNewValue($g[168].getVal($g[165].value%MEMORY_ADDRESSES))
 				$g[177].setNewTag($g[164].vRdt)
-				$pc = 242
+				$pc = 244
 				continue
-			case 241:
+			case 243:
 				$g[177].setNewValue($g[165].value)
 				$g[177].setNewTag($g[165].tag)
-				$pc = 242
-			case 242:
-				$g[177].setInvalid(0)
-				$pc = 243
-			case 243:
-				if (wait(8))
-				return
 				$pc = 244
 			case 244:
+				$g[177].setInvalid(0)
+				$pc = 245
+			case 245:
+				if (wait(8))
+				return
+				$pc = 246
+			case 246:
 				fork(40, $g[170], 64)
 				if (!($g[164].vIns==ST)) {
-					$pc = 247
+					$pc = 249
 					continue
 				}
 				fork(40, $g[174], 24)
 				callf(40, $g[173], 24)
 				continue
-			case 245:
-				callf(38, $g[168], $g[165].value%MEMORY_ADDRESSES, $g[166].value)
-				continue
-			case 246:
-				$pc = 255
-				continue
 			case 247:
+				callf(38, $g[168], $g[165].value, $g[166].value)
+				continue
+			case 248:
+				$pc = 257
+				continue
+			case 249:
 				if (!(instrOpTypeRdt($g[164].vIns)==OP_TYPE_REG)) {
-					$pc = 254
+					$pc = 256
 					continue
 				}
 				if (!($g[164].vIns==LD)) {
-					$pc = 250
+					$pc = 252
 					continue
 				}
 				callf(40, $g[173], 24)
 				continue
-			case 248:
+			case 250:
 				$g[168].highlight($g[165].value%MEMORY_ADDRESSES)
 				callf(40, $g[175], 24)
 				continue
-			case 249:
-				$pc = 252
-				continue
-			case 250:
-				callf(40, $g[171], 48)
-				continue
 			case 251:
-				$pc = 252
+				$pc = 254
+				continue
 			case 252:
-				callf(40, $g[172], 16)
+				callf(40, $g[171], 48)
 				continue
 			case 253:
 				$pc = 254
 			case 254:
-				$pc = 255
+				callf(40, $g[172], 16)
+				continue
 			case 255:
+				$pc = 256
+			case 256:
+				$pc = 257
+			case 257:
 				returnf(0)
 				continue
-			case 256:
+			case 258:
 				enterf(0);	// wbExec
 				fork(34, $g[176])
 				if (!((instrOpTypeRdt($g[176].nIns)==OP_TYPE_REG) && ($g[176].nIns!=ST))) {
-					$pc = 257
-					continue
-				}
-				fork(36, $g[177])
-				$pc = 257
-			case 257:
-				if (wait(8))
-				return
-				$pc = 258
-			case 258:
-				if (!((instrOpTypeRdt($g[176].vIns)==OP_TYPE_REG) && ($g[176].vIns!=ST))) {
-					$pc = 264
-					continue
-				}
-				if (!($g[177].tag!=0)) {
 					$pc = 259
 					continue
 				}
-				$g[96][$g[177].tag].setNewValue($g[177].value)
+				fork(36, $g[177])
 				$pc = 259
 			case 259:
 				if (wait(8))
 				return
 				$pc = 260
 			case 260:
+				if (!((instrOpTypeRdt($g[176].vIns)==OP_TYPE_REG) && ($g[176].vIns!=ST))) {
+					$pc = 266
+					continue
+				}
+				if (!($g[177].tag!=0)) {
+					$pc = 261
+					continue
+				}
+				$g[96][$g[177].tag].setNewValue($g[177].value)
+				$pc = 261
+			case 261:
+				if (wait(8))
+				return
+				$pc = 262
+			case 262:
 				callf(40, $g[178], 24)
 				continue
-			case 261:
+			case 263:
 				callf(36, $g[96][$g[177].tag])
 				continue
-			case 262:
-				if (wait(19))
-				return
-				$pc = 263
-			case 263:
-				$pc = 266
-				continue
 			case 264:
-				if (wait(67))
+				if (wait(19))
 				return
 				$pc = 265
 			case 265:
-				$pc = 266
+				$pc = 268
+				continue
 			case 266:
+				if (wait(67))
+				return
+				$pc = 267
+			case 267:
+				$pc = 268
+			case 268:
 				if (!($g[176].vIns!=STALL && $g[176].vIns!=EMPTY)) {
-					$pc = 267
+					$pc = 269
 					continue
 				}
 				$g[33]++
 				$g[69].setTxt("%4d", $g[33])
-				$pc = 267
-			case 267:
+				$pc = 269
+			case 269:
 				$g[34]++
 				$g[70].setTxt("%4d", $g[34])
 				returnf(0)
 				continue
-			case 268:
+			case 270:
 				enterf(0);	// nonPipelinedBranch
 				fork(40, $g[118], 24)
 				fork(40, $g[119], 24)
 				callf(40, $g[91], 12)
 				continue
-			case 269:
+			case 271:
 				fork(40, $g[116], 12)
 				fork(40, $g[117], 12)
 				if (wait(12))
 				return
-				$pc = 270
-			case 270:
+				$pc = 272
+			case 272:
 				if (!(instrIsBranch($g[141].vIns))) {
-					$pc = 273
+					$pc = 275
 					continue
 				}
 				$g[74].setNewValue($g[130].value&127)
 				callf(36, $g[74])
 				continue
-			case 271:
+			case 273:
 				callf(40, $g[84], 14)
 				continue
-			case 272:
-				$pc = 283
+			case 274:
+				$pc = 285
 				continue
-			case 273:
+			case 275:
 				if (!(instrIsJumpR($g[94].vIns))) {
-					$pc = 275
+					$pc = 277
 					continue
 				}
 				$g[74].setNewValue(($g[96][$g[94].vRs2].value)&127)
 				callf(40, $g[86], 34)
 				continue
-			case 274:
-				$pc = 282
+			case 276:
+				$pc = 284
 				continue
-			case 275:
+			case 277:
 				if (!(isJorJAL($g[94].vIns))) {
-					$pc = 278
+					$pc = 280
 					continue
 				}
 				$g[74].setNewValue(($g[74].value+$g[94].vRs2)&127)
 				callf(40, $g[123], 20)
 				continue
-			case 276:
+			case 278:
 				callf(40, $g[84], 14)
 				continue
-			case 277:
-				$pc = 281
+			case 279:
+				$pc = 283
 				continue
-			case 278:
+			case 280:
 				$g[74].setNewValue(($g[74].value+4)&127)
 				callf(40, $g[121], 20)
 				continue
-			case 279:
+			case 281:
 				callf(40, $g[84], 14)
 				continue
-			case 280:
-				$pc = 281
-			case 281:
-				$pc = 282
 			case 282:
 				$pc = 283
 			case 283:
+				$pc = 284
+			case 284:
+				$pc = 285
+			case 285:
 				callf(40, $g[88], 6)
 				continue
-			case 284:
+			case 286:
 				returnf(0)
 				continue
-			case 285:
+			case 287:
 				enterf(5);	// execNonPipelined
 				callf(36, $g[74])
 				continue
-			case 286:
+			case 288:
 				$g[72].setActive($g[74].newValue)
 				callf(40, $g[83], 24)
 				continue
-			case 287:
+			case 289:
 				callf(40, $g[81], 40)
 				continue
-			case 288:
+			case 290:
 				$g[94].setNewInstruction($g[72].instruction[$g[74].value/4])
 				$g[82].setTxt($g[94].getNewInstrTxt())
 				$g[82].translate(60/2+70, 0, 20, 1, 0)
 				callf(34, $g[94])
 				continue
-			case 289:
+			case 291:
 				if (!((instrOpTypeRs2($g[94].vIns)==OP_TYPE_IMM) && (instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG))) {
-					$pc = 290
+					$pc = 292
 					continue
 				}
 				fork(40, $g[93], 64)
-				$pc = 290
-			case 290:
-				fork(268, $obj)
+				$pc = 292
+			case 292:
+				fork(270, $obj)
 				if (wait(24))
 				return
-				$pc = 291
-			case 291:
+				$pc = 293
+			case 293:
 				if (!(instrIsJumpAndLink($g[94].vIns))) {
-					$pc = 294
+					$pc = 296
 					continue
 				}
 				callf(40, $g[115], 20)
 				continue
-			case 292:
+			case 294:
 				callf(40, $g[136], 20)
 				continue
-			case 293:
+			case 295:
 				$stack[$fp+1]=0
 				$stack[$fp+2]=($g[74].value+4)&127
-				$pc = 306
+				$pc = 308
 				continue
-			case 294:
+			case 296:
 				if (!(instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG)) {
-					$pc = 303
+					$pc = 305
 					continue
 				}
 				$stack[$fp+1]=$g[96][$g[94].vRs1].value
@@ -3990,24 +4020,24 @@ function dlx(vplayer) {
 				$g[140].setOpacity(1)
 				fork(40, $g[139], 40)
 				if (!((instrOpTypeRs2($g[94].vIns)==OP_TYPE_REG) || ($g[94].vIns==ST))) {
-					$pc = 300
+					$pc = 302
 					continue
 				}
 				if (!(instrOpTypeRs2($g[94].vIns)==OP_TYPE_IMM)) {
-					$pc = 295
+					$pc = 297
 					continue
 				}
 				$stack[$fp+2]=$g[96][$g[94].vRdt].value
 				$g[96][$g[94].vRdt].highlight($g[21])
-				$pc = 296
+				$pc = 298
 				continue
-			case 295:
+			case 297:
 				$stack[$fp+2]=$g[96][$g[94].vRs2].value
 				$g[96][$g[94].vRs2].highlight($g[21])
-				$pc = 296
-			case 296:
+				$pc = 298
+			case 298:
 				if (!((!instrIsArRI($g[94].vIns)) && ($g[94].vIns!=LD))) {
-					$pc = 299
+					$pc = 301
 					continue
 				}
 				$stack[$fp+5] = ($g[94].vIns==ST) ? $g[94].vRdt : $g[94].vRs2
@@ -4015,41 +4045,41 @@ function dlx(vplayer) {
 				$g[138].setOpacity(1)
 				callf(40, $g[137], 20)
 				continue
-			case 297:
+			case 299:
 				callf(40, $g[136], 20)
 				continue
-			case 298:
-				$pc = 299
-			case 299:
-				$pc = 302
-				continue
 			case 300:
-				if (wait(40))
-				return
 				$pc = 301
 			case 301:
-				$pc = 302
-			case 302:
-				$pc = 305
+				$pc = 304
 				continue
-			case 303:
+			case 302:
 				if (wait(40))
 				return
+				$pc = 303
+			case 303:
 				$pc = 304
 			case 304:
-				$pc = 305
+				$pc = 307
+				continue
 			case 305:
+				if (wait(40))
+				return
 				$pc = 306
 			case 306:
+				$pc = 307
+			case 307:
+				$pc = 308
+			case 308:
 				if (!(instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG)) {
-					$pc = 307
+					$pc = 309
 					continue
 				}
 				$g[147].setTxtOp($g[94].vIns)
-				$pc = 307
-			case 307:
+				$pc = 309
+			case 309:
 				if (!($g[94].vIns==ST)) {
-					$pc = 312
+					$pc = 314
 					continue
 				}
 				fork(40, $g[159], 40)
@@ -4058,198 +4088,198 @@ function dlx(vplayer) {
 				$g[154].setOpacity(1)
 				callf(40, $g[153], 40)
 				continue
-			case 308:
+			case 310:
 				fork(40, $g[160], 40)
 				fork(40, $g[162], 10)
 				callf(40, $g[161], 10)
 				continue
-			case 309:
+			case 311:
 				if (wait(20))
 				return
-				$pc = 310
-			case 310:
+				$pc = 312
+			case 312:
 				callf(40, $g[163], 10)
 				continue
-			case 311:
+			case 313:
 				$stack[$fp+4]=$stack[$fp+2]
 				$stack[$fp+3]=instrExecute($g[94].vIns, $stack[$fp+1], $g[94].vRs2)
-				$pc = 332
+				$pc = 334
 				continue
-			case 312:
+			case 314:
 				if (!(instrIsJumpAndLink($g[94].vIns))) {
-					$pc = 317
+					$pc = 319
 					continue
 				}
 				callf(40, $g[152], 40)
 				continue
-			case 313:
+			case 315:
 				callf(40, $g[162], 10)
 				continue
-			case 314:
+			case 316:
 				$stack[$fp+3]=instrExecute($g[94].vIns, $stack[$fp+1], $stack[$fp+2])
 				if (wait(20))
 				return
-				$pc = 315
-			case 315:
+				$pc = 317
+			case 317:
 				callf(40, $g[163], 10)
 				continue
-			case 316:
-				$pc = 331
+			case 318:
+				$pc = 333
 				continue
-			case 317:
+			case 319:
 				if (!(instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG)) {
-					$pc = 328
+					$pc = 330
 					continue
 				}
 				fork(40, $g[151], 40)
 				if (!(instrOpTypeRs2($g[94].vIns)==OP_TYPE_IMM)) {
-					$pc = 319
+					$pc = 321
 					continue
 				}
 				$g[154].setTxt("%02X", $g[94].vRs2)
 				$g[154].setOpacity(1)
 				callf(40, $g[153], 40)
 				continue
-			case 318:
+			case 320:
 				$stack[$fp+3]=instrExecute($g[94].vIns, $stack[$fp+1], $g[94].vRs2)
-				$pc = 321
+				$pc = 323
 				continue
-			case 319:
+			case 321:
 				callf(40, $g[152], 40)
 				continue
-			case 320:
+			case 322:
 				$stack[$fp+3]=instrExecute($g[94].vIns, $stack[$fp+1], $stack[$fp+2])
-				$pc = 321
-			case 321:
+				$pc = 323
+			case 323:
 				fork(40, $g[162], 10)
 				callf(40, $g[161], 10)
 				continue
-			case 322:
+			case 324:
 				if (!(instrIsBranch($g[94].vIns))) {
-					$pc = 324
+					$pc = 326
 					continue
 				}
 				if (wait(5))
 				return
-				$pc = 323
-			case 323:
-				$g[113].setPen($g[107])
-				$pc = 327
-				continue
-			case 324:
-				if (wait(20))
-				return
 				$pc = 325
 			case 325:
-				callf(40, $g[163], 10)
+				$g[113].setPen($g[107])
+				$pc = 329
 				continue
 			case 326:
+				if (wait(20))
+				return
 				$pc = 327
 			case 327:
-				$pc = 330
+				callf(40, $g[163], 10)
 				continue
 			case 328:
-				if (wait(80))
-				return
 				$pc = 329
 			case 329:
-				$pc = 330
+				$pc = 332
+				continue
 			case 330:
+				if (wait(80))
+				return
 				$pc = 331
 			case 331:
 				$pc = 332
 			case 332:
+				$pc = 333
+			case 333:
+				$pc = 334
+			case 334:
 				if (!($g[94].vIns==LD)) {
-					$pc = 336
+					$pc = 338
 					continue
 				}
 				callf(40, $g[173], 20)
 				continue
-			case 333:
+			case 335:
 				$g[167][($stack[$fp+3])%4].highlight($g[21])
 				callf(40, $g[175], 20)
 				continue
-			case 334:
+			case 336:
 				callf(40, $g[172], 40)
 				continue
-			case 335:
+			case 337:
 				$stack[$fp+3]=$g[167][($stack[$fp+3])%4].value
-				$pc = 346
+				$pc = 348
 				continue
-			case 336:
+			case 338:
 				if (!($g[94].vIns==ST)) {
-					$pc = 339
+					$pc = 341
 					continue
 				}
 				fork(40, $g[174], 20)
 				callf(40, $g[173], 20)
 				continue
-			case 337:
+			case 339:
 				$g[167][($stack[$fp+3])%4].setNewValue($stack[$fp+4])
 				callf(36, $g[167][($stack[$fp+3])%4])
 				continue
-			case 338:
-				$pc = 345
+			case 340:
+				$pc = 347
 				continue
-			case 339:
+			case 341:
 				if (!(instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG)) {
-					$pc = 342
+					$pc = 344
 					continue
 				}
 				callf(40, $g[171], 40)
 				continue
-			case 340:
+			case 342:
 				callf(40, $g[172], 40)
 				continue
-			case 341:
-				$pc = 344
+			case 343:
+				$pc = 346
 				continue
-			case 342:
+			case 344:
 				if (wait(80))
 				return
-				$pc = 343
-			case 343:
-				$pc = 344
-			case 344:
 				$pc = 345
 			case 345:
 				$pc = 346
 			case 346:
+				$pc = 347
+			case 347:
+				$pc = 348
+			case 348:
 				$g[96][0].unHighlight()
 				$g[96][1].unHighlight()
 				$g[96][2].unHighlight()
 				$g[96][3].unHighlight()
 				if (!((instrOpTypeRdt($g[94].vIns)==OP_TYPE_REG) && ($g[94].vIns!=ST))) {
-					$pc = 350
+					$pc = 352
 					continue
 				}
 				callf(40, $g[178], 40)
 				continue
-			case 347:
+			case 349:
 				$g[96][$g[94].vRdt].setNewValue($stack[$fp+3])
 				callf(36, $g[96][$g[94].vRdt])
 				continue
-			case 348:
-				if (wait(19))
-				return
-				$pc = 349
-			case 349:
-				$pc = 352
-				continue
 			case 350:
-				if (wait(75))
+				if (wait(19))
 				return
 				$pc = 351
 			case 351:
-				$pc = 352
+				$pc = 354
+				continue
 			case 352:
+				if (wait(75))
+				return
+				$pc = 353
+			case 353:
+				$pc = 354
+			case 354:
 				$g[34]+=5
 				$g[33]++
 				$g[69].setTxt("%4d", $g[33])
 				$g[70].setTxt("%4d", $g[34])
 				returnf(0)
 				continue
-			case 353:
+			case 355:
 				enterf(0);	// exec
 				$g[96][0].unHighlight()
 				$g[96][1].unHighlight()
@@ -4264,72 +4294,72 @@ function dlx(vplayer) {
 				$g[77][0].unHighlight()
 				$g[77][1].unHighlight()
 				if (!($g[26]==PIPELINING_ENABLED)) {
-					$pc = 354
+					$pc = 356
 					continue
 				}
 				fork(51, $obj)
 				fork(72, $obj)
 				fork(126, $obj)
-				fork(237, $obj)
-				fork(256, $obj)
-				$pc = 355
+				fork(239, $obj)
+				fork(258, $obj)
+				$pc = 357
 				continue
-			case 354:
-				fork(285, $obj)
-				$pc = 355
-			case 355:
+			case 356:
+				fork(287, $obj)
+				$pc = 357
+			case 357:
 				if (wait(8))
 				return
-				$pc = 356
-			case 356:
+				$pc = 358
+			case 358:
 				resetWires()
 				if (wait(($g[26]==PIPELINING_ENABLED) ? 72 : 392))
 				return
-				$pc = 357
-			case 357:
+				$pc = 359
+			case 359:
 				checkPoint()
 				returnf(0)
 				continue
-			case 358:
+			case 360:
 				enterf(0);	// run
 				if (wait(1))
 				return
-				$pc = 359
-			case 359:
+				$pc = 361
+			case 361:
 				$g[32]=1
 				setlocked()
-				$pc = 360
-			case 360:
+				$pc = 362
+			case 362:
 				if (!(1)) {
-					$pc = 365
+					$pc = 367
 					continue
 				}
 				fork(46, $g[73], ($g[26]==PIPELINING_ENABLED) ? 80 : 400)
-				callf(353, $obj)
+				callf(355, $obj)
 				continue
-			case 361:
+			case 363:
 				if (!((($g[176].vIns==HALT) && ($g[26]==PIPELINING_ENABLED)) || (($g[94].vIns==HALT) && ($g[26]==PIPELINING_DISABLED)))) {
-					$pc = 363
+					$pc = 365
 					continue
 				}
 				stop()
 				if (!($g[182])) {
-					$pc = 362
+					$pc = 364
 					continue
 				}
-				$pc = 365
+				$pc = 367
 				continue
-				$pc = 362
-			case 362:
-				$pc = 363
-			case 363:
-				if (wait(1))
-				return
 				$pc = 364
 			case 364:
-				$pc = 360
-				continue
+				$pc = 365
 			case 365:
+				if (wait(1))
+				return
+				$pc = 366
+			case 366:
+				$pc = 362
+				continue
+			case 367:
 				returnf(0)
 				continue
 			}

@@ -15,12 +15,14 @@ class Stack(num _x, num _y) {
 	num off = 40;
 
 	AnimPipe apSP = AnimPipe();
-	Rectangle spText;
-	num spAddr;
+	Rectangle spText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num spAddr = -1;
 
 	AnimPipe apFP = AnimPipe();
-	Rectangle fpText;
-	num fpAddr;
+	Rectangle fpText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num fpAddr = -2;
 
 	num outer_x = x;
 	num outer_y = y;
@@ -62,12 +64,14 @@ class Stack(num _x, num _y) {
 	}
 
 	function store(num addr, num val) {
-		stack[addr].setNewValue(val);
-		stack[addr].update();
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		stack[pos].setNewValue(val);
+		stack[pos].update();
 	}
 
 	num function getVal(num addr) {
-		return stack[addr].value;
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		return stack[pos].value;
 	}
 
 	function highlight(num addr) {
@@ -99,25 +103,43 @@ class Stack(num _x, num _y) {
 	}
 
 	function setSP(num addr){
-		Register a = stack[addr];
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		Register a = stack[pos];
+
+		if(spAddr == fpAddr){
+			num tpos = floor((spAddr/4))%MEMORY_ADDRESSES;
+			Register ta = stack[tpos];
+			num tax = ta._x;
+			num tay = ta._y;
+			num taw = ta._w;
+			num tah = ta._h;
+
+			fpText.setOpacity(0);
+			fpText = Rectangle2(0, 0, whitePen, stackBrush, (tax+taw+13), (tay+6),
+				20, 8, redPen, componentFont, sprintf("FP"));
+		}
+
 		spAddr = addr;
 		num ax = a._x;
 		num ay = a._y;
 		num aw = a._w;
 		num ah = a._h;
 
+		spText.setOpacity(0);
+
 		spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
 			20, 8, redPen, componentFont, sprintf("SP"));
 
 		apSP.setOpacity(0);
 		apSP.reset();
-		apSP.addPoint(ax+aw+15, ay+10);
-		apSP.addPoint(ax+aw+2, ay+10);
+		apSP.setPoint(0, ax+aw+15, ay+10);
+		apSP.setPoint(1, ax+aw+2, ay+10);
 		apSP.setOpacity(1);
 	}
 
 	function setFP(num addr){
-		Register a = stack[addr];
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		Register a = stack[pos];
 		fpAddr = addr;
 		num ax = a._x;
 		num ay = a._y;
@@ -125,19 +147,27 @@ class Stack(num _x, num _y) {
 		num ah = a._h;
 
 		if(spAddr != fpAddr){
+			fpText.setOpacity(0);
 			fpText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
 				20, 8, redPen, componentFont, sprintf("FP"));
 		}
 		else{
+			spText.setOpacity(0);
 			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
 				15, 8, redPen, componentFont, sprintf("SP/FP"));
 		}
 
 		apSP.setOpacity(0);
 		apSP.reset();
-		apSP.addPoint(ax+aw+15, ay+10);
-		apSP.addPoint(ax+aw+2, ay+10);
+		apSP.setPoint(0, ax+aw+15, ay+10);
+		apSP.setPoint(1, ax+aw+2, ay+10);
 		apSP.setOpacity(1);
+
+		apFP.setOpacity(0);
+		apFP.reset();
+		apFP.setPoint(0, ax+aw+15, ay+10);
+		apFP.setPoint(1, ax+aw+2, ay+10);
+		apFP.setOpacity(1);
 	}
 
 

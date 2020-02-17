@@ -1183,12 +1183,14 @@ if (example == 0) {
 
 		im.setValue(0, ADDi, 18, 0, 4);
 		im.setValue(4, ADDi, 19, 0, 5);
-		im.setValue(8, JAL, 1, 0, 0x14);
-		im.setValue(12, XOR, 0, 0, 0);
-		im.setValue(0x1C, SUB, 20, 19, 18);
-		im.setValue(0x20, NOP, 0, 0, 0);
-		im.setValue(0x24, NOP, 0, 0, 0);
-		im.setValue(0x28, JALR, 0, 0, 1);
+		im.setValue(8, SUBi, 2, 2, 4);
+		im.setValue(12, ST, 18, 2, 0);
+		im.setValue(16, JAL, 1, 0, 0x14);
+		im.setValue(20, XOR, 0, 0, 0);
+		im.setValue(0x24, SUB, 20, 19, 18);
+		im.setValue(0x28, SUBi, 2, 2, 4);
+		im.setValue(0x2C, NOP, 0, 0, 0);
+		im.setValue(0x30, JALR, 0, 0, 1);
     im.setValue(44, HALT, 0, 0, 0);                 // {joj}
     regFile[2].setValue(9);                         // {joj}
     regFile[3].setValue(8);                         // {joj}
@@ -1199,15 +1201,8 @@ if (example == 0) {
     //
     // pipeline forwarding example
     //
-    im.setValue( 0, ADD, 1, 2, 3);                   // r1 = r2 + r3     // {joj 20/10/12}
-    im.setValue( 4, SUB, 3, 1, 2);                   // r3 = r1 - r2     // {joj 20/10/12}
-    im.setValue( 8, AND, 2, 1, 3);                   // r2 = r1 & r3     // {joj 20/10/12}
-    im.setValue(12, XOR, 2, 1, 3);                  // r2 = r1 ^ r3     // {joj 20/10/12}
-    im.setValue(16, ADD, 2, 1, 0);                  // r2 = r1 + r0     // {joj 20/10/12}
-    im.setValue(20, HALT, 0, 0, 0);                 //                  // {joj 20/10/12}
-    regFile[1].setValue(1);                         // r1 = 1           // {joj 20/10/12}
-    regFile[2].setValue(2);                         // r2 = 2           // {joj 20/10/12}
-    setTPS(50);                                     // {joj}
+    im.setValue( 0, ADDi, 2, 0, 4);                   // r1 = r2 + r3     // {joj 20/10/12}
+
 
 } else if (example == 3) {                          // {joj}
 
