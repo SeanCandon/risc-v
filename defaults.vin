@@ -59,5 +59,7 @@ Brush marineBrush = SolidBrush(MARINE);
 Brush redBrush = SolidBrush(RED);					// {joj 2/10/16}
 Brush whiteBrush = SolidBrush(WHITE);				// {joj 2/10/16}
 Brush yellowBrush = SolidBrush(YELLOW);				// {joj 2/10/16}
+Brush blueBrush = SolidBrush(BLUE);
+Brush greenBrush = SolidBrush(GREEN);
 
 // eof

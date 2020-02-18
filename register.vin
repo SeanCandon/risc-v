@@ -93,7 +93,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     } else {
         label = Rectangle(valuesLayer, 0, 0, yellowBrush, vx + vw/2, vy + vh/2, -vw/2, -vh/2, vw, vh, 0, font, "%02X", value);
     }
-	label.setRounded(2, 2); 	// {joj 16/10/16}
+	label.setRounded(2, 2);
 
     //
     // setFixed
@@ -104,6 +104,10 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
 
     function rotateLabel(num d) {
       r2.rotate(d);
+    }
+
+    function setColour(Brush b){
+      label.setBrush(b);
     }
 
     //
@@ -134,6 +138,8 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
         }
 		return 0;
     }
+
+
 
 	//
     // mouse enter exit event handler

@@ -1183,17 +1183,31 @@ if (example == 0) {
 
 		im.setValue(0, ADDi, 18, 0, 4);
 		im.setValue(4, ADDi, 19, 0, 5);
-		im.setValue(8, SUBi, 2, 2, 4);
-		im.setValue(12, ST, 18, 2, 0);
-		im.setValue(16, JAL, 1, 0, 0x14);
+		im.setValue(8, ST, 18, 2, 0);
+		im.setValue(12, SUBi, 2, 2, 4);
+		im.setValue(16, JAL, 1, 0, 0x10);
 		im.setValue(20, XOR, 0, 0, 0);
-		im.setValue(0x24, SUB, 20, 19, 18);
+		im.setValue(0x18, HALT, 0, 0, 0);
+		im.setValue(0x20, ST, 1, 2, 0);
+		im.setValue(0x24, ADD, 8, 0, 2);
 		im.setValue(0x28, SUBi, 2, 2, 4);
-		im.setValue(0x2C, NOP, 0, 0, 0);
-		im.setValue(0x30, JALR, 0, 0, 1);
-    im.setValue(44, HALT, 0, 0, 0);                 // {joj}
-    regFile[2].setValue(9);                         // {joj}
-    regFile[3].setValue(8);                         // {joj}
+		im.setValue(0x2C, SUB, 20, 19, 18);
+		im.setValue(0x30, SUBi, 2, 2, 4);
+		im.setValue(0x34, SUBi, 2, 2, 4);
+		im.setValue(0x38, JAL, 1, 0, 0x18);
+		im.setValue(0x3C, LD, 1, 8, 0);
+		im.setValue(0x40, ADDi, 2, 2, 12);
+		im.setValue(0x44, JALR, 0, 0, 1);
+		im.setValue(0x50, ST, 1, 2, 0);
+		im.setValue(0x54, ADD, 9, 0, 2);
+		im.setValue(0x58, SUBi, 2, 2, 4);
+		im.setValue(0x5C, ST, 8, 2, 0);
+		im.setValue(0x60, SUBi, 2, 2, 4);
+		im.setValue(0x64, ADD, 8, 0, 9);
+		im.setValue(0x68, LD, 1, 8, 0);
+		im.setValue(0x6C, LD, 8, 8, -4);
+		im.setValue(0x70, ADDi, 2, 2, 8);
+		im.setValue(0x74, JALR, 0, 0, 1);
     //setTPS(100);                                    // {joj}
 
 } else if (example == 2) {                          // {joj}

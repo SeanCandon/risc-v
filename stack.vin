@@ -17,12 +17,25 @@ class Stack(num _x, num _y) {
 	AnimPipe apSP = AnimPipe();
 	Rectangle spText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
 		20, 8, whitePen, componentFont, sprintf(""));
-	num spAddr = -1;
+	num spAddr = -2;
+	num prevSPAddr = -1;
 
 	AnimPipe apFP = AnimPipe();
 	Rectangle fpText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
 		20, 8, whitePen, componentFont, sprintf(""));
-	num fpAddr = -2;
+	num fpAddr = -3;
+
+	num currFrame = 0;
+
+	Brush frameColours[3];
+	frameColours[0] = redBrush;
+	frameColours[1] = blueBrush;
+	frameColours[2] = greenBrush;
+
+	Frame frames[3];
+	frames[0] = Frame(0, 0);
+	frames[1] = Frame(0, 0);
+	frames[2] = Frame(0, 0);
 
 	num outer_x = x;
 	num outer_y = y;
@@ -78,28 +91,40 @@ class Stack(num _x, num _y) {
 		stack[addr].highlight(bhighlight);
 	}
 
-	function createFrame(num addr, num frame) {
-		Register a = stack[addr];
-		num ax = a._x;
-		num ay = a._y;
-		num aw = a._w;
-		num ah = a._h;
-		num offset = 6 * ah;
+	function clearFrame(){
+		if(currFrame>0){
+			Frame f = frames[currFrame-1];
+			num s = f.getStart();
+			num e = f.getEnd();
 
-		Line arrowDown = Line(valuesLayer, 0, redArrow,
-        0, 0,
-		ax + aw + 2, ay,
-        5, 0,
-        0, 0,
-        0, 0
-    );
+			num n = s-e;
 
-		arrowDown.setPt(2, ax+aw+7, ay+offset);
-		arrowDown.setPt(3, ax+aw+2, ay+offset);
-		arrowDown.setOpacity(1);
+			if(n==0){
+				Register fpR = stack[s];
+				if(currFrame >= 2){
+					fpR.setColour(frameColours[currFrame-2]);
+				}
+				else{
+					fpR.setColour(yellowBrush);
+				}
+			}
+			else{
+				for(num i=0; i<=n; i++){
+					Register r = stack[s-i];
+					if(i==0 && currFrame>=2){
+						r.setColour(frameColours[currFrame-2]);
+					}
+					else{
+						r.setColour(yellowBrush);
+					}
+				}
+			}
 
-		Rectangle outer = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+25), (ay+(offset/2)),
-			20, 10, redPen, componentFont, sprintf("subroutine %d", frame));
+			f.setStart(0);
+			f.setEnd(0);
+			currFrame--;
+		}
+
 	}
 
 	function setSP(num addr){
@@ -119,6 +144,7 @@ class Stack(num _x, num _y) {
 				20, 8, redPen, componentFont, sprintf("FP"));
 		}
 
+		prevSPAddr = spAddr;
 		spAddr = addr;
 		num ax = a._x;
 		num ay = a._y;
@@ -127,14 +153,64 @@ class Stack(num _x, num _y) {
 
 		spText.setOpacity(0);
 
-		spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
-			20, 8, redPen, componentFont, sprintf("SP"));
+		if(spAddr == fpAddr){
+			fpText.setOpacity(0);
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
+				15, 8, redPen, componentFont, sprintf("SP/FP"));
+
+		}
+		else{
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
+				20, 8, redPen, componentFont, sprintf("SP"));
+		}
 
 		apSP.setOpacity(0);
 		apSP.reset();
 		apSP.setPoint(0, ax+aw+15, ay+10);
 		apSP.setPoint(1, ax+aw+2, ay+10);
 		apSP.setOpacity(1);
+
+		if(currFrame > 0){
+			//createFrame();
+			Brush col = frameColours[currFrame-1];
+
+			num st = frames[currFrame-1].getStart();
+			if(pos > st){
+				clearFrame();
+			}
+			else{
+				frames[currFrame-1].setEnd(spAddr);
+			}
+
+			num prevPos = floor((prevSPAddr/4))%MEMORY_ADDRESSES;
+			num n = pos - prevPos;
+
+			if(prevSPAddr < spAddr){
+				if(n>0 && (pos-n>=0)){
+					for(num j=1; j<=n; j++){
+						Register r1 = stack[pos-j];
+						r1.setColour(yellowBrush);
+					}
+				}
+				else if(n==0){
+					Register r2 = stack[pos];
+					r2.setColour(col);
+				}
+			}
+			else{
+				n = prevPos - pos;
+				if(n>0 && (pos-n>=0)){
+					for(num k=1; k<=n; k++){
+						Register r3 = stack[prevPos-k];
+						r3.setColour(col);
+					}
+				}
+				else if(n==0){
+					Register r4 = stack[pos];
+					r4.setColour(col);
+				}
+			}
+		}
 	}
 
 	function setFP(num addr){
@@ -153,21 +229,31 @@ class Stack(num _x, num _y) {
 		}
 		else{
 			spText.setOpacity(0);
+			fpText.setOpacity(0);
 			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
 				15, 8, redPen, componentFont, sprintf("SP/FP"));
+
+			apSP.setOpacity(0);
+			apSP.reset();
+			apSP.setPoint(0, ax+aw+15, ay+10);
+			apSP.setPoint(1, ax+aw+2, ay+10);
+			apSP.setOpacity(1);
+			//currFrame++;
 		}
 
-		apSP.setOpacity(0);
-		apSP.reset();
-		apSP.setPoint(0, ax+aw+15, ay+10);
-		apSP.setPoint(1, ax+aw+2, ay+10);
-		apSP.setOpacity(1);
+		// apSP.setOpacity(0);
+		// apSP.reset();
+		// apSP.setPoint(0, ax+aw+15, ay+10);
+		// apSP.setPoint(1, ax+aw+2, ay+10);
+		// apSP.setOpacity(1);
 
 		apFP.setOpacity(0);
 		apFP.reset();
 		apFP.setPoint(0, ax+aw+15, ay+10);
 		apFP.setPoint(1, ax+aw+2, ay+10);
 		apFP.setOpacity(1);
+
+		//createFrame();
 	}
 
 
@@ -190,6 +276,27 @@ num function countHex(string h[], num index, num length, num digits, string char
 		}
 	}
 	return index + 16;
+}
+
+class Frame(num s, num e){
+
+	num start = s;
+	num end = e;
+
+	function setStart(num s){
+		start = floor((s/4))%MEMORY_ADDRESSES;
+	}
+	function setEnd(num e){
+		end = floor((e/4))%MEMORY_ADDRESSES;;
+	}
+
+	num function getStart(){
+		return start;
+	}
+	num function getEnd(){
+		return end;
+	}
+
 }
 
 function fillchars(string chars[]) {
