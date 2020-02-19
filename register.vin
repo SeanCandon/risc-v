@@ -41,6 +41,8 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     Rectangle r2;
     num _x=x; num _y=y; num _w=w; num _h=h;
 
+    Brush regCol = yellowBrush;
+
     Rectangle r1 = Rectangle2(0, 0, blackPen, regBrush, x, y, w, h);
 	r1.setRounded(2, 2);	// {joj 16/10/16}
     Rectangle bg1 = Rectangle2(valuesLayer, 0, 0, whiteBrush, vx, vy, vw / 2, vh);           	// joj
@@ -108,6 +110,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
 
     function setColour(Brush b){
       label.setBrush(b);
+      regCol = b;
     }
 
     //
@@ -146,7 +149,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
     //
     when label ~> eventEE(num enter, num x, num y) {			// {joj 24/10/17}
         if (fixed == 0)
-            label.setBrush(enter ? whiteBrush : yellowBrush);	// {joj 7/10/16}
+            label.setBrush(enter ? whiteBrush : regCol);	// {joj 7/10/16}
 		return 0;
     }
 

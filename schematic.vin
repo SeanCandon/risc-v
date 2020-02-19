@@ -1181,9 +1181,9 @@ if (example == 0) {
 
 } else if (example == 1) {                          // {joj}
 
-		im.setValue(0, ADDi, 18, 0, 4);
-		im.setValue(4, ADDi, 19, 0, 5);
-		im.setValue(8, ST, 18, 2, 0);
+		im.setValue(0, ADDi, 12, 0, 4);
+		im.setValue(4, ADDi, 13, 0, 5);
+		im.setValue(8, ST, 12, 2, 0);
 		im.setValue(12, SUBi, 2, 2, 4);
 		im.setValue(16, JAL, 1, 0, 0x10);
 		im.setValue(20, XOR, 0, 0, 0);
@@ -1191,7 +1191,7 @@ if (example == 0) {
 		im.setValue(0x20, ST, 1, 2, 0);
 		im.setValue(0x24, ADD, 8, 0, 2);
 		im.setValue(0x28, SUBi, 2, 2, 4);
-		im.setValue(0x2C, SUB, 20, 19, 18);
+		im.setValue(0x2C, SUB, 10, 12, 13);
 		im.setValue(0x30, SUBi, 2, 2, 4);
 		im.setValue(0x34, SUBi, 2, 2, 4);
 		im.setValue(0x38, JAL, 1, 0, 0x18);

@@ -724,6 +724,7 @@ function dlx(vplayer) {
 		this._y = y
 		this._w = w
 		this._h = h
+		this.regCol = $g[13]
 		this.r1 = new Rectangle2($g[0], 0, 0, $g[1], $g[42], x, y, w, h)
 		this.r1.setRounded(2, 2)
 		this.bg1 = new Rectangle2($g[0], $g[19], 0, 0, $g[12], this.vx, this.vy, this.vw/2, this.vh)
@@ -777,6 +778,7 @@ function dlx(vplayer) {
 
 	Register.prototype.setColour = function(b) {
 		this.label.setBrush(b)
+		this.regCol=b
 	}
 
 	Register.prototype.setOpacity = function(opacity) {
@@ -804,7 +806,7 @@ function dlx(vplayer) {
 
 	Register.prototype.$eh9 = function(enter, x, y) {
 		if (this.fixed==0)
-		this.label.setBrush(enter ? $g[12] : $g[13])
+		this.label.setBrush(enter ? $g[12] : this.regCol)
 		return 0
 	}
 
@@ -2529,9 +2531,9 @@ function dlx(vplayer) {
 					$pc = 19
 					continue
 				}
-				$g[74].setValue(0, ADDi, 18, 0, 4)
-				$g[74].setValue(4, ADDi, 19, 0, 5)
-				$g[74].setValue(8, ST, 18, 2, 0)
+				$g[74].setValue(0, ADDi, 12, 0, 4)
+				$g[74].setValue(4, ADDi, 13, 0, 5)
+				$g[74].setValue(8, ST, 12, 2, 0)
 				$g[74].setValue(12, SUBi, 2, 2, 4)
 				$g[74].setValue(16, JAL, 1, 0, 16)
 				$g[74].setValue(20, XOR, 0, 0, 0)
@@ -2539,7 +2541,7 @@ function dlx(vplayer) {
 				$g[74].setValue(32, ST, 1, 2, 0)
 				$g[74].setValue(36, ADD, 8, 0, 2)
 				$g[74].setValue(40, SUBi, 2, 2, 4)
-				$g[74].setValue(44, SUB, 20, 19, 18)
+				$g[74].setValue(44, SUB, 10, 12, 13)
 				$g[74].setValue(48, SUBi, 2, 2, 4)
 				$g[74].setValue(52, SUBi, 2, 2, 4)
 				$g[74].setValue(56, JAL, 1, 0, 24)
