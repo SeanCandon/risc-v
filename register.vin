@@ -163,7 +163,7 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
 			} else if (flags & MB_RIGHT) {
 				value = (value - 1) & 0xFF;
 			}
-            updateLabel();
+          updateLabel();
         }
 		return 0;
     }
