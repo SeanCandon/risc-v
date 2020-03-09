@@ -104,4 +104,14 @@ num locked = 0;         //
 num instrCount = 0;     //
 num tickCount = 0;      //
 
+//BroadcastChannel bc = BroadcastChannel("channel 1");
+// when bc ~> eventMessage(string mess){
+//   //console.log(mess);
+// }
+//bc.postMessage("wow dats");
+//bc.onmessage();
+//bc.tempfunc();
+//sendMessage("channel 1", "hello");
+getMessage("channel 1");
+//setupChan("channel 1");
 // eof

@@ -38,6 +38,7 @@ function dlx(vplayer) {
 	var fork = vplayer.fork
 	var getArg = vplayer.getArg
 	var getArgAsNum = vplayer.getArgAsNum
+	var getMessage = vplayer.getMessage
 	var getURL = vplayer.getURL
 	var Group = vplayer.Group
 	var Image = vplayer.Image
@@ -45,6 +46,7 @@ function dlx(vplayer) {
 	var Line = vplayer.Line
 	var Line2 = vplayer.Line2
 	var newArray = vplayer.newArray
+	var newWindow = vplayer.newWindow
 	var Polygon = vplayer.Polygon
 	var R$ = vplayer.R$
 	var Rectangle = vplayer.Rectangle
@@ -52,6 +54,7 @@ function dlx(vplayer) {
 	var reset = vplayer.reset
 	var rgba = vplayer.rgba
 	var round = vplayer.round
+	var sendMessage = vplayer.sendMessage
 	var setArg = vplayer.setArg
 	var setBgBrush = vplayer.setBgBrush
 	var setTPS = vplayer.setTPS
@@ -1953,10 +1956,15 @@ function dlx(vplayer) {
 			setZFMode(($g[33]+1)%3)
 			resetCircuit()
 		}
+		newWindow()
 		return 0
 	}
 
-	function $eh18(down, flags, x, y) {
+	function $eh18(m) {
+		$g[62].setCaption(m)
+	}
+
+	function $eh19(down, flags, x, y) {
 		if (down && (flags&MB_LEFT)) {
 			let lp1, opcode, reg
 			let instr
@@ -1980,24 +1988,23 @@ function dlx(vplayer) {
 		return 0
 	}
 
-	function $eh19(down, flags, x, y) {
-		if (down && (flags&MB_LEFT))
-		getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm")
+	function $eh20(down, flags, x, y) {
+		sendMessage("heyyyyyyyyy")
 		return 0
 	}
 
-	function $eh20(down, flags, $2, $3) {
+	function $eh21(down, flags, $2, $3) {
 		if (down && (flags&MB_LEFT))
 		getURL("showanim.php")
 	}
 
-	function $eh21(enter, x, y) {
+	function $eh22(enter, x, y) {
 		$g[73].setBrush(enter ? $g[8] : $g[12])
 		$g[73].setTxtPen(enter ? $g[3] : $g[1])
 		return 0
 	}
 
-	function $eh22(down, flags, x, y) {
+	function $eh23(down, flags, x, y) {
 		if (down && (flags&MB_LEFT)) {
 			$g[16]=($g[16]==maxexample) ? 0 : $g[16]+1
 			setArg("example", $g[16].toString())
@@ -2054,6 +2061,7 @@ function dlx(vplayer) {
 				$g[34] = 0
 				$g[35] = 0
 				$g[36] = 0
+				getMessage("channel 1")
 				$g[37] = newArray(38)
 				$g[37][NOP]="NOP"
 				$g[37][ADD]="ADD"
@@ -2671,11 +2679,12 @@ function dlx(vplayer) {
 				$g[66].label.addEventHandler("eventMB", this, $eh15)
 				$g[67].label.addEventHandler("eventMB", this, $eh16)
 				$g[68].label.addEventHandler("eventMB", this, $eh17)
-				$g[62].label.addEventHandler("eventMB", this, $eh18)
-				$g[69].addEventHandler("eventMB", this, $eh19)
-				$g[54].addEventHandler("eventMB", this, $eh20)
-				$g[73].addEventHandler("eventEE", this, $eh21)
-				$g[73].addEventHandler("eventMB", this, $eh22)
+				$g[62].label.addEventHandler("eventMessage", this, $eh18)
+				$g[62].label.addEventHandler("eventMB", this, $eh19)
+				$g[69].addEventHandler("eventMB", this, $eh20)
+				$g[54].addEventHandler("eventMB", this, $eh21)
+				$g[73].addEventHandler("eventEE", this, $eh22)
+				$g[73].addEventHandler("eventMB", this, $eh23)
 				callf(367, $obj)
 				continue
 			case 33:

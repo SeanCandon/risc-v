@@ -173,6 +173,8 @@ function VPlayer(canvasID, VCode, args) {
 	const $EPATH				= 0;				// $E
 	const $RPATH				= 1;				// $R
 
+	var h2 = window;
+
 	var layer = [];									// layers
 	var nlayer = 0;									// number of layers
 	var canvas;										// canvas
@@ -4712,7 +4714,7 @@ function VPlayer(canvasID, VCode, args) {
 				ctx.transform(this.drawT2D.a, this.drawT2D.b, this.drawT2D.c, this.drawT2D.d, this.drawT2D.e, this.drawT2D.f);
 			}
 			ctx.globalAlpha = this.drawOpacity;	// {joj 4/10/17}
-			if (this.closed && brushVisible(this.brush)) {	// NB: polygon is a closed line
+			if (this.closed && brushVisible(this.brush)) {	// NB: Polygon is a closed line
 				ctx.save();
 				ctx.beginPath();
 				ctx.moveTo(this.ptx[0], this.pty[0]);
@@ -4905,6 +4907,25 @@ function VPlayer(canvasID, VCode, args) {
 		this.brush = brush;
 	}
 	Polygon.prototype = Line.prototype;
+
+
+	// function BroadcastChannel(name){
+	// 	this.bc = new BroadcastChannel(name);
+	// 	//this.bc.addEventListener('message', handleMessageEvent, false);
+	// 	//this.handler = [];
+	// 	this.bc.onmessage = function(ev) {console.log(ev.data)};
+	// }
+	// //BroadcastChannel.prototype = Object.create(GObj.prototype);
+	//
+	// BroadcastChannel.prototype.postMessage = function(message){
+	// 	this.bc.postMessage(message);
+	// }
+
+	//BroadcastChannel.prototype.addEventHandler = function(e, obj, pc){
+		// if (this.handler[e] == undefined)
+		// 	this.handler[e] = [];
+		// this.handler[e].push({"obj": obj, "pc": pc});
+	//}
 
 	//
 	// Rectangle constructor
@@ -5960,6 +5981,33 @@ function VPlayer(canvasID, VCode, args) {
 			} else if (flags & MB_RIGHT) {	// {joj 28/11/17}
 				createOverlay();			// {joj 28/11/17}
 				contextMenu.show(e);		// {joj 28/11/17}
+			}
+		}
+	}
+
+	function handleMessageEvent(e){
+		let mess = e.data;
+		//console.log(e.data);
+		FOR: {
+			for (let i = nlayer - 1; i >= 0; i--) {
+				if (layer[i].opacity == 0)	// {joj 17/10/16}
+					continue;
+				for (let j = layer[i].gobjs.length - 1; j >= 0 ; j--) {
+					if (layer[i].gobjs[j].handler["eventMessage"]) {
+							if (asyncPhase == 0)			// first hit indicates a new path so...
+								removeFutureAsyncEvents();	// need to remove future ASYNC events
+							let handler = layer[i].gobjs[j].handler["eventMessage"];
+							for (let k = 0; k < handler.length; k++) {
+								addToAsyncEventQ(new AsyncEvent(tick, callEventHandler.bind(null, handler[k].pc, handler[k].obj, mess)));
+								let r = callEventHandler(handler[k].pc, handler[k].obj, mess);
+								asyncPhase = 1;
+	//								if (r & REMEMBER)
+	//									addToAsyncEventQ(new AsyncEvent(tick, callEventHandler.bind(null, handler[k].pc, handler[k].obj, down, flags, x, y)));
+								if ((r & PROPAGATE) == 0)
+									break FOR;
+							}
+					}
+				}
 			}
 		}
 	}
@@ -7336,6 +7384,7 @@ function VPlayer(canvasID, VCode, args) {
 		return Number(this);
 	}
 
+
 	// Date.isLeapYear
 	// from stackoverflow
 	Date.prototype.isLeapYear = function() {
@@ -7494,6 +7543,30 @@ function VPlayer(canvasID, VCode, args) {
 		return str;
 	}
 
+	function sendMessage(mess){
+		//var bc = new BroadcastChannel(chan);
+		h2.postMessage(mess, '*');
+		//console.log("wow");
+	}
+
+	function getMessage(chan){
+		//var bc2 = new BroadcastChannel(chan);
+		// bc2.addEventListener('message', function (e) {
+		// 	console.log("holy fuck");
+		// });
+		window.addEventListener('message', handleMessageEvent, false);
+		//bc.onmessage = function(ev) {console.log(ev.data)};
+	}
+
+	function getTitle(){
+		var t = document.getElementByTagName("title");
+		return t;
+	}
+
+	function newWindow(){
+		h2 = window.open('riscv2.html');
+	}
+
 	//
 	// VPlayer public interface
 	//
@@ -7636,6 +7709,7 @@ function VPlayer(canvasID, VCode, args) {
 	this.NullPen = NullPen;
 	this.Pie = Pie;
 	this.Polygon = Polygon;
+	this.BroadcastChannel = BroadcastChannel;
 	this.pow = Math.pow;
 	this.R$ = R$;
 	this.RadialBrush = RadialBrush;
@@ -7669,6 +7743,10 @@ function VPlayer(canvasID, VCode, args) {
 	this.terminateThread = terminateThread;
 	this.timeMS = function() {return Date.now()};
 	this.timeToString = timeToString;
+	this.sendMessage = sendMessage;
+	this.getMessage = getMessage;
+	this.getTitle = getTitle;
+	this.newWindow = newWindow;
 	this.trunc = Math.trunc;
 	this.Txt = Txt;
 	this.VObj = VObj;

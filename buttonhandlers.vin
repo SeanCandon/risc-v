@@ -157,7 +157,14 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 		setZFMode((zfMode + 1) % 3);
 		resetCircuit();
 	}
+	//sendMessage("channel 1", "hello");
+	//bc.postMessage("wow dats");
+	newWindow();
 	return 0;
+}
+
+when buttonSP.label ~> eventMessage(string m){
+	buttonSP.setCaption(m);
 }
 
 //
@@ -167,7 +174,7 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 //
 when buttonSP.label ~> eventMB(num down, num flags, num x, num y) {		// {joj 24/9/17}
 	if (down && (flags & MB_LEFT)) {
-		
+
 		//debug("save configuration");
 
 		num lp1, opcode, reg;
@@ -203,8 +210,9 @@ when buttonSP.label ~> eventMB(num down, num flags, num x, num y) {		// {joj 24/
 // Vivio logo
 //
 when logo ~> eventMB(num down, num flags, num x, num y) {				// {joj 24/9/17}
-     if (down && (flags & MB_LEFT))
-         getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm");
+     // if (down && (flags & MB_LEFT))
+     //     getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm");
+		 sendMessage("heyyyyyyyyy");
      return 0;
 }
 

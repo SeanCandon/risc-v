@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset = "utf-8" />
+	<title>Hart 1</title>
+	<script src = "www/vivio.js"></script>
+	<script src = "dlx.js"></script>
+</head>
+
+<body style = "margin:0; padding:0">
+
+	<a href="file:///C:/Users/seanc/fyp/risc-v/riscv2.html" target="blank">Link 1</a>
+	<!--<button onclick="myFunction()">Click me</button>-->
+
+<!--tabindex needed for keyboard input-->
+	<canvas id = "canvas" tabindex = "1" style = "width:100%; height:100%; position:absolute; overflow:hidden; display:block;">
+		No canvas support
+	</canvas>
+
+	<script>
+		vplayer = new VPlayer("canvas", dlx);
+
+		// const bc = new BroadcastChannel('channel 1');
+		// //
+		// bc.onmessage = function (ev) { console.log(ev.data); }
+		//
+		// function myFunction(){
+		// 	bc.postMessage('This is a test message.');
+		// 	//console.log("Wow");
+		// }
+		//childwin = window.open('riscv2.html');
+		// //
+		// window.addEventListener('message', function(e){
+    //   console.log(e.data);
+    // });
+		//
+		// function myFunction(){
+		// 	childwin.postMessage("wow bob", '*');
+		// }
+	</script>
+
+</body>
+</html>
