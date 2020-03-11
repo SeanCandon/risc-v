@@ -1,0 +1,321 @@
+//
+// sample .vin file
+//
+
+class Stack(num _x, num _y) {
+
+	num w = 100;
+	num h = 20;
+	num length = MEMORY_ADDRESSES;
+	num x = _x;
+	num y = _y;
+	num addr_size = 4;
+	num maxdigits = 3;
+
+	num off = 40;
+
+	AnimPipe apSP = AnimPipe();
+	Rectangle spText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num spAddr = -2;
+	num prevSPAddr = -1;
+
+	AnimPipe apFP = AnimPipe();
+	Rectangle fpText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num fpAddr = -3;
+
+	num currFrame = 0;
+
+	Brush frameColours[3];
+	frameColours[0] = redBrush;
+	frameColours[1] = blueBrush;
+	frameColours[2] = greenBrush;
+
+	Frame frames[3];
+	frames[0] = Frame(0, 0);
+	frames[1] = Frame(0, 0);
+	frames[2] = Frame(0, 0);
+
+	num outer_x = x;
+	num outer_y = y;
+	num outer_w = w;
+	num outer_h = (h * length + 20);
+
+	x = x + 10;
+	y = y + 10;
+	w = w/2;
+
+	Rectangle outer = Rectangle2(0, 0, blackPen, stackBrush, outer_x, outer_y, outer_w, outer_h);
+
+	string hex[length*addr_size];
+	//string chars[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+	string chars[18];
+	fillchars(chars);
+	num div = (length*addr_size)/16;
+	num digits = 1;
+	for(num i=1; i<=maxdigits; i++){
+		num p = div^i;
+		if(div < p){
+			digits = i+1;
+			break;
+		}
+	}
+	countHex(hex, 0, (length*addr_size), digits, chars, "");
+	string addresses[length];
+	num j = 0;
+	for(i=0; i<(length*addr_size); i+=addr_size){
+	 	addresses[j] = hex[i];
+	 	j++;
+	}
+	Register stack[length];
+	for(j=(length-1); j>=0; j--) {
+		Register r = Register(x, y, w, h, LEFT, addresses[j]);
+		r.rotateLabel(90);
+		stack[j] = r;
+		y += h;
+	}
+
+	function store(num addr, num val) {
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		stack[pos].setNewValue(val);
+		stack[pos].update();
+	}
+
+	num function getVal(num addr) {
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		return stack[pos].value;
+	}
+
+	function highlight(num addr) {
+		stack[addr].highlight(bhighlight);
+	}
+
+	function clearFrame(){
+		if(currFrame>0){
+			Frame f = frames[currFrame-1];
+			num s = f.getStart();
+			num e = f.getEnd();
+
+			num n = s-e;
+
+			if(n==0){
+				Register fpR = stack[s];
+				if(currFrame >= 2){
+					fpR.setColour(frameColours[currFrame-2]);
+				}
+				else{
+					fpR.setColour(yellowBrush);
+				}
+			}
+			else{
+				for(num i=0; i<=n; i++){
+					Register r = stack[s-i];
+					if(i==0 && currFrame>=2){
+						r.setColour(frameColours[currFrame-2]);
+					}
+					else{
+						r.setColour(yellowBrush);
+					}
+				}
+			}
+
+			f.setStart(0);
+			f.setEnd(0);
+			currFrame--;
+		}
+
+	}
+
+	function setSP(num addr){
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		Register a = stack[pos];
+
+		if(spAddr == fpAddr){
+			num tpos = floor((spAddr/4))%MEMORY_ADDRESSES;
+			Register ta = stack[tpos];
+			num tax = ta._x;
+			num tay = ta._y;
+			num taw = ta._w;
+			num tah = ta._h;
+
+			fpText.setOpacity(0);
+			fpText = Rectangle2(0, 0, whitePen, stackBrush, (tax+taw+13), (tay+6),
+				20, 8, redPen, componentFont, sprintf("FP"));
+		}
+
+		prevSPAddr = spAddr;
+		spAddr = addr;
+		num ax = a._x;
+		num ay = a._y;
+		num aw = a._w;
+		num ah = a._h;
+
+		spText.setOpacity(0);
+
+		if(spAddr == fpAddr){
+			fpText.setOpacity(0);
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
+				15, 8, redPen, componentFont, sprintf("SP/FP"));
+
+		}
+		else{
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
+				20, 8, redPen, componentFont, sprintf("SP"));
+		}
+
+		apSP.setOpacity(0);
+		apSP.reset();
+		apSP.setPoint(0, ax+aw+15, ay+10);
+		apSP.setPoint(1, ax+aw+2, ay+10);
+		apSP.setOpacity(1);
+
+		if(currFrame > 0){
+			//createFrame();
+			Brush col = frameColours[currFrame-1];
+
+			num st = frames[currFrame-1].getStart();
+			if(pos > st){
+				clearFrame();
+			}
+			else{
+				frames[currFrame-1].setEnd(spAddr);
+			}
+
+			num prevPos = floor((prevSPAddr/4))%MEMORY_ADDRESSES;
+			num n = pos - prevPos;
+
+			if(prevSPAddr < spAddr){
+				if(n>0 && (pos-n>=0)){
+					for(num j=1; j<=n; j++){
+						Register r1 = stack[pos-j];
+						r1.setColour(yellowBrush);
+					}
+				}
+				else if(n==0){
+					Register r2 = stack[pos];
+					r2.setColour(col);
+				}
+			}
+			else{
+				n = prevPos - pos;
+				if(n>0 && (pos-n>=0)){
+					for(num k=1; k<=n; k++){
+						Register r3 = stack[prevPos-k];
+						r3.setColour(col);
+					}
+				}
+				else if(n==0){
+					Register r4 = stack[pos];
+					r4.setColour(col);
+				}
+			}
+		}
+	}
+
+	function setFP(num addr){
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		Register a = stack[pos];
+		fpAddr = addr;
+		num ax = a._x;
+		num ay = a._y;
+		num aw = a._w;
+		num ah = a._h;
+
+		if(spAddr != fpAddr){
+			fpText.setOpacity(0);
+			fpText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+13), (ay+6),
+				20, 8, redPen, componentFont, sprintf("FP"));
+		}
+		else{
+			spText.setOpacity(0);
+			fpText.setOpacity(0);
+			spText = Rectangle2(0, 0, whitePen, stackBrush, (ax+aw+20), (ay+6),
+				15, 8, redPen, componentFont, sprintf("SP/FP"));
+
+			apSP.setOpacity(0);
+			apSP.reset();
+			apSP.setPoint(0, ax+aw+15, ay+10);
+			apSP.setPoint(1, ax+aw+2, ay+10);
+			apSP.setOpacity(1);
+			//currFrame++;
+		}
+
+		// apSP.setOpacity(0);
+		// apSP.reset();
+		// apSP.setPoint(0, ax+aw+15, ay+10);
+		// apSP.setPoint(1, ax+aw+2, ay+10);
+		// apSP.setOpacity(1);
+
+		apFP.setOpacity(0);
+		apFP.reset();
+		apFP.setPoint(0, ax+aw+15, ay+10);
+		apFP.setPoint(1, ax+aw+2, ay+10);
+		apFP.setOpacity(1);
+
+		//createFrame();
+	}
+
+
+}
+
+num function countHex(string h[], num index, num length, num digits, string chars[], string pref){
+	num endreached = 0;
+	for (num i=0; i<16; i++){
+		if (digits > 1){
+			num newindex = 0;
+			string newpref = pref + chars[i];
+			if(endreached == 0)
+				newindex = countHex(h, index, length, (digits-1), chars, newpref);
+			if(index >= length) return 0;
+			index = newindex;
+		}
+		else{
+			if(index+i < length)
+				h[index+i] = pref + chars[i];
+		}
+	}
+	return index + 16;
+}
+
+class Frame(num s, num e){
+
+	num start = s;
+	num end = e;
+
+	function setStart(num s){
+		start = floor((s/4))%MEMORY_ADDRESSES;
+	}
+	function setEnd(num e){
+		end = floor((e/4))%MEMORY_ADDRESSES;;
+	}
+
+	num function getStart(){
+		return start;
+	}
+	num function getEnd(){
+		return end;
+	}
+
+}
+
+function fillchars(string chars[]) {
+	chars[0] = "0";
+	chars[1] = "1";
+	chars[2] = "2";
+	chars[3] = "3";
+	chars[4] = "4";
+	chars[5] = "5";
+	chars[6] = "6";
+	chars[7] = "7";
+	chars[8] = "8";
+	chars[9] = "9";
+	chars[10] = "A";
+	chars[11] = "B";
+	chars[12] = "C";
+	chars[13] = "D";
+	chars[14] = "E";
+	chars[15] = "F";
+}
+
+//eof

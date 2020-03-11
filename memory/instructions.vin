@@ -24,7 +24,7 @@
 //
 
 // Number of instructions (excluding "stall" instruction)
-const num MAX_INSTR = 38;
+const num MAX_INSTR = 36;
 
 // No-op
 const num NOP = 0;
@@ -74,21 +74,18 @@ const num MUL = 33;
 const num DIV = 34;
 const num REM = 35;
 
-const num LR = 36;
-const num SC = 37;
-
 // Halt
-const num HALT  = 38;   // Stop running
+const num HALT  = 36;   // Stop running
 
 // "Stall" and "Empty" instruction (aliases for NOP)
-const num STALL = 39;
-const num EMPTY = 40;
+const num STALL = 37;
+const num EMPTY = 38;
 
 //
 // Instruction names
 //
 
-string instrNames[40];
+string instrNames[38];
 
 // NOP
 instrNames[NOP] = "NOP";
@@ -137,9 +134,6 @@ instrNames[JALR]    = "JALR";   // Jump and link register
 instrNames[MUL]     = "MUL";
 instrNames[DIV]     = "DIV";
 instrNames[REM]     = "REM";
-
-instrNames[LR]      = "LR";
-instrNames[SC]      = "SC";
 
 // Halt
 instrNames[HALT]    = "HALT";
@@ -191,12 +185,8 @@ num function instrIsJumpAndLink(num instr) {
     return ((instr == JAL) || (instr == JALR)) ? 1 : 0;     // {joj 28/10/06}
 }
 
-num function instrIsAtomic(num instr){
-  return ((instr == LR) || (instr == SC)) ? 1 : 0;
-}
-
 num function instrIsLoadOrStore(num instr) {
-    return ((instr == LD) || (instr == ST) || instrIsAtomic(instr)) ? 1 : 0;            // {joj 28/10/06}
+    return ((instr == LD) || (instr == ST)) ? 1 : 0;            // {joj 28/10/06}
 }
 
 //
@@ -240,12 +230,10 @@ string function instrText(num instr, num rdt, num rs1, num rs2) {				// {joj 28/
         return sprintf("%s x%d,x%d,x%d", instrNames[instr], rdt, rs1, rs2);  	// {joj 28/10/10}
     else if (instrIsArRI(instr))
         return sprintf("%s x%d,x%d,%02X", instrNames[instr], rdt, rs1, rs2); 	// {joj 28/10/10}
-    // else if (instr == LD)														// {joj}
-    //    return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2);                     	// {joj 28/10/06}
-    // else if (instr == ST)                                                		// {joj 28/10/06}
-    //     return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2);                    	// {joj 28/10/06}
-    else if(instrIsLoadOrStore(instr))
-      return sprintf("%s x%d,x%d+%02X", instrNames[instr], rdt, rs1, rs2);
+    else if (instr == LD)														// {joj}
+       return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2);                     	// {joj 28/10/06}
+    else if (instr == ST)                                                		// {joj 28/10/06}
+        return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2);                    	// {joj 28/10/06}
     else if (instrIsBranch(instr))
         return sprintf("%s x%d,x%d,%02X", instrNames[instr], rdt, rs1, rs2);
     else if (instr == J)
@@ -302,7 +290,7 @@ num function instrExecute(num instr, num op1, num op2) {
         return op2 < op1 ? 1 : 0;
     else if (instr == BGE)
         return op2 >= op1 ? 1 : 0;
-    else if (instrIsLoadOrStore(instr))                 // joj
+    else if (instr == LD || instr == ST)                 // joj
         return (se8(op1) + se8(op2)) & 0xFF;
     else if (instr == JAL || instr == JALR)
         return op2;

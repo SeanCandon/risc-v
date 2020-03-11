@@ -158,16 +158,12 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 		resetCircuit();
 	}
 	//sendMessage("channel 1", "hello");
-	sendToMem("wow");
 	//bc.postMessage("wow dats");
-	//newWindow();
 	return 0;
 }
 
-when buttonPar.label ~> eventMB(num down, num flags, num x, num y){
-	if(down && flags && MB_LEFT){
-		startParallel();
-	}
+when buttonSP.label ~> eventMessage(string m){
+	buttonSP.setCaption(m);
 }
 
 //
@@ -215,8 +211,7 @@ when buttonSP.label ~> eventMB(num down, num flags, num x, num y) {		// {joj 24/
 when logo ~> eventMB(num down, num flags, num x, num y) {				// {joj 24/9/17}
      // if (down && (flags & MB_LEFT))
      //     getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm");
-		 //sendMessage("heyyyyyyyyy");
-		 //stack.store(3, 2);
+		 sendMessage("heyyyyyyyyy");
      return 0;
 }
 

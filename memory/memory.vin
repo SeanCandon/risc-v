@@ -1,0 +1,121 @@
+//
+// sample .vin file
+//
+
+class Memory(num _x, num _y){
+
+  num w = 100;
+	num h = 20;
+	num length = MEMORY_ADDRESSES;
+	num x = _x;
+	num y = _y;
+	num addr_size = 4;
+	num maxdigits = 3;
+
+	num off = 40;
+
+	AnimPipe apSP = AnimPipe();
+	Rectangle spText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num spAddr = -2;
+	num prevSPAddr = -1;
+
+	AnimPipe apFP = AnimPipe();
+	Rectangle fpText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
+		20, 8, whitePen, componentFont, sprintf(""));
+	num fpAddr = -3;
+
+	num outer_x = x;
+	num outer_y = y;
+	num outer_w = w;
+	num outer_h = (h * length + 20);
+
+	x = x + 10;
+	y = y + 10;
+	w = w/2;
+
+	Rectangle outer = Rectangle2(0, 0, blackPen, stackBrush, outer_x, outer_y, outer_w, outer_h);
+
+	string hex[length*addr_size];
+	//string chars[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+	string chars[18];
+	fillchars(chars);
+	num div = (length*addr_size)/16;
+	num digits = 1;
+	for(num i=1; i<=maxdigits; i++){
+		num p = div^i;
+		if(div < p){
+			digits = i+1;
+			break;
+		}
+	}
+	countHex(hex, 0, (length*addr_size), digits, chars, "");
+	string addresses[length];
+	num j = 0;
+	for(i=0; i<(length*addr_size); i+=addr_size){
+	 	addresses[j] = hex[i];
+	 	j++;
+	}
+	Register stack[length];
+	for(j=(length-1); j>=0; j--) {
+		Register r = Register(x, y, w, h, LEFT, addresses[j]);
+		r.rotateLabel(90);
+		stack[j] = r;
+		y += h;
+	}
+
+  // function hl(num addr){
+  //   num pos = floor((addr/4))%MEMORY_ADDRESSES;
+  //   stack[pos].highlight(whiteBrush);
+  //   // wait(5);
+  //   // stack[pos].unHighlight();
+  //   //return 0;
+  // }
+
+  function store(num addr, num val) {
+		num pos = floor((addr/4))%MEMORY_ADDRESSES;
+		stack[pos].setNewValue(val);
+		stack[pos].update();
+	}
+}
+
+num function countHex(string h[], num index, num length, num digits, string chars[], string pref){
+	num endreached = 0;
+	for (num i=0; i<16; i++){
+		if (digits > 1){
+			num newindex = 0;
+			string newpref = pref + chars[i];
+			if(endreached == 0)
+				newindex = countHex(h, index, length, (digits-1), chars, newpref);
+			if(index >= length) return 0;
+			index = newindex;
+		}
+		else{
+			if(index+i < length)
+				h[index+i] = pref + chars[i];
+		}
+	}
+	return index + 16;
+}
+
+function fillchars(string chars[]) {
+	chars[0] = "0";
+	chars[1] = "1";
+	chars[2] = "2";
+	chars[3] = "3";
+	chars[4] = "4";
+	chars[5] = "5";
+	chars[6] = "6";
+	chars[7] = "7";
+	chars[8] = "8";
+	chars[9] = "9";
+	chars[10] = "A";
+	chars[11] = "B";
+	chars[12] = "C";
+	chars[13] = "D";
+	chars[14] = "E";
+	chars[15] = "F";
+}
+
+
+//eof

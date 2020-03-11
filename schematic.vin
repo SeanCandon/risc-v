@@ -50,6 +50,8 @@ const num BUTTON_ZF = 5;    // Zero forwarding
 
 const num BUTTON_SP = 6;    // Safe program
 
+const num BUTTON_PAR = 7;
+
 const num NUM_REGS = 32;
 const num REG_WIDTH = 20;
 const num REG_HEIGHT = 25;
@@ -59,13 +61,14 @@ Line2(0, ABSOLUTE, delimeter, 10, 450, 700, 450);
 
 Font arialBold10 = Font("Calibri", 10, BOLD);
 
-Button buttonSP = Button(20, 460, 80, 20, "Save Configuration", BUTTON_SP);            // {joj}
-Button buttonPE = Button(120, 460, 80, 20, "Pipelining Enabled", BUTTON_PE);           // {joj}
-Button buttonBP = Button(210, 460, 80, 20, "Branch Prediction", BUTTON_BP);            // {joj}
-Button buttonLI = Button(300, 460, 80, 20, "Load Interlock", BUTTON_LI);               // {joj}
-Button buttonAF = Button(390, 460, 80, 20, "ALU Forwarding", BUTTON_AF);               // {joj}
-Button buttonSF = Button(480, 460, 80, 20, "Store Operand\nForwarding", BUTTON_SF);    // {joj}
-Button buttonZF = Button(570, 460, 80, 20, "Zero Forwarding", BUTTON_ZF);              // {joj}
+Button buttonSP = Button(20, 460, 70, 20, "Save Configuration", BUTTON_SP);            // {joj}
+Button buttonPE = Button(100, 460, 70, 20, "Pipelining Enabled", BUTTON_PE);           // {joj}
+Button buttonBP = Button(180, 460, 70, 20, "Branch Prediction", BUTTON_BP);            // {joj}
+Button buttonLI = Button(260, 460, 70, 20, "Load Interlock", BUTTON_LI);               // {joj}
+Button buttonAF = Button(340, 460, 70, 20, "ALU Forwarding", BUTTON_AF);               // {joj}
+Button buttonSF = Button(420, 460, 70, 20, "Store Operand\nForwarding", BUTTON_SF);    // {joj}
+Button buttonZF = Button(500, 460, 70, 20, "Zero Forwarding", BUTTON_ZF);
+Button buttonPar = Button(580, 460, 70, 20, "Parallel", BUTTON_PAR);
 
 //
 // Vivio logo

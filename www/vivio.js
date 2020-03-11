@@ -173,7 +173,12 @@ function VPlayer(canvasID, VCode, args) {
 	const $EPATH				= 0;				// $E
 	const $RPATH				= 1;				// $R
 
+	var h1 = window;
+	var h1win = true;
 	var h2 = window;
+	var h2win = false;
+	var mem = window;
+	var memwin = false;
 
 	var layer = [];									// layers
 	var nlayer = 0;									// number of layers
@@ -5987,6 +5992,10 @@ function VPlayer(canvasID, VCode, args) {
 
 	function handleMessageEvent(e){
 		let mess = e.data;
+		mouseX = e.offsetX;
+		mouseY = e.offsetY;
+		let x = (mouseX - tx) / sx;		// convert to viewport co-ordinates
+		let y = (mouseY - ty) / sy;		// convert to viewport co-ordinates
 		//console.log(e.data);
 		FOR: {
 			for (let i = nlayer - 1; i >= 0; i--) {
@@ -5994,6 +6003,7 @@ function VPlayer(canvasID, VCode, args) {
 					continue;
 				for (let j = layer[i].gobjs.length - 1; j >= 0 ; j--) {
 					if (layer[i].gobjs[j].handler["eventMessage"]) {
+						//if ((layer[i].gobjs[j].hit(x, y))) {
 							if (asyncPhase == 0)			// first hit indicates a new path so...
 								removeFutureAsyncEvents();	// need to remove future ASYNC events
 							let handler = layer[i].gobjs[j].handler["eventMessage"];
@@ -6006,9 +6016,14 @@ function VPlayer(canvasID, VCode, args) {
 								if ((r & PROPAGATE) == 0)
 									break FOR;
 							}
+						//}
 					}
 				}
 			}
+		}
+		if (asyncPhase) {	// event handled
+			drawChanges();	// clears asyncPhase {joj 28/11/17}
+			return;
 		}
 	}
 
@@ -7543,13 +7558,25 @@ function VPlayer(canvasID, VCode, args) {
 		return str;
 	}
 
-	function sendMessage(mess){
-		//var bc = new BroadcastChannel(chan);
-		h2.postMessage(mess, '*');
-		//console.log("wow");
+	function sendToMem(mess){
+		if(h1win == true){
+			mem.postMessage(mess, '*');
+		}
+		else if(h2win == true){
+			window.opener.postMessage(mess, '*');
+		}
 	}
 
-	function getMessage(chan){
+	function sendToHart(no, mess){
+		if(no == 1){
+			window.opener.postMessage(mess, '*');
+		}
+		else if(no == 2){
+			h2.postMessage(mess, '*');
+		}
+	}
+
+	function getMessage(){
 		//var bc2 = new BroadcastChannel(chan);
 		// bc2.addEventListener('message', function (e) {
 		// 	console.log("holy fuck");
@@ -7563,8 +7590,18 @@ function VPlayer(canvasID, VCode, args) {
 		return t;
 	}
 
-	function newWindow(){
-		h2 = window.open('riscv2.html');
+	function newHart(){
+		h2 = window.open('../riscv2.html');
+		h1win = false;
+		h2win = false;
+		memwin = true;
+	}
+
+	function startParallel(){
+		mem = window.open('./memory/memory.html');
+		h1win = true;
+		h2win = false;
+		memwin = false;
 	}
 
 	//
@@ -7743,10 +7780,12 @@ function VPlayer(canvasID, VCode, args) {
 	this.terminateThread = terminateThread;
 	this.timeMS = function() {return Date.now()};
 	this.timeToString = timeToString;
-	this.sendMessage = sendMessage;
+	this.sendToMem = sendToMem;
+	this.sendToHart = sendToHart;
 	this.getMessage = getMessage;
 	this.getTitle = getTitle;
-	this.newWindow = newWindow;
+	this.newHart = newHart;
+	this.startParallel = startParallel;
 	this.trunc = Math.trunc;
 	this.Txt = Txt;
 	this.VObj = VObj;

@@ -1,0 +1,61 @@
+//
+// schematic.vin
+//
+// Simulation of the DLX
+// Written by Edsko de Vries, Summer 2003
+//
+// Copyright (C) 2003 - 2018 Edsko de Vries and jones@scss.tcd.ie
+//
+// This program is free software; you can redistribute it and/or modify it under
+// the terms of the GNU General Public License as published by the Free Software Foundation;
+// either version 2 of the License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+// without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+// See the GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software Foundation Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+//
+
+string name = getArg("name", "");					// optional name of code example {joj 2/11/16}
+if (name != "")
+	name = sprintf(":  %s", name);					// {joj 2/10/16}}
+
+Font fTitle = Font("Calibri", 20, SMALLCAPS | ITALIC);
+Pen borderPen = SolidPen(DASH, 1, DARK_BLUE, ROUND_START | ROUND_JOIN | ROUND_END);
+
+const num NUM_REGS = 32;
+const num REG_WIDTH = 20;
+const num REG_HEIGHT = 25;
+
+Pen delimeter = SolidPen(DOT, THIN, BLACK);
+
+Font arialBold10 = Font("Calibri", 10, BOLD);
+//
+const num LOGOW = 20;																	// 64 x 64 image
+const num LOGOH = 20;
+
+// Stack
+Memory memory = Memory(500, 80);
+memory.store(4, 5);
+
+AnimPipe apMemIn = AnimPipe();
+apMemIn.addPoint(300, 150);
+apMemIn.addPoint(500, 150);
+
+AnimPipe apMemOut = AnimPipe();
+apMemOut.addPoint(500, 300);
+apMemOut.addPoint(300, 300);
+
+
+Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
+  50, 40, blackPen, font, sprintf("wow"));
+
+when obj ~> eventMessage(string m){
+	obj.setTxt(m);
+}
+
+
+// eof

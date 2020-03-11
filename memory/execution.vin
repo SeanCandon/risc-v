@@ -1203,21 +1203,16 @@ function maExec() {													// {joj 14/11/17}
 
     if ((instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) && (regMA.vIns != ST)) {  // {joj}
 
-      if(instrIsAtomic(regMA.vIns) == 0){
-          if (regMA.vIns == LD) {   // {joj}
-              //regOUT1.setNewValue(memory[regOUT0.value % 4].value);
-              regOUT1.setNewValue(stack.getVal(regOUT0.value));
-              regOUT1.setNewTag(regMA.vRdt);
-          } else {
-              regOUT1.setNewValue(regOUT0.value);
-              regOUT1.setNewTag(regOUT0.tag);
-          }
+        if (regMA.vIns == LD) {   // {joj}
+            //regOUT1.setNewValue(memory[regOUT0.value % 4].value);
+            regOUT1.setNewValue(stack.getVal(regOUT0.value));
+            regOUT1.setNewTag(regMA.vRdt);
+        } else {
+            regOUT1.setNewValue(regOUT0.value);
+            regOUT1.setNewTag(regOUT0.tag);
+        }
 
-          regOUT1.setInvalid(0);
-      }
-      else{
-        sendToMem(regMA.vIns.toString());
-      }
+        regOUT1.setInvalid(0);
 
     }
 
@@ -1235,33 +1230,30 @@ function maExec() {													// {joj 14/11/17}
 
     } else if (instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) {
 
-      if(instrIsAtomic(regMA.vIns)){
-
-          if (regMA.vIns == LD) {                                     // {joj}
-              apOUT0_Mem.animate(24);
-              //memory[regOUT0.value % 4].highlight(bhighlight);		// {joj}
-              stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
-              apMem_MUX9.animate(24);
-              if(regMA.vRdt == 8){
-                stack.setFP(stack.getVal(regOUT0.value));
+        if (regMA.vIns == LD) {                                     // {joj}
+            apOUT0_Mem.animate(24);
+            //memory[regOUT0.value % 4].highlight(bhighlight);		// {joj}
+            stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
+            apMem_MUX9.animate(24);
+            if(regMA.vRdt == 8){
+              stack.setFP(stack.getVal(regOUT0.value));
+            }
+            else if(regMA.vRdt == 2){
+              stack.setSP(stack.getVal(regOUT0.value));
+            }
+        } else {
+            apOUT0_MUX9.animate(48);
+            if(delayStackUpdate==1){
+              if(regMA.vRdt == 2){
+                stack.setSP(regOUT0.value);
               }
-              else if(regMA.vRdt == 2){
-                stack.setSP(stack.getVal(regOUT0.value));
+              else if(regMA.vRdt == 8){
+                stack.setFP(regOUT0.value);
               }
-          } else {
-              apOUT0_MUX9.animate(48);
-              if(delayStackUpdate==1){
-                if(regMA.vRdt == 2){
-                  stack.setSP(regOUT0.value);
-                }
-                else if(regMA.vRdt == 8){
-                  stack.setFP(regOUT0.value);
-                }
-                delayStackUpdate = 0;
-              }
-          }
-          apMUX9_OUT1.animate(16);
-      }
+              delayStackUpdate = 0;
+            }
+        }
+        apMUX9_OUT1.animate(16);
 
     }
 
