@@ -83,6 +83,9 @@ const num ZERO_FORWARDING = 0;
 const num ZERO_INTERLOCK = 1;
 const num NO_ZERO_INTERLOCK = 2;
 
+const num HART_1 = 0;
+const num HART_2 = 1;
+
 //
 // Global variables
 //
@@ -97,6 +100,8 @@ num afMode = 0;         // ALU Forwarding/ALU Interlock/No ALU Interlock
 num sfMode = 0;         // Forwarding to SMDR/Store Interlock/No Store Interlock
 num zfMode = 0;         // Zero Forwarding/Zero Interlock/No Zero Interlock
 
+num hart = HART_1;
+
 //
 // Running state
 //
@@ -104,14 +109,12 @@ num locked = 0;         //
 num instrCount = 0;     //
 num tickCount = 0;      //
 
-//BroadcastChannel bc = BroadcastChannel("channel 1");
-// when bc ~> eventMessage(string mess){
-//   //console.log(mess);
-// }
-//bc.postMessage("wow dats");
-//bc.onmessage();
-//bc.tempfunc();
-//sendMessage("channel 1", "hello");
+string tt = getTitle();
+if(tt == "Hart 2"){
+  hart = HART_2;
+  isHart2();
+}
+
 getMessage();
-//setupChan("channel 1");
+
 // eof

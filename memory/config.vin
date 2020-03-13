@@ -83,6 +83,9 @@ const num ZERO_FORWARDING = 0;
 const num ZERO_INTERLOCK = 1;
 const num NO_ZERO_INTERLOCK = 2;
 
+const num HART_1 = 0;
+const num HART_2 = 1;
+
 //
 // Global variables
 //

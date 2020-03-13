@@ -1216,7 +1216,10 @@ function maExec() {													// {joj 14/11/17}
           regOUT1.setInvalid(0);
       }
       else{
-        sendToMem(regMA.vIns.toString());
+        string mess = hart.toString();
+        //string mess2 = mess.concat(", ");
+        //mess.concat(regMA.vIns.toString());
+        sendToMem(mess, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
       }
 
     }

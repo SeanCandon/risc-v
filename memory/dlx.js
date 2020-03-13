@@ -53,6 +53,7 @@ function dlx(vplayer) {
 	var SolidPen = vplayer.SolidPen
 	var sprintf = vplayer.sprintf
 	var sqrt = vplayer.sqrt
+	var stringToNum = vplayer.stringToNum
 	var terminateThread = vplayer.terminateThread
 	var timeMS = vplayer.timeMS
 	var Txt = vplayer.Txt
@@ -91,6 +92,8 @@ function dlx(vplayer) {
 	const ZERO_FORWARDING = 0
 	const ZERO_INTERLOCK = 1
 	const NO_ZERO_INTERLOCK = 2
+	const HART_1 = 0
+	const HART_2 = 1
 	const MAX_INSTR = 36
 	const NOP = 0
 	const ADD = 1
@@ -1148,7 +1151,15 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
-		$g[60].setTxt(m)
+		let p = m.find(", ")
+		let nm = m.left(p)
+		let pi = stringToNum(nm)
+		if (pi==HART_1) {
+			$g[60].setTxt("one bb")
+		} else
+		if (pi==HART_2) {
+			$g[60].setTxt("two bb")
+		}
 	}
 
 	function execute(thread) {

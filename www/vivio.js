@@ -7374,6 +7374,10 @@ function VPlayer(canvasID, VCode, args) {
 		return this.length;
 	}
 
+	// String.prototype.concat = function(s) {
+	// 	return this.concat(s);
+	// }
+
 	// String.mid
 	String.prototype.mid = function(startPos, cnt) {
 		return this.slice(startPos, startPos + cnt);
@@ -7558,13 +7562,13 @@ function VPlayer(canvasID, VCode, args) {
 		return str;
 	}
 
-	function sendToMem(mess){
-		if(h1win == true){
-			mem.postMessage(mess, '*');
-		}
-		else if(h2win == true){
-			window.opener.postMessage(mess, '*');
-		}
+	function sendToMem(s1, s2, s3, s4, s5, s6, s7){
+		var mess = s1.concat(s2, s3, s4, s5, s6, s7);
+		mem.postMessage(mess, '*');
+		// }
+		// else{
+		// 	window.opener.postMessage(mess, '*');
+		// }
 	}
 
 	function sendToHart(no, mess){
@@ -7586,7 +7590,8 @@ function VPlayer(canvasID, VCode, args) {
 	}
 
 	function getTitle(){
-		var t = document.getElementByTagName("title");
+		var t = document.getElementsByTagName("title")[0].innerText;
+		//console.log(t);
 		return t;
 	}
 
@@ -7602,6 +7607,17 @@ function VPlayer(canvasID, VCode, args) {
 		h1win = true;
 		h2win = false;
 		memwin = false;
+	}
+
+	function isHart2(){
+		h1win = false;
+		h2win = true;
+		memwin = false;
+		mem = window.opener;
+	}
+
+	function stringToNum(s){
+		return parseInt(s);
 	}
 
 	//
@@ -7786,6 +7802,8 @@ function VPlayer(canvasID, VCode, args) {
 	this.getTitle = getTitle;
 	this.newHart = newHart;
 	this.startParallel = startParallel;
+	this.isHart2 = isHart2;
+	this.stringToNum = stringToNum;
 	this.trunc = Math.trunc;
 	this.Txt = Txt;
 	this.VObj = VObj;

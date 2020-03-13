@@ -158,7 +158,7 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 		resetCircuit();
 	}
 	//sendMessage("channel 1", "hello");
-	sendToMem("wow");
+	//sendToMem("wow");
 	//bc.postMessage("wow dats");
 	//newWindow();
 	return 0;

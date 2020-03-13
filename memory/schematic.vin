@@ -54,7 +54,20 @@ Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
   50, 40, blackPen, font, sprintf("wow"));
 
 when obj ~> eventMessage(string m){
-	obj.setTxt(m);
+	num p = m.find(", ");
+	string nm = m.left(p);
+	num pi = stringToNum(nm);
+	//string nm = m.right(-p - 2);
+	//p = nm.find(", ");
+	//nm = nm.left(p);
+	// num pp = nm.find(", ");
+	// string nmm = nm.left(pp);
+	if(pi == HART_1){
+		obj.setTxt("one bb");
+	}
+	else if(pi == HART_2){
+		obj.setTxt("two bb");
+	}
 }
 
 
