@@ -39,19 +39,10 @@ const num LOGOH = 20;
 
 // Stack
 Memory memory = Memory(500, 80);
-memory.store(4, 5);
-
-AnimPipe apMemIn = AnimPipe();
-apMemIn.addPoint(300, 150);
-apMemIn.addPoint(500, 150);
-
-AnimPipe apMemOut = AnimPipe();
-apMemOut.addPoint(500, 300);
-apMemOut.addPoint(300, 300);
 
 
 Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
-  50, 40, blackPen, font, sprintf("wow"));
+  1, 1, blackPen, font, sprintf(""));
 
 when obj ~> eventMessage(string m){
 
@@ -73,7 +64,25 @@ when obj ~> eventMessage(string m){
 		m = m.right(p);
 		num regv2 = stringToNum(m);
 
-		obj.setTxt(regv2.toString());
+		num retval;
+
+		if(instr == ST){
+			memory.store(regv1, regv2);
+		}
+		else if(instr == SC){
+			memory.store_cond(regv1, regv2, origin);
+		}
+		else if(instr == LD){
+			retval = memory.load(regv1);
+			sendToHart(origin, retval.toString());
+		}
+		else if(instr == LR){
+			retval = memory.load_res(regv1, origin);
+			sendToHart(origin, retval.toString());
+		}
+
+		//obj.setTxt(regv2.toString());
+
 	}
 	//string nm = m.right(-p - 2);
 	//p = nm.find(", ");

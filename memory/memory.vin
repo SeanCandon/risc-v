@@ -94,11 +94,13 @@ class Memory(num _x, num _y){
 
   function store_cond(num addr, num val, num hart){
     num pos = floor((addr/4))%MEMORY_ADDRESSES;
-    if(reserved[pos] == hart){
+    if(reserved[pos] == hart || reserved[pos]==2){
       stack[pos].setNewValue(val);
       stack[pos].update();
     }
-    reserved[pos] = 2; //invalidate reservation
+    //invalidate reservation
+    reserved[pos] = 2;
+    reservedText[pos].setTxt("unreserved");
   }
 
   num function load(num addr){
@@ -106,9 +108,16 @@ class Memory(num _x, num _y){
     return stack[pos].value;
   }
 
-  num function load_cond(num addr, num hart){
+  num function load_res(num addr, num hart){
     num pos = floor((addr/4))%MEMORY_ADDRESSES;
-    reserved[pos] = hart; //caller hart reserves mem address
+    //caller hart reserves mem address
+    reserved[pos] = hart;
+    if(hart == HART_1){
+      reservedText[pos].setTxt("reserved by h1");
+    }
+    else{
+      reservedText[pos].setTxt("reserved by h2");
+    }
     return stack[pos].value;
   }
 }

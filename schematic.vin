@@ -1227,26 +1227,19 @@ if (example == 0) {
 
 } else if (example == 2) {                          // {joj}
 
-    //
-    // pipeline forwarding example
-    //
-    im.setValue( 0, ADDi, 2, 0, 4);                   // r1 = r2 + r3     // {joj 20/10/12}
+		//test parallel 1
+    im.setValue(0, ADDi, 1, 0, 9);
+		im.setValue(4, SC, 1, 0, 0x1C);
+		im.setValue(8, LR, 3, 0, 0x1C);
 
 
 } else if (example == 3) {                          // {joj}
 
-    //
-    // tutorial 4
-    //
-    im.setValue( 0, ADD, 1, 1, 2);					// r1 = r1 + r2     // {joj 13/11/17}
-    im.setValue( 4, ADD, 2, 1, 2);					// r2 = r1 + r2		// {joj 13/11/17}
-    im.setValue( 8, ADD, 1, 1, 2);					// r1 = r1 + r2		// {joj 13/11/17}
-    im.setValue(12, ADD, 2, 1, 2);					// r2 = r1 + r2		// {joj 13/11/17}
-    im.setValue(16, ADD, 1, 1, 2);        			// r1 = r1 + r2		// {joj 13/11/17}
-    im.setValue(20, HALT, 0, 0, 0);                 // HALT             // {joj 13/11/17}
-	regFile[1].setValue(1);                         // r1 = 1           // {joj 13/11/17}
-	regFile[2].setValue(2);                         // r2 = 2           // {joj 13/11/17}
-	setTPS(50);                                     //
+		//test parallel 2
+		im.setValue(0, ADDi, 1, 0, 3);
+		im.setValue(4, SC, 1, 0, 0x1C);
+		im.setValue(8, LR, 4, 0, 0x1C);
+		im.setValue(0x18, SC, 1, 0, 0x1C);
 
 } else if (example == 4) {
 

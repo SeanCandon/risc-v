@@ -47,6 +47,7 @@ function dlx(vplayer) {
 	var Rectangle2 = vplayer.Rectangle2
 	var rgba = vplayer.rgba
 	var round = vplayer.round
+	var sendToHart = vplayer.sendToHart
 	var setArg = vplayer.setArg
 	var setBgBrush = vplayer.setBgBrush
 	var setViewport = vplayer.setViewport
@@ -95,7 +96,7 @@ function dlx(vplayer) {
 	const NO_ZERO_INTERLOCK = 2
 	const HART_1 = 0
 	const HART_2 = 1
-	const MAX_INSTR = 36
+	const MAX_INSTR = 38
 	const NOP = 0
 	const ADD = 1
 	const SUB = 2
@@ -132,9 +133,11 @@ function dlx(vplayer) {
 	const MUL = 33
 	const DIV = 34
 	const REM = 35
-	const HALT = 36
-	const STALL = 37
-	const EMPTY = 38
+	const LR = 36
+	const SC = 37
+	const HALT = 38
+	const STALL = 39
+	const EMPTY = 40
 	const OP_TYPE_UNUSED = 0
 	const OP_TYPE_REG = 1
 	const OP_TYPE_IMM = 2
@@ -271,8 +274,12 @@ function dlx(vplayer) {
 		return ((instr==JAL) || (instr==JALR)) ? 1 : 0
 	}
 
+	function instrIsAtomic(instr) {
+		return ((instr==LR) || (instr==SC)) ? 1 : 0
+	}
+
 	function instrIsLoadOrStore(instr) {
-		return ((instr==LD) || (instr==ST)) ? 1 : 0
+		return ((instr==LD) || (instr==ST) || instrIsAtomic(instr)) ? 1 : 0
 	}
 
 	function instrOpTypeRdt(instr) {
@@ -309,11 +316,8 @@ function dlx(vplayer) {
 		if (instrIsArRI(instr))
 		return sprintf("%s x%d,x%d,%02X", $g[37][instr], rdt, rs1, rs2)
 		else 
-		if (instr==LD)
-		return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2)
-		else 
-		if (instr==ST)
-		return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2)
+		if (instrIsLoadOrStore(instr))
+		return sprintf("%s x%d,x%d+%02X", $g[37][instr], rdt, rs1, rs2)
 		else 
 		if (instrIsBranch(instr))
 		return sprintf("%s x%d,x%d,%02X", $g[37][instr], rdt, rs1, rs2)
@@ -385,7 +389,7 @@ function dlx(vplayer) {
 		if (instr==BGE)
 		return op2>=op1 ? 1 : 0
 		else 
-		if (instr==LD || instr==ST)
+		if (instrIsLoadOrStore(instr))
 		return (se8(op1)+se8(op2))&255
 		else 
 		if (instr==JAL || instr==JALR)
@@ -968,11 +972,12 @@ function dlx(vplayer) {
 
 	Memory.prototype.store_cond = function(addr, val, hart) {
 		let pos = floor((addr/4))%MEMORY_ADDRESSES
-		if (this.reserved[pos]==hart) {
+		if (this.reserved[pos]==hart || this.reserved[pos]==2) {
 			this.stack[pos].setNewValue(val)
 			this.stack[pos].update()
 		}
 		this.reserved[pos]=2
+		this.reservedText[pos].setTxt("unreserved")
 	}
 
 	Memory.prototype.load = function(addr) {
@@ -980,9 +985,14 @@ function dlx(vplayer) {
 		return this.stack[pos].value
 	}
 
-	Memory.prototype.load_cond = function(addr, hart) {
+	Memory.prototype.load_res = function(addr, hart) {
 		let pos = floor((addr/4))%MEMORY_ADDRESSES
 		this.reserved[pos]=hart
+		if (hart==HART_1) {
+			this.reservedText[pos].setTxt("reserved by h1")
+		} else {
+			this.reservedText[pos].setTxt("reserved by h2")
+		}
 		return this.stack[pos].value
 	}
 
@@ -1199,7 +1209,21 @@ function dlx(vplayer) {
 			let regv1 = stringToNum(nm)
 			m=m.right(p)
 			let regv2 = stringToNum(m)
-			$g[60].setTxt(regv2.toString())
+			let retval
+			if (instr==ST) {
+				$g[57].store(regv1, regv2)
+			} else
+			if (instr==SC) {
+				$g[57].store_cond(regv1, regv2, origin)
+			} else
+			if (instr==LD) {
+				retval=$g[57].load(regv1)
+				sendToHart(origin, retval.toString())
+			} else
+			if (instr==LR) {
+				retval=$g[57].load_res(regv1, origin)
+				sendToHart(origin, retval.toString())
+			}
 		}
 	}
 
@@ -1253,7 +1277,7 @@ function dlx(vplayer) {
 				$g[36] = 0
 				getMessage()
 				newHart()
-				$g[37] = newArray(38)
+				$g[37] = newArray(40)
 				$g[37][NOP]="NOP"
 				$g[37][ADD]="ADD"
 				$g[37][SUB]="SUB"
@@ -1290,6 +1314,8 @@ function dlx(vplayer) {
 				$g[37][MUL]="MUL"
 				$g[37][DIV]="DIV"
 				$g[37][REM]="REM"
+				$g[37][LR]="LR"
+				$g[37][SC]="SC"
 				$g[37][HALT]="HALT"
 				$g[37][STALL]="STALL"
 				$g[37][EMPTY]="EMPTY"
@@ -1320,15 +1346,8 @@ function dlx(vplayer) {
 				$g[55] = new SolidPen(DOT, THIN, BLACK)
 				$g[56] = new Font("Calibri", 10, BOLD)
 				$g[57] = new Memory(500, 80)
-				$g[57].store(4, 5)
-				$g[58] = new AnimPipe()
-				$g[58].addPoint(300, 150)
-				$g[58].addPoint(500, 150)
-				$g[59] = new AnimPipe()
-				$g[59].addPoint(500, 300)
-				$g[59].addPoint(300, 300)
-				$g[60] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 50, 40, $g[1], $g[17], sprintf("wow"))
-				$g[60].addEventHandler("eventMessage", this, $eh12)
+				$g[58] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 1, 1, $g[1], $g[17], sprintf(""))
+				$g[58].addEventHandler("eventMessage", this, $eh12)
 				returnf(0)
 				continue
 			case 2:

@@ -1212,7 +1212,9 @@ function maExec() {													// {joj 14/11/17}
       //if(instrIsAtomic(regMA.vIns) == 0){
           if ((regMA.vIns == LD) || (regMA.vIns == LR)) {   // {joj}
               //regOUT1.setNewValue(memory[regOUT0.value % 4].value);
-              regOUT1.setNewValue(stack.getVal(regOUT0.value));
+              if(parallel == 0){
+                regOUT1.setNewValue(stack.getVal(regOUT0.value));
+              }
               regOUT1.setNewTag(regMA.vRdt);
           } else {
               regOUT1.setNewValue(regOUT0.value);
@@ -1607,6 +1609,14 @@ function exec() {
 
     checkPoint();
 
+}
+
+Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
+  1, 1, blackPen, font, sprintf(""));
+
+when obj ~> eventMessage(string m){
+  num v = stringToNum(m);
+  regOUT1.setNewValue(v);
 }
 
 // eof
