@@ -54,20 +54,38 @@ Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
   50, 40, blackPen, font, sprintf("wow"));
 
 when obj ~> eventMessage(string m){
-	num p = m.find(", ");
-	string nm = m.left(p);
-	num pi = stringToNum(nm);
+
+	if(m == "close"){
+		endParallel();
+	}
+	else{
+		num p = m.find(", ");
+		string nm = m.left(p);
+		num origin = stringToNum(nm);
+		m = m.right(-p-2);
+		p = m.find(", ");
+		nm = m.left(p);
+		num instr = stringToNum(nm);
+		m = m.right(-p-2);
+		p = m.find(", ");
+		nm = m.left(p);
+		num regv1 = stringToNum(nm);
+		m = m.right(p);
+		num regv2 = stringToNum(m);
+
+		obj.setTxt(regv2.toString());
+	}
 	//string nm = m.right(-p - 2);
 	//p = nm.find(", ");
 	//nm = nm.left(p);
 	// num pp = nm.find(", ");
 	// string nmm = nm.left(pp);
-	if(pi == HART_1){
-		obj.setTxt("one bb");
-	}
-	else if(pi == HART_2){
-		obj.setTxt("two bb");
-	}
+	// if(pi == HART_1){
+	// 	obj.setTxt("one bb");
+	// }
+	// else if(pi == HART_2){
+	// 	obj.setTxt("two bb");
+	// }
 }
 
 

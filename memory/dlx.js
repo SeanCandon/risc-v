@@ -31,6 +31,7 @@ function dlx(vplayer) {
 
 	var $g = vplayer.$g
 	var addWaitToEventQ = vplayer.addWaitToEventQ
+	var endParallel = vplayer.endParallel
 	var floor = vplayer.floor
 	var Font = vplayer.Font
 	var getArg = vplayer.getArg
@@ -896,7 +897,7 @@ function dlx(vplayer) {
 
 	function Memory(_x, _y) {
 		VObj.call(this)
-		this.w = 100
+		this.w = 130
 		this.h = 20
 		this.length = MEMORY_ADDRESSES
 		this.x = _x
@@ -917,7 +918,7 @@ function dlx(vplayer) {
 		this.outer_h = (this.h*this.length+20)
 		this.x=this.x+10
 		this.y=this.y+10
-		this.w=this.w/2
+		this.w=this.w/3
 		this.outer = new Rectangle2($g[0], 0, 0, $g[1], $g[46], this.outer_x, this.outer_y, this.outer_w, this.outer_h)
 		this.hex = newArray(this.length*this.addr_size)
 		this.chars = newArray(18)
@@ -945,6 +946,17 @@ function dlx(vplayer) {
 			this.stack[this.j]=this.r
 			this.y+=this.h
 		}
+		this.reserved = newArray(this.length)
+		for (this.i=0; this.i<this.length; this.i++) {
+			this.reserved[this.i]=2
+		}
+		this.y=_y+10
+		this.reservedText = newArray(this.length)
+		for (this.j=(this.length-1); this.j>=0; this.j--) {
+			this.rec = new Rectangle2($g[0], 0, 0, $g[4], $g[46], this.x+this.w+15, this.y, this.w, this.h, $g[1], $g[45], sprintf("unreserved"))
+			this.reservedText[this.j]=this.rec
+			this.y+=this.h
+		}
 	}
 	Memory.prototype = Object.create(VObj.prototype)
 
@@ -952,6 +964,26 @@ function dlx(vplayer) {
 		let pos = floor((addr/4))%MEMORY_ADDRESSES
 		this.stack[pos].setNewValue(val)
 		this.stack[pos].update()
+	}
+
+	Memory.prototype.store_cond = function(addr, val, hart) {
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		if (this.reserved[pos]==hart) {
+			this.stack[pos].setNewValue(val)
+			this.stack[pos].update()
+		}
+		this.reserved[pos]=2
+	}
+
+	Memory.prototype.load = function(addr) {
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		return this.stack[pos].value
+	}
+
+	Memory.prototype.load_cond = function(addr, hart) {
+		let pos = floor((addr/4))%MEMORY_ADDRESSES
+		this.reserved[pos]=hart
+		return this.stack[pos].value
 	}
 
 	function countHex(h, index, length, digits, chars, pref) {
@@ -1151,14 +1183,23 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
-		let p = m.find(", ")
-		let nm = m.left(p)
-		let pi = stringToNum(nm)
-		if (pi==HART_1) {
-			$g[60].setTxt("one bb")
-		} else
-		if (pi==HART_2) {
-			$g[60].setTxt("two bb")
+		if (m=="close") {
+			endParallel()
+		} else {
+			let p = m.find(", ")
+			let nm = m.left(p)
+			let origin = stringToNum(nm)
+			m=m.right(-p-2)
+			p=m.find(", ")
+			nm=m.left(p)
+			let instr = stringToNum(nm)
+			m=m.right(-p-2)
+			p=m.find(", ")
+			nm=m.left(p)
+			let regv1 = stringToNum(nm)
+			m=m.right(p)
+			let regv2 = stringToNum(m)
+			$g[60].setTxt(regv2.toString())
 		}
 	}
 

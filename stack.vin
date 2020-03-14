@@ -256,6 +256,16 @@ class Stack(num _x, num _y) {
 		//createFrame();
 	}
 
+	function setAll(num v){
+		outer.setOpacity(v);
+		apSP.setOpacity(v);
+		apFP.setOpacity(v);
+		spText.setOpacity(v);
+		fpText.setOpacity(v);
+		for(num i=0; i<length; i++){
+			stack[i].setOpacity(v);
+		}
+	}
 
 }
 

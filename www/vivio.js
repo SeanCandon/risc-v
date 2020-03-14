@@ -6548,9 +6548,10 @@ function VPlayer(canvasID, VCode, args) {
 	// contextMenuAction
 	function contextMenuAction(v) {
 		console.log("menuAction ", v);
-		if (v == 0) {
+		if (v == 0 || v == 1) {
 			reset();
 			drawAll();
+			endParallel();
 		} else if (v == 2) {
 			//for (let i = 1; i < nlayer; i++)
 			//	ctx.drawImage(layer[i].canvas, 0, 0);
@@ -7609,6 +7610,21 @@ function VPlayer(canvasID, VCode, args) {
 		memwin = false;
 	}
 
+	function endParallel(){
+		if(h1win == true || h2win == true){
+			mem.postMessage("close", '*');
+		}
+		else if(memwin == true){
+			h2.close();
+			window.close();
+		}
+		// else if(h2win == true){
+		// 	mem.close();
+		// 	window.close();
+		// }
+
+	}
+
 	function isHart2(){
 		h1win = false;
 		h2win = true;
@@ -7802,6 +7818,7 @@ function VPlayer(canvasID, VCode, args) {
 	this.getTitle = getTitle;
 	this.newHart = newHart;
 	this.startParallel = startParallel;
+	this.endParallel = endParallel;
 	this.isHart2 = isHart2;
 	this.stringToNum = stringToNum;
 	this.trunc = Math.trunc;

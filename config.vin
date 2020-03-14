@@ -101,6 +101,7 @@ num sfMode = 0;         // Forwarding to SMDR/Store Interlock/No Store Interlock
 num zfMode = 0;         // Zero Forwarding/Zero Interlock/No Zero Interlock
 
 num hart = HART_1;
+num parallel = 0;
 
 //
 // Running state
@@ -113,6 +114,7 @@ string tt = getTitle();
 if(tt == "Hart 2"){
   hart = HART_2;
   isHart2();
+  parallel = 1;
 }
 
 getMessage();

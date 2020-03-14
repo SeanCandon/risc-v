@@ -166,7 +166,17 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 
 when buttonPar.label ~> eventMB(num down, num flags, num x, num y){
 	if(down && flags && MB_LEFT){
-		startParallel();
+		if(parallel == 0){
+			parallel = 1;
+			startParallel();
+			buttonPar.setCaption("Non-parallel");
+		}
+		else{
+			parallel = 0;
+			buttonPar.setCaption("Parallel");
+			endParallel();
+		}
+		parallelMode();
 	}
 }
 
@@ -213,8 +223,8 @@ when buttonSP.label ~> eventMB(num down, num flags, num x, num y) {		// {joj 24/
 // Vivio logo
 //
 when logo ~> eventMB(num down, num flags, num x, num y) {				// {joj 24/9/17}
-     // if (down && (flags & MB_LEFT))
-     //     getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm");
+     if (down && (flags & MB_LEFT))
+          getURL("https://www.scss.tcd.ie/Jeremy.Jones/VivioJS/vivio.htm");
 		 //sendMessage("heyyyyyyyyy");
 		 //stack.store(3, 2);
      return 0;

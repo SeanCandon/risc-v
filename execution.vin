@@ -31,7 +31,8 @@ AnimPipe newMux1Src;
 
 //x1 is stack pointer, initially points to top of stack
 regFile[2].setValue(0x44);
-stack.setSP(0x44);
+if(hart == HART_1)
+  stack.setSP(0x44);
 
 //num nojal = 1;
 num nojalr = 1;
@@ -1068,7 +1069,7 @@ function exExec() {														// {joj 14/11/17}
   }
 
     // For stores, send correct operand to SMDR
-  if (regEX.vIns == ST) {  // {joj}
+  if ((regEX.vIns == ST) || (regEX.vIns == SC)) {  // {joj}
       if (sfMode == FORWARDING_TO_SMDR) {
           if (regOUT0.tagMatches(regEX.vRdt)) {
               mux8Src = apOUT0_MUX8;
@@ -1090,8 +1091,9 @@ function exExec() {														// {joj 14/11/17}
 
   fork(apEX_MA.animate(64));
 
-  if (regEX.vIns == ST)                                           // {joj}
+  if ((regEX.vIns == ST) || (regEX.vIns == SC)){                                           // {joj}
       fork(mux8Src.animate(24));                            	 	// {joj 1/2/06}
+  }
 
   if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
       if (mux6Src != 0)
@@ -1109,8 +1111,9 @@ function exExec() {														// {joj 14/11/17}
   // Second half of the clock cycle
   //
 
-  if (regEX.vIns == ST)                                           // {joj}
+  if ((regEX.vIns == ST) || (regEX.vIns == SC)){                                          // {joj}
       fork(apMUX8_SMDR.animate(40));                         		// {joj 1/2/06}
+  }
 
   if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
 
@@ -1155,29 +1158,31 @@ function exExec() {														// {joj 14/11/17}
   }
 
   // take care of change to stack visualisation
-  if(regEX.vIns == JAL){
+  if(parallel == 0){
+    if(regEX.vIns == JAL){
 
-    num spa = stack.spAddr;
-    stack.currFrame++;
-    stack.frames[stack.currFrame-1].setStart(spa);
-    stack.setSP(spa);
+      num spa = stack.spAddr;
+      stack.currFrame++;
+      stack.frames[stack.currFrame-1].setStart(spa);
+      stack.setSP(spa);
 
-  }
-  if(regEX.vIns == JALR){
-      stack.clearFrame();
-  }
-
-  if((instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && (regEX.vIns != ST) && (regEX.vIns != LD)) {
-
-    if((regEX.vRdt==2 && regMA.vRdt==8) && regMA.vIns==LD) {
-      delayStackUpdate = 1;
     }
-    else{
-      if(regEX.vRdt == 2){
-        stack.setSP(result);
+    if(regEX.vIns == JALR){
+        stack.clearFrame();
+    }
+
+    if((instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) && (instrIsLoadOrStore(regEX.vIns) == 0)) {
+
+      if((regEX.vRdt==2 && regMA.vRdt==8) && regMA.vIns==LD) {
+        delayStackUpdate = 1;
       }
-      else if(regEX.vRdt == 8){
-        stack.setFP(result);
+      else{
+        if(regEX.vRdt == 2){
+          stack.setSP(result);
+        }
+        else if(regEX.vRdt == 8){
+          stack.setFP(result);
+        }
       }
     }
   }
@@ -1194,17 +1199,18 @@ function maExec() {													// {joj 14/11/17}
     if (instrOpTypeRdt(regMA.nIns) == OP_TYPE_REG)
         fork(regOUT0.update());
 
-    if (regMA.nIns == ST) // {joj}
+    if ((regMA.nIns == ST) || (regMA.nIns == SC)){ // {joj}
         fork(regSMDR.update());
+    }
 
     wait(8);
 
     regWB.setNewValue(regMA.vIns, regMA.vRdt, regMA.vRs1, regMA.vRs2);
 
-    if ((instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) && (regMA.vIns != ST)) {  // {joj}
+    if ((instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) && (regMA.vIns != ST) && (regMA.vIns != SC)) {  // {joj}
 
-      if(instrIsAtomic(regMA.vIns) == 0){
-          if (regMA.vIns == LD) {   // {joj}
+      //if(instrIsAtomic(regMA.vIns) == 0){
+          if ((regMA.vIns == LD) || (regMA.vIns == LR)) {   // {joj}
               //regOUT1.setNewValue(memory[regOUT0.value % 4].value);
               regOUT1.setNewValue(stack.getVal(regOUT0.value));
               regOUT1.setNewTag(regMA.vRdt);
@@ -1214,13 +1220,13 @@ function maExec() {													// {joj 14/11/17}
           }
 
           regOUT1.setInvalid(0);
-      }
-      else{
-        string mess = hart.toString();
-        //string mess2 = mess.concat(", ");
-        //mess.concat(regMA.vIns.toString());
-        sendToMem(mess, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
-      }
+      //}
+      // else{
+      //   string mess = hart.toString();
+      //   //string mess2 = mess.concat(", ");
+      //   //mess.concat(regMA.vIns.toString());
+      //   sendToMem(mess, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
+      // }
 
     }
 
@@ -1228,43 +1234,54 @@ function maExec() {													// {joj 14/11/17}
 
     fork(apMA_WB.animate(64));
 
-    if (regMA.vIns == ST) {                                         // {joj}
-
-        //memory[regOUT0.value % 4].setNewValue(regSMDR.value);
-        fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
-        apOUT0_Mem.animate(24);
-        //memory[regOUT0.value % 4].update();
-        stack.store(regOUT0.value, regSMDR.value);
+    if ((regMA.vIns == ST) || (regMA.vIns == SC)) {
+      fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
+      apOUT0_Mem.animate(24);                                        // {joj}
+      if(parallel == 0){
+          //memory[regOUT0.value % 4].update();
+          stack.store(regOUT0.value, regSMDR.value);
+      }
+      else{
+        string h = hart.toString();
+        sendToMem(h, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
+      }
 
     } else if (instrOpTypeRdt(regMA.vIns) == OP_TYPE_REG) {
 
-      if(instrIsAtomic(regMA.vIns)){
+      //if(instrIsAtomic(regMA.vIns)){
 
-          if (regMA.vIns == LD) {                                     // {joj}
-              apOUT0_Mem.animate(24);
-              //memory[regOUT0.value % 4].highlight(bhighlight);		// {joj}
-              stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
-              apMem_MUX9.animate(24);
-              if(regMA.vRdt == 8){
-                stack.setFP(stack.getVal(regOUT0.value));
-              }
-              else if(regMA.vRdt == 2){
-                stack.setSP(stack.getVal(regOUT0.value));
-              }
+          if ((regMA.vIns == LD) || (regMA.vIns == LR)) {
+            apOUT0_Mem.animate(24);
+            apMem_MUX9.animate(24);
+            if(parallel == 0){                                    // {joj}
+                stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
+                if(regMA.vRdt == 8){
+                  stack.setFP(stack.getVal(regOUT0.value));
+                }
+                else if(regMA.vRdt == 2){
+                  stack.setSP(stack.getVal(regOUT0.value));
+                }
+            }
+            else{
+              h = hart.toString();
+              sendToMem(h, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
+            }
           } else {
               apOUT0_MUX9.animate(48);
-              if(delayStackUpdate==1){
-                if(regMA.vRdt == 2){
-                  stack.setSP(regOUT0.value);
+              if(parallel == 0){
+                if(delayStackUpdate==1){
+                  if(regMA.vRdt == 2){
+                    stack.setSP(regOUT0.value);
+                  }
+                  else if(regMA.vRdt == 8){
+                    stack.setFP(regOUT0.value);
+                  }
+                  delayStackUpdate = 0;
                 }
-                else if(regMA.vRdt == 8){
-                  stack.setFP(regOUT0.value);
-                }
-                delayStackUpdate = 0;
               }
           }
           apMUX9_OUT1.animate(16);
-      }
+      //}
 
     }
 

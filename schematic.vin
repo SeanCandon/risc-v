@@ -564,6 +564,9 @@ memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
 
 // Stack
 Stack stack = Stack(760, 60);
+if(parallel == 1){
+	stack.setAll(0);
+}
 //stack.setFP(10);
 //stack.createFrame(2, 1);
 
@@ -744,6 +747,15 @@ function resetWires() {
     //
     apOUT1_RF.reset();
 
+}
+
+function parallelMode(){
+	if(parallel == 1){
+		stack.setAll(0);
+	}
+	else{
+		stack.setAll(1);
+	}
 }
 
 //
