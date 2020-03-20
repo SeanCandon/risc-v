@@ -238,15 +238,20 @@ Pen muxPen = SolidPen(SOLID, MEDIUM, BLACK);															// {joj}
 // 	);
 
 //zero input to alu for comparison during multiply operation
-Line cZero = Line2(valuesLayer, ABSOLUTE, muxPen, 540, 100, 560, 100);
-Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 542, 90, 0, font, "zero");
-Line clALU1 = Line2(valuesLayer, ABSOLUTE, controlPen, 550, 102, 550, 200);
+Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 542, 376, 0, font, "zero");
+Line clALU1 = Line2(valuesLayer, ABSOLUTE, controlPen, 550, 375, 550, 260);
+Line clALU3 = Line2(valuesLayer, ABSOLUTE, controlPen,
+	550, 375,
+	550, 280,
+	520, 280,
+	520, 260,
+	530, 260
+);
 
 Line clZeroA = Line2(valuesLayer, ABSOLUTE, controlPen,
-	550, 102,
-	550, 140,
-	405, 140,
-	405, 220,
+	550, 360,
+	410, 360,
+	410, 220,
 	420, 220
 );
 
@@ -527,14 +532,14 @@ apMUX8_SMDR.addPoint(600, 330);
 // Connections from MUX6 through the ALU to OUT0
 //
 AnimPipe apMUX6_ALU = AnimPipe();
-apMUX6_ALU.addPoint(510, 205);
-apMUX6_ALU.addPoint(530, 205);
+apMUX6_ALU.addPoint(510, 210);
+apMUX6_ALU.addPoint(530, 210);
 // apMUX6_ALU.addPoint(510, 230);
 // apMUX6_ALU.addPoint(560, 230);
 
 AnimPipe apMUX7_ALU = AnimPipe();
-apMUX7_ALU.addPoint(510, 255);
-apMUX7_ALU.addPoint(530, 255);
+apMUX7_ALU.addPoint(510, 250);
+apMUX7_ALU.addPoint(530, 250);
 // apMUX7_ALU.addPoint(510, 230);
 // apMUX7_ALU.addPoint(560, 230);
 
@@ -554,21 +559,37 @@ Txt(valuesLayer, HLEFT | VTOP, 633, 100, 0, font, "memory\naddress");        // 
 Txt(valuesLayer, HLEFT | VTOP, 685, 320, 0, font, "memory\ndata-in");        // {joj}
 Txt(valuesLayer, HLEFT | VTOP, 695, 100, 0, font, "memory\ndata-out");       // {joj}
 
-//Memory
-Txt(0, HLEFT | VTOP, 645, 35, 0, font, "Data\nCache\n(memory)"); // {joj}
-Register memory[4];
-memory[0] = Register(560, 30, 40, 20, LEFT, "M0");
-memory[1] = Register(560, 50, 40, 20, LEFT, "M1");
-memory[2] = Register(600, 30, 40, 20, RIGHT, "M2");
-memory[3] = Register(600, 50, 40, 20, RIGHT, "M3");
+Register regLPAR = Register(460, 110, 40, 30, LEFT, "LPAR");
+Register regLF = Register(510, 110, 20, 30, TOP, "LF");
+Line clALU4 = Line2(valuesLayer, ABSOLUTE, controlPen,
+	520, 140,
+	520, 200,
+	530, 200
+);
 
 // Stack
 Stack stack = Stack(760, 60);
-if(parallel == 1){
-	stack.setAll(0);
-}
+
 //stack.setFP(10);
 //stack.createFrame(2, 1);
+
+//Memory Bus
+AnimPipe apBus1 = AnimPipe();
+apBus1.resize(20);
+apBus1.addPoint(760, 70);
+apBus1.addPoint(760, 450);
+AnimPipe apBus2 = AnimPipe();
+apBus2.resize(20);
+apBus2.addPoint(760, 410);
+apBus2.addPoint(760, 30);
+apBus1.setOpacity(0);
+apBus2.setOpacity(0);
+
+AnimPipe apToMem = AnimPipe();
+apToMem.resize(10);
+apToMem.addPoint(770, 250);
+apToMem.addPoint(950, 250);
+apToMem.setOpacity(0);
 
 //
 // Other components
@@ -590,23 +611,6 @@ AnimPipe apMUX9_OUT1 = AnimPipe();
 apMUX9_OUT1.addPoint(680, 230);
 apMUX9_OUT1.addPoint(700, 230);
 
-// Connections to and from memory
-
-// AnimPipe apOUT0_Mem = AnimPipe();
-// apOUT0_Mem.addPoint(580, 230);
-// apOUT0_Mem.addPoint(590, 230);
-// apOUT0_Mem.addPoint(590, 70);
-//
-// AnimPipe apSMDR_Mem = AnimPipe();
-// apSMDR_Mem.addPoint(590, 330);
-// apSMDR_Mem.addPoint(600, 330);
-// apSMDR_Mem.addPoint(600, 70);
-//
-// AnimPipe apMem_MUX9 = AnimPipe();
-// apMem_MUX9.addPoint(610, 70);
-// apMem_MUX9.addPoint(610, 220);
-// apMem_MUX9.addPoint(630, 220);
-
 AnimPipe apOUT0_Mem = AnimPipe();
 apOUT0_Mem.addPoint(620, 230);
 apOUT0_Mem.addPoint(630, 230);
@@ -622,6 +626,17 @@ apMem_MUX9.addPoint(760, 90);
 apMem_MUX9.addPoint(650, 90);
 apMem_MUX9.addPoint(650, 220);
 apMem_MUX9.addPoint(670, 220);
+
+AnimPipe apBus_LPAR = AnimPipe();
+apBus_LPAR.addPoint(760, 90);
+apBus_LPAR.addPoint(480, 90);
+apBus_LPAR.addPoint(480, 110);
+
+AnimPipe apBus_LF = AnimPipe();
+apBus_LF.addPoint(760, 90);
+apBus_LF.addPoint(520, 90);
+apBus_LF.addPoint(520, 110);
+
 
 //
 // Write Back
@@ -642,6 +657,8 @@ apOUT1_RF.addPoint(470, 10);
 apOUT1_RF.addPoint(470, 25);
 
 alu.txtResult.moveToFront();                            // {joj 29/10/06}
+
+parallelMode();
 
 //
 // ResetWires
@@ -697,6 +714,9 @@ function resetWires() {
 		clALU1.setPen(controlPen);
 		clZeroA.setPen(controlPen);
 		clALU2.setPen(controlPen);
+		clALU3.setPen(controlPen);
+
+		clALU4.setPen(controlPen);
 		//clDM1.setPen(controlPen);
 
     //
@@ -742,6 +762,13 @@ function resetWires() {
     apSMDR_Mem.reset();
     apMem_MUX9.reset();
 
+		apBus_LPAR.reset(); //apBus_LPAR.setOpacity(0);
+		apBus_LF.reset();	//apBus_LF.setOpacity(0);
+
+		apBus1.reset();	//apBus1.setOpacity(0);
+		apBus2.reset();	//apBus2.setOpacity(0);
+		apToMem.reset(); //apToMem.setOpacity(0);
+
     //
     // WB
     //
@@ -752,9 +779,25 @@ function resetWires() {
 function parallelMode(){
 	if(parallel == 1){
 		stack.setAll(0);
+		apBus1.setOpacity(1);
+		apBus2.setOpacity(1);
+		apToMem.setOpacity(1);
+		// apBus_LPAR.setOpacity(1);
+		// apBus_LF.setOpacity(1);
+		// regLPAR.setOpacity(1);
+		// regLF.setOpacity(1);
+		// clALU4.setPen(controlPen);
 	}
 	else{
 		stack.setAll(1);
+		apBus1.setOpacity(0);
+		apBus2.setOpacity(0);
+		apToMem.setOpacity(0);
+		// apBus_LPAR.setOpacity(0);
+		// apBus_LF.setOpacity(0);
+		// regLPAR.setOpacity(0);
+		// regLF.setOpacity(0);
+		// clALU4.setPen(whitePen);
 	}
 }
 
@@ -775,16 +818,6 @@ function resetRegisters() {
     btbPC[1].reset();               // {joj 1/2/06}
     btbPPC[0].reset();              // {joj 1/2/06}
     btbPPC[1].reset();              // {joj 1/2/06}
-
-//  regFile[0].reset();
-//  regFile[1].reset();
-//  regFile[2].reset();
-//  regFile[3].reset();
-
- memory[0].reset();
- memory[1].reset();
- memory[2].reset();
- memory[3].reset();
 
     regID.reset();
     regEX.reset();
@@ -809,6 +842,9 @@ function resetRegisters() {
 
     statIC.setTxt("%4d", 0);        // {joj}
     statTE.setTxt("%4d", 0);        // {joj}
+
+		// regLPAR.setOpacity(0);
+		// regLF.setOpacity(0);
 
 }
 
@@ -1172,14 +1208,6 @@ for (i = 0; i < 4; i++) {                           // {joj 31/10/10}
     s = sprintf("r%d", i);							// {joj 2/10/16}
     regFile[i].setValue(getArgAsNum(s, 0));			// {joj 4/10/16}
 }                                                   // {joj}
-
-//
-// initialise memory
-//
-for (i = 0; i < 4; i++) {                           // {joj}
-    s = sprintf("m%d", i);                          // {joj 31/10/10}
-    memory[i].setValue(getArgAsNum(s, 0));			// {joj 7/10/16}
-}
 
 setTPS(20);                                         // {joj}
 example = getArgAsNum("example", 0);				// {joj 4/10/16}

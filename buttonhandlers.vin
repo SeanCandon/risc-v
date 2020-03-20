@@ -157,10 +157,7 @@ when buttonZF.label ~> eventMB(num down, num flags, num, num) {			// {joj 4/10/1
 		setZFMode((zfMode + 1) % 3);
 		resetCircuit();
 	}
-	//sendMessage("channel 1", "hello");
-	//sendToMem("wow");
-	//bc.postMessage("wow dats");
-	//newWindow();
+
 	return 0;
 }
 
@@ -206,11 +203,6 @@ when buttonSP.label ~> eventMB(num down, num flags, num x, num y) {		// {joj 24/
             s = sprintf("%sr%d='0x%02X' ", s, lp1, reg); // {joj 20/10/16}
         }
 
-        for (lp1 = 0; lp1 < 4; lp1++) {
-            reg = memory[lp1].value;
-            s = sprintf("%sm%d='0x%02X' ", s, lp1, reg); // {joj 20/10/16}
-        }
-
         s = sprintf("%speMode='%d' bpMode='%d' liMode='%d' afMode='%d' sfMode='%d' zfMode='%d'", s, peMode, bpMode, liMode, afMode, sfMode, zfMode); // {joj 31/10/10}
 		//debug("%s", s);
 		getURL(s);
@@ -252,6 +244,9 @@ when imLabel ~> eventMB(num down, num flags, num x, num y) {			// {joj 24/9/17}
 		example = (example == maxexample) ? 0 : example + 1;
 		setArg("example", example.toString());							// {joj 6/11/16}
 		reset();
+		if(parallel == 1){
+			stack.setAll(0);
+		}
 	}
 	return 0;
 }

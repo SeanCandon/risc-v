@@ -49,6 +49,18 @@ class AnimPipe() {
 		fgLine.setPen(fgPen0);
     }
 
+    function resize(num neww){
+      w = neww;
+      bgPen0 = SolidPen(SOLID, neww, GRAY192, BEVEL_JOIN | BUTT_END);		// could be static / global
+      bgPen1 = SolidPen(SOLID, neww, GRAY192, BEVEL_JOIN | ARROW60_END);		// could be static / global
+
+      fgPen0 = SolidPen(SOLID, neww, RED, BEVEL_JOIN | BUTT_END);			// could be static / global
+      fgPen1 = SolidPen(SOLID, neww, RED, BEVEL_JOIN | ARROW60_END);			// could be static / global
+
+      bgLine = Line(inactivePipesLayer, 0, bgPen1, 0, 0);	// {joj 17/10/16}
+  	  fgLine = Line(activePipesLayer, 0, fgPen0, 0, 0);		// {joj 17/10/16}
+    }
+
     function addPoint(num x, num y) {
         px[n] = x;
         py[n] = y;

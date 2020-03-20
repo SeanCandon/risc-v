@@ -909,13 +909,6 @@ function dlx(vplayer) {
 		this.addr_size = 4
 		this.maxdigits = 3
 		this.off = 40
-		this.apSP = new AnimPipe()
-		this.spText = new Rectangle2($g[0], 0, 0, $g[4], $g[46], 120, 120, 20, 8, $g[4], $g[45], sprintf(""))
-		this.spAddr = -2
-		this.prevSPAddr = -1
-		this.apFP = new AnimPipe()
-		this.fpText = new Rectangle2($g[0], 0, 0, $g[4], $g[46], 120, 120, 20, 8, $g[4], $g[45], sprintf(""))
-		this.fpAddr = -3
 		this.outer_x = this.x
 		this.outer_y = this.y
 		this.outer_w = this.w
@@ -1193,6 +1186,7 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
+		$g[58].setTxt(m)
 		if (m=="close") {
 			endParallel()
 		} else {
@@ -1207,14 +1201,14 @@ function dlx(vplayer) {
 			p=m.find(", ")
 			nm=m.left(p)
 			let regv1 = stringToNum(nm)
-			m=m.right(p)
+			m=m.right(-p-2)
 			let regv2 = stringToNum(m)
 			let retval
 			if (instr==ST) {
 				$g[57].store(regv1, regv2)
 			} else
 			if (instr==SC) {
-				$g[57].store_cond(regv1, regv2, origin)
+				$g[57].store(regv1, regv2)
 			} else
 			if (instr==LD) {
 				retval=$g[57].load(regv1)
@@ -1346,7 +1340,7 @@ function dlx(vplayer) {
 				$g[55] = new SolidPen(DOT, THIN, BLACK)
 				$g[56] = new Font("Calibri", 10, BOLD)
 				$g[57] = new Memory(500, 80)
-				$g[58] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 1, 1, $g[1], $g[17], sprintf(""))
+				$g[58] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf("wow"))
 				$g[58].addEventHandler("eventMessage", this, $eh12)
 				returnf(0)
 				continue

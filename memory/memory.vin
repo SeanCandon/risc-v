@@ -14,17 +14,6 @@ class Memory(num _x, num _y){
 
 	num off = 40;
 
-	AnimPipe apSP = AnimPipe();
-	Rectangle spText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
-		20, 8, whitePen, componentFont, sprintf(""));
-	num spAddr = -2;
-	num prevSPAddr = -1;
-
-	AnimPipe apFP = AnimPipe();
-	Rectangle fpText = Rectangle2(0, 0, whitePen, stackBrush, 120, 120,
-		20, 8, whitePen, componentFont, sprintf(""));
-	num fpAddr = -3;
-
 	num outer_x = x;
 	num outer_y = y;
 	num outer_w = w;
@@ -37,7 +26,6 @@ class Memory(num _x, num _y){
 	Rectangle outer = Rectangle2(0, 0, blackPen, stackBrush, outer_x, outer_y, outer_w, outer_h);
 
 	string hex[length*addr_size];
-	//string chars[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
 	string chars[18];
 	fillchars(chars);
 	num div = (length*addr_size)/16;
@@ -77,14 +65,6 @@ class Memory(num _x, num _y){
 		reservedText[j] = rec;
 		y += h;
 	}
-
-  // function hl(num addr){
-  //   num pos = floor((addr/4))%MEMORY_ADDRESSES;
-  //   stack[pos].highlight(whiteBrush);
-  //   // wait(5);
-  //   // stack[pos].unHighlight();
-  //   //return 0;
-  // }
 
   function store(num addr, num val) {
 		num pos = floor((addr/4))%MEMORY_ADDRESSES;
