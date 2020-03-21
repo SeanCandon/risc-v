@@ -34,8 +34,6 @@ regFile[2].setValue(0x44);
 if(hart == HART_1)
   stack.setSP(0x44);
 
-regLF.setValue(1);
-
 //num nojal = 1;
 num nojalr = 1;
 
@@ -629,7 +627,7 @@ function idExec() {																// {joj 14/11/17}
           } else {
 
             regFile[regID.vRs1].highlight(bhighlight);                             // {joj}
-            if(regID.vIns == SC){
+            if(instrIsAtomic(regID.vIns)){
               regA.setNewValue(regFile[regID.vRs2].value);
             }
             else{
@@ -642,7 +640,9 @@ function idExec() {																// {joj 14/11/17}
                 if(regID.vIns == SC){
                   regB.setNewValue(regFile[regID.vRs1].value);
                 }
-                else{
+                else if(regID.vIns == LR){
+                  // do nothing
+                } else{
                   regB.setNewValue(regFile[regID.vRs2].value);
                 }
             } else {
@@ -661,11 +661,11 @@ function idExec() {																// {joj 14/11/17}
             //
             // read Register file B port
             // don't read if immediate addressing
-            // don't read if LD
+            // don't read if LD or LR
             // read destination register if ST
             // otherwise read source 2 register
             //
-            if ((!instrIsArRI(regID.vIns)) && (regID.vIns != LD)) {     // {joj 28/10/06}
+            if ((!instrIsArRI(regID.vIns)) && (regID.vIns != LD) && (regID.vIns != LR)) {     // {joj 28/10/06}
                 num vr = (regID.vIns == ST) ? regID.vRdt : regID.vRs2;  // {joj 28/10/06}
                 txtRF_MUX5.setTxt("R%d:%02X", vr, regFile[vr].value);   // {joj 29/10/06}
                 txtRF_MUX5.setOpacity(1);								// {joj}
@@ -938,16 +938,22 @@ function exExec() {														// {joj 14/11/17}
             }
           }
           else{
-              if (regOUT0.tagMatches(regEX.vRs2)) {
-                  mux7Src = apOUT0_MUX7;
-                  op2 = regOUT0.value;
-              } else if (regOUT1.tagMatches(regEX.vRs2)) {
-                  mux7Src = apOUT1_MUX7;
-                  op2 = regOUT1.value;
-              } else {
-                  mux7Src = apB_MUX7;
-                  op2 = regB.value;
-              }
+            if(regEX.vIns != LR){
+                if (regOUT0.tagMatches(regEX.vRs2)) {
+                    mux7Src = apOUT0_MUX7;
+                    op2 = regOUT0.value;
+                } else if (regOUT1.tagMatches(regEX.vRs2)) {
+                    mux7Src = apOUT1_MUX7;
+                    op2 = regOUT1.value;
+                } else {
+                    mux7Src = apB_MUX7;
+                    op2 = regB.value;
+                }
+            }
+            else{
+              mux7Src = 0;
+              op2 = 0;
+            }
           }
         }
 
@@ -964,8 +970,14 @@ function exExec() {														// {joj 14/11/17}
               }
             }
             else{
-                mux7Src = apB_MUX7;
-                op2 = regB.value;
+              if(regEX.vIns != LR){
+                  mux7Src = apB_MUX7;
+                  op2 = regB.value;
+              }
+              else{
+                mux7Src = 0;
+                op2 = 0;
+              }
             }
         }
 
@@ -1122,6 +1134,10 @@ function exExec() {														// {joj 14/11/17}
       if(instrIsBranch(regEX.vIns) == 0){
         regOUT0.setNewValue(result);
         takeCondBranch = 0;
+        if(regEX.vIns == LR){
+          regLPAR.setNewValue(result);
+          //regLPAR.update();
+        }
       }
       else{
         takeCondBranch = result;
@@ -1227,6 +1243,16 @@ function exExec() {														// {joj 14/11/17}
       fork(apMUX8_SMDR.animate(40));                         		                         // {joj 1/2/06}
   }
 
+  if(regEX.vIns == SC && sc_stage == 1){
+    regLF.setNewValue(0);
+    regLF.update();
+  }
+
+  if(regEX.vIns == LR){
+    regLF.setNewValue(1);
+    fork(regLF.update());
+  }
+
   if (instrOpTypeRdt(regEX.vIns) == OP_TYPE_REG) {
 
       if(regEX.vIns == MUL){
@@ -1261,9 +1287,17 @@ function exExec() {														// {joj 14/11/17}
           //wait(5);
           //regA.update();
         }
-        wait(20);                                                   // {joj 29/10/06}
+        wait(20);
+                                                          // {joj 29/10/06}
         apALU_OUT0.animate(10);
+        if(regEX.vIns == LR){
+          fork(apOUT0_LPAR.animate(10));
+          //regLPAR.update();
+        }
         wait(10);
+        if(regEX.vIns == LR){
+          regLPAR.update();
+        }
         alu.txtResult.setTxt("%02X", result);                       // {joj 29/10/06}
         alu.txtResult.setOpacity(1, 20, 1, 0);                      // {joj 29/10/06}
       }
@@ -1315,6 +1349,10 @@ function maExec() {													// {joj 14/11/17}
     if ((regMA.nIns == ST) || (regMA.nIns == SC)){ // {joj}
         fork(regSMDR.update());
     }
+
+    // if(regMA.vIns == LR){
+    //   fork(regLPAR.update());
+    // }
 
     wait(8);
 

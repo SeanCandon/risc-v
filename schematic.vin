@@ -442,6 +442,12 @@ apOUT0_MUX6.addPoint(470, 170);
 apOUT0_MUX6.addPoint(470, 190);
 apOUT0_MUX6.addPoint(500, 190);
 
+AnimPipe apOUT0_LPAR = AnimPipe();
+apOUT0_LPAR.addPoint(610, 210);
+apOUT0_LPAR.addPoint(610, 90);
+apOUT0_LPAR.addPoint(480, 90);
+apOUT0_LPAR.addPoint(480, 110);
+
 // AnimPipe apOUT0_A = AnimPipe();
 // apOUT0_A.addPoint(530, 210);
 // apOUT0_A.addPoint(530, 170);
@@ -627,16 +633,6 @@ apMem_MUX9.addPoint(650, 90);
 apMem_MUX9.addPoint(650, 220);
 apMem_MUX9.addPoint(670, 220);
 
-AnimPipe apBus_LPAR = AnimPipe();
-apBus_LPAR.addPoint(760, 90);
-apBus_LPAR.addPoint(480, 90);
-apBus_LPAR.addPoint(480, 110);
-
-AnimPipe apBus_LF = AnimPipe();
-apBus_LF.addPoint(760, 90);
-apBus_LF.addPoint(520, 90);
-apBus_LF.addPoint(520, 110);
-
 
 //
 // Write Back
@@ -762,8 +758,8 @@ function resetWires() {
     apSMDR_Mem.reset();
     apMem_MUX9.reset();
 
-		apBus_LPAR.reset(); //apBus_LPAR.setOpacity(0);
-		apBus_LF.reset();	//apBus_LF.setOpacity(0);
+		apOUT0_LPAR.reset(); //apOUT0_LPAR.setOpacity(0);
+		//apOUT0_LF.reset();	//apOUT0_LF.setOpacity(0);
 
 		apBus1.reset();	//apBus1.setOpacity(0);
 		apBus2.reset();	//apBus2.setOpacity(0);
@@ -782,8 +778,8 @@ function parallelMode(){
 		apBus1.setOpacity(1);
 		apBus2.setOpacity(1);
 		apToMem.setOpacity(1);
-		// apBus_LPAR.setOpacity(1);
-		// apBus_LF.setOpacity(1);
+		// apOUT0_LPAR.setOpacity(1);
+		// apOUT0_LF.setOpacity(1);
 		// regLPAR.setOpacity(1);
 		// regLF.setOpacity(1);
 		// clALU4.setPen(controlPen);
@@ -793,8 +789,8 @@ function parallelMode(){
 		apBus1.setOpacity(0);
 		apBus2.setOpacity(0);
 		apToMem.setOpacity(0);
-		// apBus_LPAR.setOpacity(0);
-		// apBus_LF.setOpacity(0);
+		// apOUT0_LPAR.setOpacity(0);
+		// apOUT0_LF.setOpacity(0);
 		// regLPAR.setOpacity(0);
 		// regLF.setOpacity(0);
 		// clALU4.setPen(whitePen);

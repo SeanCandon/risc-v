@@ -215,7 +215,7 @@ num function instrOpTypeRdt(num instr) {
 }
 
 num function instrOpTypeRs1(num instr) {
-    if (instrIsNop(instr) || instrIsJumpR(instr) || isJorJAL(instr))
+    if (instrIsNop(instr) || instrIsJumpR(instr) || isJorJAL(instr) || instr == LR)
         return OP_TYPE_UNUSED;
     else
         return OP_TYPE_REG;
@@ -224,7 +224,7 @@ num function instrOpTypeRs1(num instr) {
 num function instrOpTypeRs2(num instr) {
     if (instrIsNop(instr))
         return OP_TYPE_UNUSED;
-    else if (instrIsArRR(instr) || instrIsJumpR(instr))
+    else if (instrIsArRR(instr) || instrIsJumpR(instr) || instr == LR)
         return OP_TYPE_REG;
     else
         return OP_TYPE_IMM;
@@ -244,10 +244,12 @@ string function instrText(num instr, num rdt, num rs1, num rs2) {				// {joj 28/
        return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2);                     	// {joj 28/10/06}
     else if (instr == ST)                                                		// {joj 28/10/06}
         return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2);                    	// {joj 28/10/06}
-    else if(instr == LR)
-      return sprintf("%s x%d,x%d+%02X", instrNames[instr], rdt, rs1, rs2);
+    // else if(instr == LR)
+    //   return sprintf("%s x%d,x%d+%02X", instrNames[instr], rdt, rs1, rs2);
     else if (instrIsBranch(instr))
         return sprintf("%s x%d,x%d,%02X", instrNames[instr], rdt, rs1, rs2);
+    else if(instr == LR)
+        return sprintf("%s x%d, x%d", instrNames[instr], rdt, rs2);
     else if (instr == J)
         return sprintf("%s %02X", instrNames[instr], rs2);                   	// {joj 28/10/10}
     else if (instr == JAL)
