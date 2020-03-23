@@ -5992,6 +5992,7 @@ function VPlayer(canvasID, VCode, args) {
 
 	function handleMessageEvent(e){
 		let mess = e.data;
+		console.log(mess);
 		mouseX = e.offsetX;
 		mouseY = e.offsetY;
 		let x = (mouseX - tx) / sx;		// convert to viewport co-ordinates
@@ -7572,7 +7573,8 @@ function VPlayer(canvasID, VCode, args) {
 		// }
 	}
 
-	function sendToHart(no, mess){
+	function sendToHart(no, s1, s2, s3){
+		var mess = s1.concat(s2, s3);
 		if(no == 1){
 			window.opener.postMessage(mess, '*');
 		}

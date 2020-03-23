@@ -83,8 +83,8 @@ const num ZERO_FORWARDING = 0;
 const num ZERO_INTERLOCK = 1;
 const num NO_ZERO_INTERLOCK = 2;
 
-const num HART_1 = 0;
-const num HART_2 = 1;
+const num HART_1 = 1;
+const num HART_2 = 2;
 
 //
 // Global variables
@@ -106,6 +106,8 @@ num zfMode = 0;         // Zero Forwarding/Zero Interlock/No Zero Interlock
 num locked = 0;         //
 num instrCount = 0;     //
 num tickCount = 0;      //
+
+num bus_busy = 1;
 
 getMessage();
 

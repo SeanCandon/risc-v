@@ -94,8 +94,8 @@ function dlx(vplayer) {
 	const ZERO_FORWARDING = 0
 	const ZERO_INTERLOCK = 1
 	const NO_ZERO_INTERLOCK = 2
-	const HART_1 = 0
-	const HART_2 = 1
+	const HART_1 = 1
+	const HART_2 = 2
 	const MAX_INSTR = 38
 	const NOP = 0
 	const ADD = 1
@@ -308,31 +308,31 @@ function dlx(vplayer) {
 
 	function instrText(instr, rdt, rs1, rs2) {
 		if (instrIsNop(instr))
-		return sprintf("%s", $g[37][instr])
+		return sprintf("%s", $g[38][instr])
 		else 
 		if (instrIsArRR(instr))
-		return sprintf("%s x%d,x%d,x%d", $g[37][instr], rdt, rs1, rs2)
+		return sprintf("%s x%d,x%d,x%d", $g[38][instr], rdt, rs1, rs2)
 		else 
 		if (instrIsArRI(instr))
-		return sprintf("%s x%d,x%d,%02X", $g[37][instr], rdt, rs1, rs2)
+		return sprintf("%s x%d,x%d,%02X", $g[38][instr], rdt, rs1, rs2)
 		else 
 		if (instrIsLoadOrStore(instr))
-		return sprintf("%s x%d,x%d+%02X", $g[37][instr], rdt, rs1, rs2)
+		return sprintf("%s x%d,x%d+%02X", $g[38][instr], rdt, rs1, rs2)
 		else 
 		if (instrIsBranch(instr))
-		return sprintf("%s x%d,x%d,%02X", $g[37][instr], rdt, rs1, rs2)
+		return sprintf("%s x%d,x%d,%02X", $g[38][instr], rdt, rs1, rs2)
 		else 
 		if (instr==J)
-		return sprintf("%s %02X", $g[37][instr], rs2)
+		return sprintf("%s %02X", $g[38][instr], rs2)
 		else 
 		if (instr==JAL)
-		return sprintf("%s x%d, %02X", $g[37][instr], rdt, rs2)
+		return sprintf("%s x%d, %02X", $g[38][instr], rdt, rs2)
 		else 
 		if (instr==JR)
-		return sprintf("%s x%d", $g[37][instr], rs2)
+		return sprintf("%s x%d", $g[38][instr], rs2)
 		else 
 		if (instr==JALR)
-		return sprintf("%s x%d, x%d", $g[37][instr], rdt, rs2)
+		return sprintf("%s x%d, x%d", $g[38][instr], rdt, rs2)
 		return "EMPTY"
 	}
 
@@ -421,8 +421,8 @@ function dlx(vplayer) {
 		this.rs2 = new Rectangle2($g[0], $g[19], 0, 0, this.brush, this.x+5*this.fw, this.y, this.fw, this.h, this.rs2Pen, $g[17], "-")
 		this.dot = new Rectangle2($g[0], $g[19], 0, 0, $g[11], this.x+this.fw*0.80000000000000004, this.y+2, this.h/2, this.h/2)
 		this.dot.setOpacity(0)
-		this.arrowDown = new Line($g[0], $g[19], 0, $g[41], 0, 0, this.x+this.w+2, this.y+this.h*0.5, 5, 0, 0, 0, 0, 0)
-		this.arrowUp = new Line($g[0], $g[19], 0, $g[41], 0, 0, this.x-2, this.y+this.h*0.5, -5, 0, 0, 0, 0, 0)
+		this.arrowDown = new Line($g[0], $g[19], 0, $g[42], 0, 0, this.x+this.w+2, this.y+this.h*0.5, 5, 0, 0, 0, 0, 0)
+		this.arrowUp = new Line($g[0], $g[19], 0, $g[42], 0, 0, this.x-2, this.y+this.h*0.5, -5, 0, 0, 0, 0, 0)
 		this.arrowDown.setOpacity(0)
 		this.arrowUp.setOpacity(0)
 		this.adr.addEventHandler("eventEE", this, this.$eh0)
@@ -484,7 +484,7 @@ function dlx(vplayer) {
 
 	Instruction.prototype.initRegs = function(remember) {
 		let offset
-		this.ins.setTxt("%c%s", 32, $g[37][this.vIns])
+		this.ins.setTxt("%c%s", 32, $g[38][this.vIns])
 		this.opTypeRdt=instrOpTypeRdt(this.vIns)
 		this.opTypeRs1=instrOpTypeRs1(this.vIns)
 		this.opTypeRs2=instrOpTypeRs2(this.vIns)
@@ -627,9 +627,9 @@ function dlx(vplayer) {
 		this.ih = (h-4)/32
 		this.instruction = newArray(32)
 		this.active = 31
-		this.r = new Rectangle2($g[0], 0, 0, $g[1], $g[38], x, y, w, h)
+		this.r = new Rectangle2($g[0], 0, 0, $g[1], $g[39], x, y, w, h)
 		this.r.setRounded(2, 2)
-		new Rectangle2($g[0], 0, 0, $g[1], $g[39], x+2, y+2, w-4, h-4)
+		new Rectangle2($g[0], 0, 0, $g[1], $g[40], x+2, y+2, w-4, h-4)
 		for (this.lp1 = 0; this.lp1<32; this.lp1++)
 		this.instruction[this.lp1]=new Instruction(x+2, y+2+this.lp1*this.ih, w-4, this.ih, this.lp1*4)
 	}
@@ -716,7 +716,7 @@ function dlx(vplayer) {
 		this._w = w
 		this._h = h
 		this.regCol = $g[13]
-		this.r1 = new Rectangle2($g[0], 0, 0, $g[1], $g[42], x, y, w, h)
+		this.r1 = new Rectangle2($g[0], 0, 0, $g[1], $g[43], x, y, w, h)
 		this.r1.setRounded(2, 2)
 		this.bg1 = new Rectangle2($g[0], $g[19], 0, 0, $g[12], this.vx, this.vy, this.vw/2, this.vh)
 		this.bg2 = new Rectangle2($g[0], $g[19], 0, 0, $g[12], this.vx+this.vw/2, this.vy, this.vw/2, this.vh)
@@ -882,13 +882,13 @@ function dlx(vplayer) {
 		this.y = _y
 		this.w = _w
 		this.h = _h
-		this.bg = new Rectangle2($g[0], 0, 0, $g[1], $g[44], this.x, this.y, this.w, this.h)
+		this.bg = new Rectangle2($g[0], 0, 0, $g[1], $g[45], this.x, this.y, this.w, this.h)
 		this.bg.setRounded(2, 2)
 		this.label
 		if (this.w>=this.h) {
-			this.label=new Rectangle2($g[0], 0, 0, 0, 0, this.x, this.y, this.w, this.h, 0, $g[45], caption)
+			this.label=new Rectangle2($g[0], 0, 0, 0, 0, this.x, this.y, this.w, this.h, 0, $g[46], caption)
 		} else {
-			this.label=new Rectangle($g[0], 0, 0, 0, 0, this.x+this.w/2-1, this.y+this.h/2, -this.w/2, -this.h/2, this.w, this.h, 0, $g[45], caption)
+			this.label=new Rectangle($g[0], 0, 0, 0, 0, this.x+this.w/2-1, this.y+this.h/2, -this.w/2, -this.h/2, this.w, this.h, 0, $g[46], caption)
 			this.label.rotate(-90)
 		}
 	}
@@ -916,7 +916,7 @@ function dlx(vplayer) {
 		this.x=this.x+10
 		this.y=this.y+10
 		this.w=this.w/3
-		this.outer = new Rectangle2($g[0], 0, 0, $g[1], $g[46], this.outer_x, this.outer_y, this.outer_w, this.outer_h)
+		this.outer = new Rectangle2($g[0], 0, 0, $g[1], $g[47], this.outer_x, this.outer_y, this.outer_w, this.outer_h)
 		this.hex = newArray(this.length*this.addr_size)
 		this.chars = newArray(18)
 		fillchars(this.chars)
@@ -950,7 +950,7 @@ function dlx(vplayer) {
 		this.y=_y+10
 		this.reservedText = newArray(this.length)
 		for (this.j=(this.length-1); this.j>=0; this.j--) {
-			this.rec = new Rectangle2($g[0], 0, 0, $g[4], $g[46], this.x+this.w+15, this.y, this.w, this.h, $g[1], $g[45], sprintf("unreserved"))
+			this.rec = new Rectangle2($g[0], 0, 0, $g[4], $g[47], this.x+this.w+15, this.y, this.w, this.h, $g[1], $g[46], sprintf("unreserved"))
 			this.reservedText[this.j]=this.rec
 			this.y+=this.h
 		}
@@ -1029,13 +1029,13 @@ function dlx(vplayer) {
 
 	function ALU(x, y, w, h) {
 		VObj.call(this)
-		this.alu = new Polygon($g[0], 0, ABSOLUTE, $g[1], $g[44], x, y, 0, 0, w, h/4, w, 3*h/4, 0, h, 0, 5*h/8, w/2, h/2, 0, 3*h/8)
-		new Rectangle2($g[0], 0, 0, 0, 0, x, y-10, w, 10, 0, $g[45], "ALU")
+		this.alu = new Polygon($g[0], 0, ABSOLUTE, $g[1], $g[45], x, y, 0, 0, w, h/4, w, 3*h/4, 0, h, 0, 5*h/8, w/2, h/2, 0, 3*h/8)
+		new Rectangle2($g[0], 0, 0, 0, 0, x, y-10, w, 10, 0, $g[46], "ALU")
 		this.op = ""
-		this.txtOp = new Rectangle($g[0], $g[19], 0, 0, $g[11], x, y+h/2, 0, -h/12, 2*w/3, h/6, $g[4], $g[45], this.op)
+		this.txtOp = new Rectangle($g[0], $g[19], 0, 0, $g[11], x, y+h/2, 0, -h/12, 2*w/3, h/6, $g[4], $g[46], this.op)
 		this.txtOp.setOpacity(0)
 		this.txtOp.setRounded(2, 2)
-		this.txtResult = new Rectangle($g[0], $g[21], 0, $g[1], $g[13], x+3*w/4, y+h/2, 0, -h/12, w/2, h/6, $g[1], $g[45])
+		this.txtResult = new Rectangle($g[0], $g[21], 0, $g[1], $g[13], x+3*w/4, y+h/2, 0, -h/12, w/2, h/6, $g[1], $g[46])
 		this.txtResult.setOpacity(0)
 		this.txtResult.setRounded(2, 2)
 	}
@@ -1151,8 +1151,8 @@ function dlx(vplayer) {
 		this.setClipPath(R$(0, 0, w, h))
 		this.clkDisplay = new Rectangle2(this, 0, 0, $g[1], $g[12], 0, 0, w, h)
 		this.clkDisplay.setRounded(2, 2)
-		this.prev_clock = new Line(this, $g[21], 0, $g[47], -this.chw+this.chw/5, 3+this.ch, 0, 0, 0, -this.ch, this.chw, 0, 0, this.ch, this.chw, 0)
-		this.next_clock = new Line(this, $g[21], 0, $g[48], this.chw+this.chw/5, 3+this.ch, 0, 0, 0, -this.ch, this.chw, 0, 0, this.ch, this.chw, 0)
+		this.prev_clock = new Line(this, $g[21], 0, $g[48], -this.chw+this.chw/5, 3+this.ch, 0, 0, 0, -this.ch, this.chw, 0, 0, this.ch, this.chw, 0)
+		this.next_clock = new Line(this, $g[21], 0, $g[49], this.chw+this.chw/5, 3+this.ch, 0, 0, 0, -this.ch, this.chw, 0, 0, this.ch, this.chw, 0)
 		this.dot = new Rectangle2(this, $g[21], 0, 0, $g[5], w/2-3, h-6, 6, 6)
 		this.canUpdate
 	}
@@ -1162,18 +1162,18 @@ function dlx(vplayer) {
 		this.stall=s
 		this.type=t
 		if (this.canUpdate)
-		this.prev_clock.setPen(this.stall ? (this.type ? $g[49] : $g[47]) : $g[48])
+		this.prev_clock.setPen(this.stall ? (this.type ? $g[50] : $g[48]) : $g[49])
 	}
 
 	function Button(x, y, w, h, caption, ID) {
 		VObj.call(this)
-		this.label = new Rectangle2($g[0], 0, 0, $g[1], $g[50], x, y, w, h, $g[1], $g[17], caption)
+		this.label = new Rectangle2($g[0], 0, 0, $g[1], $g[51], x, y, w, h, $g[1], $g[17], caption)
 		this.label.addEventHandler("eventEE", this, this.$eh11)
 	}
 	Button.prototype = Object.create(VObj.prototype)
 
 	Button.prototype.$eh11 = function(enter, x, y) {
-		this.label.setBrush(enter ? $g[51] : $g[50])
+		this.label.setBrush(enter ? $g[52] : $g[51])
 		return 0
 	}
 
@@ -1186,36 +1186,54 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
+		$g[59].setTxt(m)
 		if (m=="close") {
 			endParallel()
 		} else {
 			let p = m.find(", ")
 			let nm = m.left(p)
-			let origin = stringToNum(nm)
-			m=m.right(-p-2)
-			p=m.find(", ")
-			nm=m.left(p)
-			let instr = stringToNum(nm)
-			m=m.right(-p-2)
-			p=m.find(", ")
-			nm=m.left(p)
-			let regv1 = stringToNum(nm)
-			m=m.right(-p-2)
-			let regv2 = stringToNum(m)
-			let retval
-			if (instr==ST) {
-				$g[57].store(regv1, regv2)
-			} else
-			if (instr==SC) {
-				$g[57].store(regv1, regv2)
-			} else
-			if (instr==LD) {
-				retval=$g[57].load(regv1)
-				sendToHart(origin, retval.toString())
-			} else
-			if (instr==LR) {
-				retval=$g[57].load_res(regv1, origin)
-				sendToHart(origin, retval.toString())
+			if (nm=="busy?") {
+				m=m.right(-p-2)
+				let orig = stringToNum(m)
+				if ($g[37]==0) {
+					sendToHart(orig, "not busy", "", "")
+					$g[37]=1
+				} else {
+					sendToHart(orig, "busy", "", "")
+				}
+			} else {
+				let origin = stringToNum(nm)
+				m=m.right(-p-2)
+				p=m.find(", ")
+				nm=m.left(p)
+				let instr = stringToNum(nm)
+				m=m.right(-p-2)
+				p=m.find(", ")
+				nm=m.left(p)
+				let regv1 = stringToNum(nm)
+				m=m.right(-p-2)
+				let regv2 = stringToNum(m)
+				let retval
+				if (origin==HART_1) {
+					sendToHart(HART_2, instr.toString(), ", ", regv1.toString())
+				} else {
+					sendToHart(HART_1, instr.toString(), ", ", regv1.toString())
+				}
+				if (instr==ST) {
+					$g[58].store(regv1, regv2)
+				} else
+				if (instr==SC) {
+					$g[58].store(regv1, regv2)
+				} else
+				if (instr==LD) {
+					retval=$g[58].load(regv1)
+					sendToHart(origin, retval.toString(), "", "")
+				} else
+				if (instr==LR) {
+					retval=$g[58].load(regv1)
+					sendToHart(origin, retval.toString(), "", "")
+				}
+				$g[37]=0
 			}
 		}
 	}
@@ -1268,79 +1286,80 @@ function dlx(vplayer) {
 				$g[34] = 0
 				$g[35] = 0
 				$g[36] = 0
+				$g[37] = 1
 				getMessage()
 				newHart()
-				$g[37] = newArray(40)
-				$g[37][NOP]="NOP"
-				$g[37][ADD]="ADD"
-				$g[37][SUB]="SUB"
-				$g[37][AND]="AND"
-				$g[37][OR]="OR"
-				$g[37][XOR]="XOR"
-				$g[37][SLL]="SLL"
-				$g[37][SRL]="SRL"
-				$g[37][SLT]="SLT"
-				$g[37][SGT]="SGT"
-				$g[37][SLE]="SLE"
-				$g[37][SGE]="SGE"
-				$g[37][ADDi]="ADDi"
-				$g[37][SUBi]="SUBi"
-				$g[37][ANDi]="ANDi"
-				$g[37][ORi]="ORi"
-				$g[37][XORi]="XORi"
-				$g[37][SLLi]="SLLi"
-				$g[37][SRLi]="SRLi"
-				$g[37][SLTi]="SLTi"
-				$g[37][SGTi]="SGTi"
-				$g[37][SLEi]="SLEi"
-				$g[37][SGEi]="SGEi"
-				$g[37][LD]="LD"
-				$g[37][ST]="ST"
-				$g[37][BEQ]="BEQ"
-				$g[37][BNE]="BNE"
-				$g[37][BLT]="BLT"
-				$g[37][BGE]="BGE"
-				$g[37][J]="J"
-				$g[37][JAL]="JAL"
-				$g[37][JR]="JR"
-				$g[37][JALR]="JALR"
-				$g[37][MUL]="MUL"
-				$g[37][DIV]="DIV"
-				$g[37][REM]="REM"
-				$g[37][LR]="LR"
-				$g[37][SC]="SC"
-				$g[37][HALT]="HALT"
-				$g[37][STALL]="STALL"
-				$g[37][EMPTY]="EMPTY"
-				$g[38] = new SolidBrush(BORDEAU)
-				$g[39] = new SolidBrush(WHITE)
-				$g[40] = new SolidPen(DOT, 1, rgba(0.75, 0.75, 0.75))
-				$g[41] = new SolidPen(SOLID, 1, RED, ARROW60_END)
-				$g[42] = new SolidBrush(PURPLE)
-				$g[43] = new SolidBrush(WHITE)
-				$g[44] = new SolidBrush(LIGHT_BLUE)
-				$g[45] = new Font("Calibri", 9)
-				$g[46] = new SolidBrush(WHITE)
-				$g[47] = new SolidPen(SOLID, 1, RED, ROUND_START|ROUND_JOIN|ROUND_END)
-				$g[48] = new SolidPen(SOLID, 1, GREEN, ROUND_START|ROUND_JOIN|ROUND_END)
-				$g[49] = new SolidPen(SOLID, 1, ORANGE, ROUND_START|ROUND_JOIN|ROUND_END)
-				$g[50] = new SolidBrush(WHITE)
-				$g[51] = new SolidBrush(GRAY224)
-				$g[52] = getArg("name", "")
-				if (!($g[52]!="")) {
+				$g[38] = newArray(40)
+				$g[38][NOP]="NOP"
+				$g[38][ADD]="ADD"
+				$g[38][SUB]="SUB"
+				$g[38][AND]="AND"
+				$g[38][OR]="OR"
+				$g[38][XOR]="XOR"
+				$g[38][SLL]="SLL"
+				$g[38][SRL]="SRL"
+				$g[38][SLT]="SLT"
+				$g[38][SGT]="SGT"
+				$g[38][SLE]="SLE"
+				$g[38][SGE]="SGE"
+				$g[38][ADDi]="ADDi"
+				$g[38][SUBi]="SUBi"
+				$g[38][ANDi]="ANDi"
+				$g[38][ORi]="ORi"
+				$g[38][XORi]="XORi"
+				$g[38][SLLi]="SLLi"
+				$g[38][SRLi]="SRLi"
+				$g[38][SLTi]="SLTi"
+				$g[38][SGTi]="SGTi"
+				$g[38][SLEi]="SLEi"
+				$g[38][SGEi]="SGEi"
+				$g[38][LD]="LD"
+				$g[38][ST]="ST"
+				$g[38][BEQ]="BEQ"
+				$g[38][BNE]="BNE"
+				$g[38][BLT]="BLT"
+				$g[38][BGE]="BGE"
+				$g[38][J]="J"
+				$g[38][JAL]="JAL"
+				$g[38][JR]="JR"
+				$g[38][JALR]="JALR"
+				$g[38][MUL]="MUL"
+				$g[38][DIV]="DIV"
+				$g[38][REM]="REM"
+				$g[38][LR]="LR"
+				$g[38][SC]="SC"
+				$g[38][HALT]="HALT"
+				$g[38][STALL]="STALL"
+				$g[38][EMPTY]="EMPTY"
+				$g[39] = new SolidBrush(BORDEAU)
+				$g[40] = new SolidBrush(WHITE)
+				$g[41] = new SolidPen(DOT, 1, rgba(0.75, 0.75, 0.75))
+				$g[42] = new SolidPen(SOLID, 1, RED, ARROW60_END)
+				$g[43] = new SolidBrush(PURPLE)
+				$g[44] = new SolidBrush(WHITE)
+				$g[45] = new SolidBrush(LIGHT_BLUE)
+				$g[46] = new Font("Calibri", 9)
+				$g[47] = new SolidBrush(WHITE)
+				$g[48] = new SolidPen(SOLID, 1, RED, ROUND_START|ROUND_JOIN|ROUND_END)
+				$g[49] = new SolidPen(SOLID, 1, GREEN, ROUND_START|ROUND_JOIN|ROUND_END)
+				$g[50] = new SolidPen(SOLID, 1, ORANGE, ROUND_START|ROUND_JOIN|ROUND_END)
+				$g[51] = new SolidBrush(WHITE)
+				$g[52] = new SolidBrush(GRAY224)
+				$g[53] = getArg("name", "")
+				if (!($g[53]!="")) {
 					$pc = 1
 					continue
 				}
-				$g[52]=sprintf(":  %s", $g[52])
+				$g[53]=sprintf(":  %s", $g[53])
 				$pc = 1
 			case 1:
-				$g[53] = new Font("Calibri", 20, SMALLCAPS|ITALIC)
-				$g[54] = new SolidPen(DASH, 1, DARK_BLUE, ROUND_START|ROUND_JOIN|ROUND_END)
-				$g[55] = new SolidPen(DOT, THIN, BLACK)
-				$g[56] = new Font("Calibri", 10, BOLD)
-				$g[57] = new Memory(500, 80)
-				$g[58] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 1, 1, $g[1], $g[17], sprintf(""))
-				$g[58].addEventHandler("eventMessage", this, $eh12)
+				$g[54] = new Font("Calibri", 20, SMALLCAPS|ITALIC)
+				$g[55] = new SolidPen(DASH, 1, DARK_BLUE, ROUND_START|ROUND_JOIN|ROUND_END)
+				$g[56] = new SolidPen(DOT, THIN, BLACK)
+				$g[57] = new Font("Calibri", 10, BOLD)
+				$g[58] = new Memory(500, 80)
+				$g[59] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf("wow"))
+				$g[59].addEventHandler("eventMessage", this, $eh12)
 				returnf(0)
 				continue
 			case 2:
@@ -1418,7 +1437,7 @@ function dlx(vplayer) {
 			case 12:
 				$obj.canUpdate=1
 				$obj.prev_clock.translate(2*$obj.cw, 0)
-				$obj.prev_clock.setPen($obj.stall ? ($obj.type ? $g[49] : $g[47]) : $g[48])
+				$obj.prev_clock.setPen($obj.stall ? ($obj.type ? $g[50] : $g[48]) : $g[49])
 				if (wait($stack[$fp+2]*2))
 				return
 				$pc = 13

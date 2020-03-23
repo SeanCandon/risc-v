@@ -59,6 +59,9 @@ num sc_stage = 0;
 num sc_go = 0;
 num sc_stall = 0;
 
+num sc_buff[3];
+num bus_stall = 0;
+
 //
 // index for tag or -1 if none
 //
@@ -412,7 +415,11 @@ function detectStall() {
       stall = DATA_STALL;
     }
 
-    if((regEX.vIns == SC) && (sc_go == 1)){
+    if((regEX.vIns == SC) && (sc_stage == 1)){
+      stall = DATA_STALL;
+    }
+
+    if(bus_stall == 1){
       stall = DATA_STALL;
     }
 
@@ -591,16 +598,22 @@ function idExec() {																// {joj 14/11/17}
 	if ((instrIsJump(regID.vIns) || instrIsBranch(regEX.vIns)) && (stall != DATA_STALL))				// {joj 10/12/16}
 		updBTB();
 															// {joj 9/12/16}
-
-    if (stall == NO_STALL) {
-      regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
-    } else if (condBranchStall==0 && multiStall==0 && sc_stall==0){
-      // if(regID.vIns == JAL){
-      //   regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
-      // }
-      // else{
-        regEX.setNewValue(STALL, 0, 0, 0);
-      //}
+    if(bus_stall == 0){
+      if (stall == NO_STALL) {
+        regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
+      } else if (condBranchStall==0 && multiStall==0 && sc_stall==0){
+        // if(regID.vIns == JAL){
+        //   regEX.setNewValue(regID.vIns, regID.vRdt, regID.vRs1, regID.vRs2);
+        // }
+        // else{
+          regEX.setNewValue(STALL, 0, 0, 0);
+        //}
+      }
+    }
+    else{
+      regEX.setNewValue(regEX.vIns, regEX.vRdt, regEX.vRs1, regEX.vRs2);
+      regMA.setNewValue(STALL, 0, 0, 0);
+      //bus_stall = 0;
     }
     //if(instrIsNonZeroBranch(regID.vIns) == 0)
     wait(7);																	// {joj 4/11/12}
@@ -836,15 +849,20 @@ function exExec() {														// {joj 14/11/17}
             if(sc_stage == 0){
               op1 = regLF.value;
               clALU4.setPen(controlHLPen);
-              if (regOUT0.tagMatches(regEX.vRs1)) {
-                  mux6Src = apOUT0_MUX6;
-                  p1 = regOUT0.value;
-              } else if (regOUT1.tagMatches(regEX.vRs1)) {
-                  mux6Src = apOUT1_MUX6;
-                  p1 = regOUT1.value;
-              } else {
-                  mux6Src = apA_MUX6;
-                  p1 = regA.value;
+              if(bus_stall == 0){
+                if (regOUT0.tagMatches(regEX.vRs1)) {
+                    mux6Src = apOUT0_MUX6;
+                    p1 = regOUT0.value;
+                } else if (regOUT1.tagMatches(regEX.vRs1)) {
+                    mux6Src = apOUT1_MUX6;
+                    p1 = regOUT1.value;
+                } else {
+                    mux6Src = apA_MUX6;
+                    p1 = regA.value;
+                }
+              }
+              else{
+                bus_stall = 0;
               }
             }
             else{
@@ -873,8 +891,13 @@ function exExec() {														// {joj 14/11/17}
             if(sc_stage == 0){
                 op1 = regLF.value;
                 clALU4.setPen(controlHLPen);
-                mux6Src = apA_MUX6;
-                p1 = regA.value;
+                if(bus_stall == 0){
+                  mux6Src = apA_MUX6;
+                  p1 = regA.value;
+                }
+                else{
+                  bus_stall = 0;
+                }
             }
             else{
                 op1 = p1;
@@ -1104,7 +1127,7 @@ function exExec() {														// {joj 14/11/17}
       else{
           if(regEX.vIns == SC){
             if(sc_stage == 0){
-              result = instrExecute(SLT, op1, op2);
+              result = instrExecute(SLE, op1, op2);
               if(result == 0){
                 sc_stage = 1;
                 sc_go = 1;
@@ -1118,7 +1141,7 @@ function exExec() {														// {joj 14/11/17}
             else{
               result = op1;
               sc_stage = 0;
-              sc_go = 0;
+              sc_go = 1;
               sc_stall = 0;
             }
           }
@@ -1190,7 +1213,7 @@ function exExec() {														// {joj 14/11/17}
     // For stores, send correct operand to SMDR
   if ((regEX.vIns == ST) || (regEX.vIns == SC)) {  // {joj}
 
-    if((regEX.vIns == SC) && (sc_stage == 0)){
+    if((regEX.vIns == SC) && (sc_stage == 0) && (sc_stall == 1)){
 
     }
     else{
@@ -1243,10 +1266,10 @@ function exExec() {														// {joj 14/11/17}
       fork(apMUX8_SMDR.animate(40));                         		                         // {joj 1/2/06}
   }
 
-  if(regEX.vIns == SC && sc_stage == 1){
-    regLF.setNewValue(0);
-    regLF.update();
-  }
+  // if(regEX.vIns == SC && sc_stage == 1){
+  //   regLF.setNewValue(0);
+  //   regLF.update();
+  // }
 
   if(regEX.vIns == LR){
     regLF.setNewValue(1);
@@ -1392,21 +1415,36 @@ function maExec() {													// {joj 14/11/17}
 
       }
       else{
-        fork(apSMDR_Mem.animate(24));                          		// {joj 1/2/06}
-        apOUT0_Mem.animate(24);
+        if(sc_go == 1){
+          fork(apSMDR_Mem.animate(10));                          		// {joj 1/2/06}
+          apOUT0_Mem.animate(10);
+        }
       }                                         // {joj}
 
       if((regMA.vIns == SC) && (regEX.vIns == SC)){
-
+        if(parallel == 1 && sc_go == 1){
+          pollBus(regMA.vIns, regOUT0.value, regSMDR.value);
+        }
+        else if(parallel == 0){
+          clearLF();
+        }
       }
       else{
-        if(parallel == 0){
-            //memory[regOUT0.value % 4].update();
-            stack.store(regOUT0.value, regSMDR.value);
+        if(sc_go == 1){
+          if(parallel == 0){
+              //memory[regOUT0.value % 4].update();
+              stack.store(regOUT0.value, regSMDR.value);
+          }
+          else{
+            if(regMA.vIns == ST){
+              sendToMem(hart.toString(), ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
+            }
+            else{
+              storeBus(regMA.vIns, regOUT0.value, regSMDR.value);
+            }
         }
-        else{
-          string h = hart.toString();
-          sendToMem(h, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
+          // string h = hart.toString();
+          // sendToMem(h, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
         }
       }
 
@@ -1427,7 +1465,7 @@ function maExec() {													// {joj 14/11/17}
                 }
             }
             else{
-              h = hart.toString();
+              string h = hart.toString();
               sendToMem(h, ", ", regMA.vIns.toString(), ", ", regOUT0.value.toString(), ", ", regSMDR.value.toString());
             }
           } else {
@@ -1770,12 +1808,65 @@ function exec() {
 
 }
 
-Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
-  1, 1, blackPen, font, sprintf(""));
+Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 950, 450,
+  10, 10, blackPen, font, sprintf("wow"));
 
 when obj ~> eventMessage(string m){
-  num v = stringToNum(m);
-  regOUT1.setNewValue(v);
+
+  obj.setTxt(m);
+
+  if(m == "busy"){
+    bus_stall = 1;
+  }
+  else if(m == "not busy"){
+    //fork(storeBus(sc_buff[0], sc_buff[1], sc_buff[2]));
+    bus_stall = 0;
+    fork(clearLF());
+  }
+  else{
+    fork(bus_active());
+    num p = m.find(", ");
+		string nm = m.left(p);
+    num ins = stringToNum(nm);
+    m = m.right(-p-2);
+    num val = stringToNum(m);
+
+    if(ins == SC){
+      if(val == regLPAR.value){
+        fork(clearLF());
+      }
+    }
+    else if(ins == LD || ins == LR){
+      regOUT1.setNewValue(val);
+    }
+
+    //num v = stringToNum(m);
+    regOUT1.setNewValue(v);
+  }
+}
+
+function bus_active(){
+  apBus2.animate(5);
+  apToMem.animate(5);
+}
+
+function storeBus(num ins, num val1, num val2){
+  apBus1.animate(5);
+  apToMem.animate(5);
+  string h = hart.toString();
+  sendToMem(h, ", ", ins.toString(), ", ", val1.toString(), ", ", val2.toString());
+}
+
+function pollBus(num ins, num val1, num val2){
+  sc_buff[0] = ins;
+  sc_buff[1] = val1;
+  sc_buff[2] = val2;
+  sendToMem("busy?", ", ", hart.toString(), "", "", "", "");
+}
+
+function clearLF(){
+  regLF.setNewValue(0);
+  regLF.update();
 }
 
 // eof
