@@ -1816,7 +1816,7 @@ function exec() {
 }
 
 Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 950, 450,
-  10, 10, blackPen, font, sprintf("wow"));
+  10, 10, blackPen, font, sprintf(""));
 
 when obj ~> eventMessage(string m){
 
@@ -1867,8 +1867,11 @@ when obj ~> eventMessage(string m){
 }
 
 function bus_active(){
+  busBusyLabel.setOpacity(1);
   apBus2.animate(5);
   apToMem.animate(5);
+  wait(2);
+  busBusyLabel.setOpacity(0);
 }
 
 function storeBus(num ins, num val1, num val2){

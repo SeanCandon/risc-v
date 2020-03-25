@@ -42,10 +42,20 @@ num curr_loc = 0;
 
 Memory memory = Memory(500, 80);
 
+// AnimPipe toMem = AnimPipe();
+// toMem.resize(10);
+// toMem.addPoint(320, 250);
+// toMem.addPoint(500, 250);
+//
+// AnimPipe fromMem = AnimPipe();
+// fromMem.resize(10);
+// fromMem.addPoint(480, 250);
+// fromMem.addPoint(300, 250);
+
 // gobj needed by compiler to handle events. below rectangle created
 // just for purposes of handling incoming message events
 Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
-  10, 10, blackPen, font, sprintf("wow"));
+  10, 10, blackPen, font, sprintf(""));
 
 // incoming message event handler. Parses instruction from hart
 // and executes. In the event of a load instruction sends the
@@ -103,6 +113,8 @@ when obj ~> eventMessage(string m){
 			curr_ins = instr;
 			curr_loc = regv1;
 
+			//fork(executeInstr(origin, instr, regv1, regv2));
+
 			if(instr == ST){
 				memory.store(regv1, regv2);
 			}
@@ -119,6 +131,27 @@ when obj ~> eventMessage(string m){
 			}
 			bus_busy = 0;
 		}
+	}
+}
+
+function executeInstr(num orig, num ins, num r1, num r2){
+	num retval;
+	//toMem.animate(5);
+	if(ins == ST){
+		memory.store(r1, r2);
+	}
+	else if(ins == SC){
+		memory.store(r1, r2);
+	}
+	else if(ins == LD){
+		//fromMem.animate(5);
+		retval = memory.load(r1);
+		sendToHart(orig, ins.toString(), ", ", retval.toString());
+	}
+	else if(ins == LR){
+		//fromMem.animate(5);
+		retval = memory.load(r1);
+		sendToHart(orig, ins.toString(), ", ", retval.toString());
 	}
 }
 

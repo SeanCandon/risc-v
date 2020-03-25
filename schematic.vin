@@ -594,6 +594,9 @@ Rectangle busLabel = Rectangle2(0, 0, whitePen, whiteBrush, 795, 10, 10, 10, bla
 busLabel.setOpacity(0);
 Rectangle toFromMem = Rectangle2(0, 0, whitePen, whiteBrush, 880, 230, 10, 10, blackPen, font, sprintf("to/from memory"));
 toFromMem.setOpacity(0);
+Rectangle busBusyLabel = Rectangle2(0, 0, whitePen, whiteBrush, 880, 180, 10, 10, redPen, font, sprintf("Bus Busy"));
+busBusyLabel.setOpacity(0);
+
 
 AnimPipe apBus1 = AnimPipe();
 apBus1.resize(20);

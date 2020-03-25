@@ -24,7 +24,7 @@
 //
 
 // Number of instructions (excluding "stall" instruction)
-const num MAX_INSTR = 38;
+const num MAX_INSTR = 42;
 
 // No-op
 const num NOP = 0;
@@ -37,58 +37,62 @@ const num OR    = 4;    // Logical OR
 const num XOR   = 5;    // Logical exclusive OR
 const num SLL   = 6;    // Logical shift left
 const num SRL   = 7;    // Logical shift right
-const num SLT   = 8;    // Set if less than
-const num SGT   = 9;    // Set if greater than
-const num SLE   = 10;   // Set if less or equal
-const num SGE   = 11;   // Set if greater or equal
+const num SLA   = 8;
+const num SRA   = 9;
+const num SLT   = 10;    // Set if less than
+const num SGT   = 11;    // Set if greater than
+const num SLE   = 12;   // Set if less or equal
+const num SGE   = 13;   // Set if greater or equal
 
 // Arithmetic instructions (register-immediate)
-const num ADDi  = 12;
-const num SUBi  = 13;
-const num ANDi  = 14;
-const num ORi   = 15;
-const num XORi  = 16;
-const num SLLi  = 17;
-const num SRLi  = 18;
-const num SLTi  = 19;
-const num SGTi  = 20;
-const num SLEi  = 21;
-const num SGEi  = 22;
+const num ADDi  = 14;
+const num SUBi  = 15;
+const num ANDi  = 16;
+const num ORi   = 17;
+const num XORi  = 18;
+const num SLLi  = 19;
+const num SRLi  = 20;
+const num SLAi  = 21;
+const num SRAi  = 22;
+const num SLTi  = 23;
+const num SGTi  = 24;
+const num SLEi  = 25;
+const num SGEi  = 26;
 
 // Load/store instructions
-const num LD    = 23;   // Load             // joj
-const num ST    = 24;   // Store            // joj
+const num LD    = 27;   // Load             // joj
+const num ST    = 28;   // Store            // joj
 
 // Control instructions
-const num BEQ = 25;     // Branch if equal to
-const num BNE = 26;     // Branch if not equal to
-const num BLT = 27;     // Branch if less than
-const num BGE = 28;     // Branch if greater than or equal to
+const num BEQ = 29;     // Branch if equal to
+const num BNE = 30;     // Branch if not equal to
+const num BLT = 31;     // Branch if less than
+const num BGE = 32;     // Branch if greater than or equal to
 
-const num J     = 29;   // Jump
-const num JAL   = 30;   // Jump and link
-const num JR    = 31;   // Jump register
-const num JALR  = 32;   // Jump and link register
+const num J     = 33;   // Jump
+const num JAL   = 34;   // Jump and link
+const num JR    = 35;   // Jump register
+const num JALR  = 36;   // Jump and link register
 
-const num MUL = 33;
-const num DIV = 34;
-const num REM = 35;
+const num MUL = 37;
+const num DIV = 38;
+const num REM = 39;
 
-const num LR = 36;
-const num SC = 37;
+const num LR = 40;
+const num SC = 41;
 
 // Halt
-const num HALT  = 38;   // Stop running
+const num HALT  = 42;   // Stop running
 
 // "Stall" and "Empty" instruction (aliases for NOP)
-const num STALL = 39;
-const num EMPTY = 40;
+const num STALL = 43;
+const num EMPTY = 44;
 
 //
 // Instruction names
 //
 
-string instrNames[40];
+string instrNames[44];
 
 // NOP
 instrNames[NOP] = "NOP";
@@ -101,6 +105,8 @@ instrNames[OR]  = "OR";     // Logical OR
 instrNames[XOR] = "XOR";    // Logical exclusive OR
 instrNames[SLL] = "SLL";    // Logical shift left
 instrNames[SRL] = "SRL";    // Logical shift right
+instrNames[SLA] = "SLA";
+instrNames[SRA] = "SRA";
 instrNames[SLT] = "SLT";    // Set if less than
 instrNames[SGT] = "SGT";    // Set if greater than
 instrNames[SLE] = "SLE";    // Set if less or equal
@@ -114,6 +120,8 @@ instrNames[ORi]     = "ORi";
 instrNames[XORi]    = "XORi";
 instrNames[SLLi]    = "SLLi";
 instrNames[SRLi]    = "SRLi";
+instrNames[SLAi]    = "SLAi";
+instrNames[SRAi]    = "SRAi";
 instrNames[SLTi]    = "SLTi";
 instrNames[SGTi]    = "SGTi";
 instrNames[SLEi]    = "SLEi";
@@ -288,6 +296,10 @@ num function instrExecute(num instr, num op1, num op2) {
         return (op1 << op2) & 0xFF;
     else if (instr == SRL || instr == SRLi)
         return (op1 >> op2) & 0xFF;
+    else if (instr == SLA || instr == SLAi)
+        return arithShiftLeft(op1, op2);
+    else if (instr == SRA || instr == SRAi)
+        return arithShiftRight(op1, op2);
     else if (instr == SLT || instr == SLTi)
         return op1 < op2 ? 1 : 0;
     else if (instr == SGT || instr == SGTi)
@@ -310,6 +322,24 @@ num function instrExecute(num instr, num op1, num op2) {
         return op2;
     else
         return 0xEE;
+}
+
+num function arithShiftLeft(num a, num b){
+  num mask = 0x01;
+  for(num i=0; i<b; i++){
+    a = a << 1;
+    a = a | mask;
+  }
+  return a;
+}
+
+num function arithShiftRight(num a, num b){
+  num mask = 0x80;
+  for(num i=0; i<b; i++){
+    a = a >> 1;
+    a = a | mask;
+  }
+  return a;
 }
 
 // eof

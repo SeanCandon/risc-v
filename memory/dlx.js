@@ -901,7 +901,7 @@ function dlx(vplayer) {
 
 	function Memory(_x, _y) {
 		VObj.call(this)
-		this.w = 130
+		this.w = 100
 		this.h = 20
 		this.length = MEMORY_ADDRESSES
 		this.x = _x
@@ -915,7 +915,7 @@ function dlx(vplayer) {
 		this.outer_h = (this.h*this.length+20)
 		this.x=this.x+10
 		this.y=this.y+10
-		this.w=this.w/3
+		this.w=this.w-30
 		this.outer = new Rectangle2($g[0], 0, 0, $g[1], $g[47], this.outer_x, this.outer_y, this.outer_w, this.outer_h)
 		this.hex = newArray(this.length*this.addr_size)
 		this.chars = newArray(18)
@@ -943,17 +943,6 @@ function dlx(vplayer) {
 			this.stack[this.j]=this.r
 			this.y+=this.h
 		}
-		this.reserved = newArray(this.length)
-		for (this.i=0; this.i<this.length; this.i++) {
-			this.reserved[this.i]=2
-		}
-		this.y=_y+10
-		this.reservedText = newArray(this.length)
-		for (this.j=(this.length-1); this.j>=0; this.j--) {
-			this.rec = new Rectangle2($g[0], 0, 0, $g[4], $g[47], this.x+this.w+15, this.y, this.w, this.h, $g[1], $g[46], sprintf("unreserved"))
-			this.reservedText[this.j]=this.rec
-			this.y+=this.h
-		}
 	}
 	Memory.prototype = Object.create(VObj.prototype)
 
@@ -963,29 +952,8 @@ function dlx(vplayer) {
 		this.stack[pos].update()
 	}
 
-	Memory.prototype.store_cond = function(addr, val, hart) {
-		let pos = floor((addr/4))%MEMORY_ADDRESSES
-		if (this.reserved[pos]==hart || this.reserved[pos]==2) {
-			this.stack[pos].setNewValue(val)
-			this.stack[pos].update()
-		}
-		this.reserved[pos]=2
-		this.reservedText[pos].setTxt("unreserved")
-	}
-
 	Memory.prototype.load = function(addr) {
 		let pos = floor((addr/4))%MEMORY_ADDRESSES
-		return this.stack[pos].value
-	}
-
-	Memory.prototype.load_res = function(addr, hart) {
-		let pos = floor((addr/4))%MEMORY_ADDRESSES
-		this.reserved[pos]=hart
-		if (hart==HART_1) {
-			this.reservedText[pos].setTxt("reserved by h1")
-		} else {
-			this.reservedText[pos].setTxt("reserved by h2")
-		}
 		return this.stack[pos].value
 	}
 
@@ -1131,6 +1099,16 @@ function dlx(vplayer) {
 		}
 	}
 
+	AnimPipe.prototype.resize = function(neww) {
+		this.w=neww
+		this.bgPen0=new SolidPen(SOLID, neww, GRAY192, BEVEL_JOIN|BUTT_END)
+		this.bgPen1=new SolidPen(SOLID, neww, GRAY192, BEVEL_JOIN|ARROW60_END)
+		this.fgPen0=new SolidPen(SOLID, neww, RED, BEVEL_JOIN|BUTT_END)
+		this.fgPen1=new SolidPen(SOLID, neww, RED, BEVEL_JOIN|ARROW60_END)
+		this.bgLine=new Line($g[0], $g[20], 0, this.bgPen1, 0, 0)
+		this.fgLine=new Line($g[0], $g[21], 0, this.fgPen0, 0, 0)
+	}
+
 	AnimPipe.prototype.setPoint = function(n, x, y) {
 		this.px[n]=x
 		this.py[n]=y
@@ -1240,6 +1218,24 @@ function dlx(vplayer) {
 				}
 				$g[37]=0
 			}
+		}
+	}
+
+	function executeInstr(orig, ins, r1, r2) {
+		let retval
+		if (ins==ST) {
+			$g[60].store(r1, r2)
+		} else
+		if (ins==SC) {
+			$g[60].store(r1, r2)
+		} else
+		if (ins==LD) {
+			retval=$g[60].load(r1)
+			sendToHart(orig, ins.toString(), ", ", retval.toString())
+		} else
+		if (ins==LR) {
+			retval=$g[60].load(r1)
+			sendToHart(orig, ins.toString(), ", ", retval.toString())
 		}
 	}
 
@@ -1365,7 +1361,7 @@ function dlx(vplayer) {
 				$g[58] = 0
 				$g[59] = 0
 				$g[60] = new Memory(500, 80)
-				$g[61] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf("wow"))
+				$g[61] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf(""))
 				$g[61].addEventHandler("eventMessage", this, $eh12)
 				returnf(0)
 				continue

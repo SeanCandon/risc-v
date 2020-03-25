@@ -4,7 +4,7 @@
 
 class Memory(num _x, num _y){
 
-  num w = 130;
+  num w = 100;
 	num h = 20;
 	num length = MEMORY_ADDRESSES;
 	num x = _x;
@@ -21,7 +21,7 @@ class Memory(num _x, num _y){
 
 	x = x + 10;
 	y = y + 10;
-	w = w/3;
+	w = w-30;
 
 	Rectangle outer = Rectangle2(0, 0, blackPen, stackBrush, outer_x, outer_y, outer_w, outer_h);
 
@@ -52,19 +52,19 @@ class Memory(num _x, num _y){
 		y += h;
 	}
 
-  num reserved[length];
-  for(i=0; i<length; i++){
-    reserved[i] = 2;
-  }
-
-  y = _y+10;
-  Rectangle reservedText[length];
-  for(j=(length-1); j>=0; j--) {
-    Rectangle rec = Rectangle2(0, 0, whitePen, stackBrush, x+w+15, y,
-  		w, h, blackPen, componentFont, sprintf("unreserved"));
-		reservedText[j] = rec;
-		y += h;
-	}
+  // num reserved[length];
+  // for(i=0; i<length; i++){
+  //   reserved[i] = 2;
+  // }
+  //
+  // y = _y+10;
+  // Rectangle reservedText[length];
+  // for(j=(length-1); j>=0; j--) {
+  //   Rectangle rec = Rectangle2(0, 0, whitePen, stackBrush, x+w+15, y,
+  // 		w, h, blackPen, componentFont, sprintf("unreserved"));
+	// 	reservedText[j] = rec;
+	// 	y += h;
+	// }
 
   function store(num addr, num val) {
 		num pos = floor((addr/4))%MEMORY_ADDRESSES;
@@ -72,34 +72,34 @@ class Memory(num _x, num _y){
 		stack[pos].update();
 	}
 
-  function store_cond(num addr, num val, num hart){
-    num pos = floor((addr/4))%MEMORY_ADDRESSES;
-    if(reserved[pos] == hart || reserved[pos]==2){
-      stack[pos].setNewValue(val);
-      stack[pos].update();
-    }
-    //invalidate reservation
-    reserved[pos] = 2;
-    reservedText[pos].setTxt("unreserved");
-  }
+  // function store_cond(num addr, num val, num hart){
+  //   num pos = floor((addr/4))%MEMORY_ADDRESSES;
+  //   if(reserved[pos] == hart || reserved[pos]==2){
+  //     stack[pos].setNewValue(val);
+  //     stack[pos].update();
+  //   }
+  //   //invalidate reservation
+  //   reserved[pos] = 2;
+  //   reservedText[pos].setTxt("unreserved");
+  // }
 
   num function load(num addr){
     num pos = floor((addr/4))%MEMORY_ADDRESSES;
     return stack[pos].value;
   }
 
-  num function load_res(num addr, num hart){
-    num pos = floor((addr/4))%MEMORY_ADDRESSES;
-    //caller hart reserves mem address
-    reserved[pos] = hart;
-    if(hart == HART_1){
-      reservedText[pos].setTxt("reserved by h1");
-    }
-    else{
-      reservedText[pos].setTxt("reserved by h2");
-    }
-    return stack[pos].value;
-  }
+  // num function load_res(num addr, num hart){
+  //   num pos = floor((addr/4))%MEMORY_ADDRESSES;
+  //   //caller hart reserves mem address
+  //   reserved[pos] = hart;
+  //   if(hart == HART_1){
+  //     reservedText[pos].setTxt("reserved by h1");
+  //   }
+  //   else{
+  //     reservedText[pos].setTxt("reserved by h2");
+  //   }
+  //   return stack[pos].value;
+  // }
 }
 
 num function countHex(string h[], num index, num length, num digits, string chars[], string pref){
