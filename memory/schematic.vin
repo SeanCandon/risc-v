@@ -37,6 +37,9 @@ Font arialBold10 = Font("Calibri", 10, BOLD);
 const num LOGOW = 20;
 const num LOGOH = 20;
 
+num curr_ins = 0;
+num curr_loc = 0;
+
 Memory memory = Memory(500, 80);
 
 // gobj needed by compiler to handle events. below rectangle created
@@ -67,7 +70,10 @@ when obj ~> eventMessage(string m){
 				bus_busy = 1;
 			}
 			else{
-				sendToHart(orig, "busy", "", "");
+				if(curr_ins == SC){
+					sendToHart(orig, "busy1", ", ", curr_loc.toString());
+				}
+				sendToHart(orig, "busy2", "", "");
 				//bus_busy = 0;
 			}
 		}
@@ -93,6 +99,9 @@ when obj ~> eventMessage(string m){
 			else{
 				sendToHart(HART_1, instr.toString(), ", ", regv1.toString());
 			}
+
+			curr_ins = instr;
+			curr_loc = regv1;
 
 			if(instr == ST){
 				memory.store(regv1, regv2);

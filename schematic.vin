@@ -584,26 +584,31 @@ apOne_LF.addPoint(530, 130);
 Txt(valuesLayer, HLEFT | VTOP, 552, 125, 0, font, "1");
 
 // Stack
-Stack stack = Stack(760, 60);
+Stack stack = Stack(800, 60);
 
 //stack.setFP(10);
 //stack.createFrame(2, 1);
 
 //Memory Bus
+Rectangle busLabel = Rectangle2(0, 0, whitePen, whiteBrush, 795, 10, 10, 10, blackPen, font, sprintf("Memory Bus"));
+busLabel.setOpacity(0);
+Rectangle toFromMem = Rectangle2(0, 0, whitePen, whiteBrush, 880, 230, 10, 10, blackPen, font, sprintf("to/from memory"));
+toFromMem.setOpacity(0);
+
 AnimPipe apBus1 = AnimPipe();
 apBus1.resize(20);
-apBus1.addPoint(760, 70);
-apBus1.addPoint(760, 450);
+apBus1.addPoint(800, 70);
+apBus1.addPoint(800, 450);
 AnimPipe apBus2 = AnimPipe();
 apBus2.resize(20);
-apBus2.addPoint(760, 410);
-apBus2.addPoint(760, 30);
+apBus2.addPoint(800, 410);
+apBus2.addPoint(800, 30);
 apBus1.setOpacity(0);
 apBus2.setOpacity(0);
 
 AnimPipe apToMem = AnimPipe();
 apToMem.resize(10);
-apToMem.addPoint(770, 250);
+apToMem.addPoint(810, 250);
 apToMem.addPoint(950, 250);
 apToMem.setOpacity(0);
 
@@ -631,14 +636,14 @@ AnimPipe apOUT0_Mem = AnimPipe();
 apOUT0_Mem.addPoint(620, 230);
 apOUT0_Mem.addPoint(630, 230);
 apOUT0_Mem.addPoint(630, 110);
-apOUT0_Mem.addPoint(760, 110);
+apOUT0_Mem.addPoint(800, 110);
 
 AnimPipe apSMDR_Mem = AnimPipe();
 apSMDR_Mem.addPoint(640, 330);
-apSMDR_Mem.addPoint(760, 330);
+apSMDR_Mem.addPoint(800, 330);
 
 AnimPipe apMem_MUX9 = AnimPipe();
-apMem_MUX9.addPoint(760, 90);
+apMem_MUX9.addPoint(800, 90);
 apMem_MUX9.addPoint(650, 90);
 apMem_MUX9.addPoint(650, 220);
 apMem_MUX9.addPoint(670, 220);
@@ -791,6 +796,8 @@ function parallelMode(){
 		apBus1.setOpacity(1);
 		apBus2.setOpacity(1);
 		apToMem.setOpacity(1);
+		busLabel.setOpacity(1);
+		toFromMem.setOpacity(1);
 		// apOUT0_LPAR.setOpacity(1);
 		// apOUT0_LF.setOpacity(1);
 		// regLPAR.setOpacity(1);
@@ -802,6 +809,8 @@ function parallelMode(){
 		apBus1.setOpacity(0);
 		apBus2.setOpacity(0);
 		apToMem.setOpacity(0);
+		busLabel.setOpacity(0);
+		toFromMem.setOpacity(0);
 		// apOUT0_LPAR.setOpacity(0);
 		// apOUT0_LF.setOpacity(0);
 		// regLPAR.setOpacity(0);
@@ -1265,18 +1274,22 @@ if (example == 0) {
 } else if (example == 2) {                          // {joj}
 
 		//test parallel 1
-    im.setValue(0, ADDi, 1, 0, 9);
-		im.setValue(4, SC, 1, 0, 0x1C);
-		im.setValue(8, LR, 3, 0, 0x1C);
+		regFile[3].setValue(8);
+		regFile[5].setValue(12);
+		im.setValue(0, LR, 4, 0, 3);
+		im.setValue(4, SC, 1, 5, 3);
 
 
 } else if (example == 3) {                          // {joj}
 
 		//test parallel 2
-		im.setValue(0, ADDi, 1, 0, 3);
-		im.setValue(4, SC, 1, 0, 0x1C);
-		im.setValue(8, LR, 4, 0, 0x1C);
-		im.setValue(0x18, SC, 1, 0, 0x1C);
+		regFile[3].setValue(8);
+		regFile[5].setValue(6);
+		im.setValue(0, LR, 4, 0, 3);
+		im.setValue(4, NOP, 0, 0, 0);
+		im.setValue(8, NOP, 0, 0, 0);
+		im.setValue(12, SC, 1, 5, 3);
+
 
 } else if (example == 4) {
 

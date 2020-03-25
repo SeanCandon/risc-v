@@ -1032,7 +1032,7 @@ function dlx(vplayer) {
 		this.alu = new Polygon($g[0], 0, ABSOLUTE, $g[1], $g[45], x, y, 0, 0, w, h/4, w, 3*h/4, 0, h, 0, 5*h/8, w/2, h/2, 0, 3*h/8)
 		new Rectangle2($g[0], 0, 0, 0, 0, x, y-10, w, 10, 0, $g[46], "ALU")
 		this.op = ""
-		this.txtOp = new Rectangle($g[0], $g[19], 0, 0, $g[11], x, y+h/2, 0, -h/12, 2*w/3, h/6, $g[4], $g[46], this.op)
+		this.txtOp = new Rectangle($g[0], $g[19], 0, 0, $g[11], x, y+h/2, 0, -h/12, 2*w/2, h/6, $g[4], $g[46], this.op)
 		this.txtOp.setOpacity(0)
 		this.txtOp.setRounded(2, 2)
 		this.txtResult = new Rectangle($g[0], $g[21], 0, $g[1], $g[13], x+3*w/4, y+h/2, 0, -h/12, w/2, h/6, $g[1], $g[46])
@@ -1186,7 +1186,7 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
-		$g[59].setTxt(m)
+		$g[61].setTxt(m)
 		if (m=="close") {
 			endParallel()
 		} else {
@@ -1199,7 +1199,10 @@ function dlx(vplayer) {
 					sendToHart(orig, "not busy", "", "")
 					$g[37]=1
 				} else {
-					sendToHart(orig, "busy", "", "")
+					if ($g[58]==SC) {
+						sendToHart(orig, "busy1", ", ", $g[59].toString())
+					}
+					sendToHart(orig, "busy2", "", "")
 				}
 			} else {
 				let origin = stringToNum(nm)
@@ -1219,18 +1222,20 @@ function dlx(vplayer) {
 				} else {
 					sendToHart(HART_1, instr.toString(), ", ", regv1.toString())
 				}
+				$g[58]=instr
+				$g[59]=regv1
 				if (instr==ST) {
-					$g[58].store(regv1, regv2)
+					$g[60].store(regv1, regv2)
 				} else
 				if (instr==SC) {
-					$g[58].store(regv1, regv2)
+					$g[60].store(regv1, regv2)
 				} else
 				if (instr==LD) {
-					retval=$g[58].load(regv1)
+					retval=$g[60].load(regv1)
 					sendToHart(origin, instr.toString(), ", ", retval.toString())
 				} else
 				if (instr==LR) {
-					retval=$g[58].load(regv1)
+					retval=$g[60].load(regv1)
 					sendToHart(origin, instr.toString(), ", ", retval.toString())
 				}
 				$g[37]=0
@@ -1286,7 +1291,7 @@ function dlx(vplayer) {
 				$g[34] = 0
 				$g[35] = 0
 				$g[36] = 0
-				$g[37] = 1
+				$g[37] = 0
 				getMessage()
 				newHart()
 				$g[38] = newArray(40)
@@ -1357,9 +1362,11 @@ function dlx(vplayer) {
 				$g[55] = new SolidPen(DASH, 1, DARK_BLUE, ROUND_START|ROUND_JOIN|ROUND_END)
 				$g[56] = new SolidPen(DOT, THIN, BLACK)
 				$g[57] = new Font("Calibri", 10, BOLD)
-				$g[58] = new Memory(500, 80)
-				$g[59] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf("wow"))
-				$g[59].addEventHandler("eventMessage", this, $eh12)
+				$g[58] = 0
+				$g[59] = 0
+				$g[60] = new Memory(500, 80)
+				$g[61] = new Rectangle2($g[0], 0, 0, $g[4], $g[12], 20, 20, 10, 10, $g[1], $g[17], sprintf("wow"))
+				$g[61].addEventHandler("eventMessage", this, $eh12)
 				returnf(0)
 				continue
 			case 2:

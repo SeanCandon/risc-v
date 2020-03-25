@@ -64,13 +64,13 @@ class ALU(num x, num y, num w, num h) {
         else if (vIns == SRL || vIns == SRLi)
             op = "SRL"
         else if (vIns == SLT || vIns == SLTi)
-            op = "LT"
+            op = "SLT"
         else if (vIns == SGT || vIns == SGTi)
-            op = "GT"
+            op = "SGT"
         else if (vIns == SLE || vIns == SLEi)
-            op = "LE"
+            op = "SLE"
         else if (vIns == SGE || vIns == SGEi)
-            op = "GE"
+            op = "SGE"
         else if (vIns == LD || vIns == ST)          // joj
             op = "ADD"
         else if (vIns == JAL || vIns == JALR)

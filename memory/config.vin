@@ -107,7 +107,7 @@ num locked = 0;         //
 num instrCount = 0;     //
 num tickCount = 0;      //
 
-num bus_busy = 1;
+num bus_busy = 0;
 
 getMessage();
 

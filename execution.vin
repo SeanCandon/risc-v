@@ -1272,6 +1272,7 @@ function exExec() {														// {joj 14/11/17}
   // }
 
   if(regEX.vIns == LR){
+    apOne_LF.animate(5);
     regLF.setNewValue(1);
     fork(regLF.update());
   }
@@ -1281,6 +1282,11 @@ function exExec() {														// {joj 14/11/17}
       if(regEX.vIns == MUL){
         alu.txtOp.setTxt(noCycles.toString());
         alu.txtOp.setOpacity(1);
+      }
+      else if(regEX.vIns == SC){
+        if((sc_go == 1 && sc_stage == 1) || (sc_go == 0 && sc_stage == 0)){
+          alu.setTxtOp(SLE);
+        }
       }
       else{
         alu.setTxtOp(regEX.vIns);
@@ -1310,7 +1316,7 @@ function exExec() {														// {joj 14/11/17}
           //wait(5);
           //regA.update();
         }
-        wait(20);
+        wait(15);
                                                           // {joj 29/10/06}
         apALU_OUT0.animate(10);
         if(regEX.vIns == LR){
@@ -1816,31 +1822,45 @@ when obj ~> eventMessage(string m){
 
   obj.setTxt(m);
 
-  if(m == "busy"){
-    bus_stall = 1;
-  }
-  else if(m == "not busy"){
+  // if(m == "busy"){
+  //   bus_stall = 1;
+  // }
+  if(m == "not busy"){
     //fork(storeBus(sc_buff[0], sc_buff[1], sc_buff[2]));
     bus_stall = 0;
     fork(clearLF());
   }
   else{
     fork(bus_active());
-    num p = m.find(", ");
-		string nm = m.left(p);
-    num ins = stringToNum(nm);
-    m = m.right(-p-2);
-    num val = stringToNum(m);
+    if(m == "busy2"){
+      bus_stall = 1;
+    }
+    else{
+      num p = m.find(", ");
+  		string nm = m.left(p);
+      if(nm == "busy1"){
+        bus_stall = 1;
+        m = m.right(-p-2);
+        num value = stringToNum(m);
+        if(value == regLPAR.value){
+          fork(clearLF());
+        }
+      }
+      else{
+        num ins = stringToNum(nm);
+        m = m.right(-p-2);
+        num val = stringToNum(m);
 
-    if(ins == SC){
-      if(val == regLPAR.value){
-        fork(clearLF());
+        if(ins == SC){
+          if(val == regLPAR.value){
+            fork(clearLF());
+          }
+        }
+        else if(ins == LD || ins == LR){
+          fork(parLoad(val));
+        }
       }
     }
-    else if(ins == LD || ins == LR){
-      fork(parLoad(val));
-    }
-
     //num v = stringToNum(m);
     //regOUT1.setNewValue(v);
   }
@@ -1866,6 +1886,7 @@ function pollBus(num ins, num val1, num val2){
 }
 
 function clearLF(){
+  fork(apZero_LF.animate(5));
   regLF.setNewValue(0);
   regLF.update();
 }
