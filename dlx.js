@@ -1983,9 +1983,8 @@ function dlx(vplayer) {
 				}
 			} else
 			if (ins==LD || ins==LR) {
-				$g[191].setNewValue(val)
+				fork(448, $obj, val)
 			}
-			$g[191].setNewValue($g[194])
 		}
 	}
 
@@ -2826,7 +2825,7 @@ function dlx(vplayer) {
 				$g[57].addEventHandler("eventMB", this, $eh22)
 				$g[77].addEventHandler("eventEE", this, $eh23)
 				$g[77].addEventHandler("eventMB", this, $eh24)
-				callf(448, $obj)
+				callf(452, $obj)
 				continue
 			case 32:
 				returnf(0)
@@ -4477,13 +4476,13 @@ function dlx(vplayer) {
 				callf(39, $g[187], 24)
 				continue
 			case 320:
-				callf(39, $g[189], 24)
-				continue
-			case 321:
 				if (!($g[35]==0)) {
 					$pc = 325
 					continue
 				}
+				callf(39, $g[189], 24)
+				continue
+			case 321:
 				$g[179].highlight($g[172].value%MEMORY_ADDRESSES)
 				if (!($g[171].vRdt==8)) {
 					$pc = 322
@@ -5066,45 +5065,60 @@ function dlx(vplayer) {
 				returnf(0)
 				continue
 			case 448:
-				enterf(0);	// run
-				if (wait(1))
+				enterf(0);	// parLoad
+				if (wait(5))
 				return
 				$pc = 449
 			case 449:
+				callf(39, $g[189], 5)
+				continue
+			case 450:
+				$g[191].setNewValue($stack[$fp-3])
+				callf(35, $g[191])
+				continue
+			case 451:
+				returnf(1)
+				continue
+			case 452:
+				enterf(0);	// run
+				if (wait(1))
+				return
+				$pc = 453
+			case 453:
 				$g[36]=1
 				setlocked()
-				$pc = 450
-			case 450:
+				$pc = 454
+			case 454:
 				if (!(1)) {
-					$pc = 455
+					$pc = 459
 					continue
 				}
 				fork(45, $g[79], ($g[28]==PIPELINING_ENABLED) ? 80 : 400)
 				callf(435, $obj)
 				continue
-			case 451:
+			case 455:
 				if (!((($g[190].vIns==HALT) && ($g[28]==PIPELINING_ENABLED)) || (($g[100].vIns==HALT) && ($g[28]==PIPELINING_DISABLED)))) {
-					$pc = 453
+					$pc = 457
 					continue
 				}
 				stop()
 				if (!($g[196])) {
-					$pc = 452
+					$pc = 456
 					continue
 				}
-				$pc = 455
+				$pc = 459
 				continue
-				$pc = 452
-			case 452:
-				$pc = 453
-			case 453:
+				$pc = 456
+			case 456:
+				$pc = 457
+			case 457:
 				if (wait(1))
 				return
+				$pc = 458
+			case 458:
 				$pc = 454
-			case 454:
-				$pc = 450
 				continue
-			case 455:
+			case 459:
 				returnf(0)
 				continue
 			}

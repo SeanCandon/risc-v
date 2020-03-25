@@ -102,11 +102,11 @@ when obj ~> eventMessage(string m){
 			}
 			else if(instr == LD){
 				retval = memory.load(regv1);
-				sendToHart(origin, retval.toString(), "", "");
+				sendToHart(origin, instr.toString(), ", ", retval.toString());
 			}
 			else if(instr == LR){
 				retval = memory.load(regv1);
-				sendToHart(origin, retval.toString(), "", "");
+				sendToHart(origin, instr.toString(), ", ", retval.toString());
 			}
 			bus_busy = 0;
 		}

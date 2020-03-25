@@ -1454,8 +1454,9 @@ function maExec() {													// {joj 14/11/17}
 
           if ((regMA.vIns == LD) || (regMA.vIns == LR)) {
             apOUT0_Mem.animate(24);
-            apMem_MUX9.animate(24);
-            if(parallel == 0){                                    // {joj}
+            //apMem_MUX9.animate(24);
+            if(parallel == 0){
+                apMem_MUX9.animate(24);                             // {joj}
                 stack.highlight(regOUT0.value % MEMORY_ADDRESSES);
                 if(regMA.vRdt == 8){
                   stack.setFP(stack.getVal(regOUT0.value));
@@ -1837,11 +1838,11 @@ when obj ~> eventMessage(string m){
       }
     }
     else if(ins == LD || ins == LR){
-      regOUT1.setNewValue(val);
+      fork(parLoad(val));
     }
 
     //num v = stringToNum(m);
-    regOUT1.setNewValue(v);
+    //regOUT1.setNewValue(v);
   }
 }
 
@@ -1867,6 +1868,13 @@ function pollBus(num ins, num val1, num val2){
 function clearLF(){
   regLF.setNewValue(0);
   regLF.update();
+}
+
+function parLoad(num val){
+  wait(5);
+  apMem_MUX9.animate(5);
+  regOUT1.setNewValue(val);
+  regOUT1.update();
 }
 
 // eof

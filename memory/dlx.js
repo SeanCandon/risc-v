@@ -1227,11 +1227,11 @@ function dlx(vplayer) {
 				} else
 				if (instr==LD) {
 					retval=$g[58].load(regv1)
-					sendToHart(origin, retval.toString(), "", "")
+					sendToHart(origin, instr.toString(), ", ", retval.toString())
 				} else
 				if (instr==LR) {
 					retval=$g[58].load(regv1)
-					sendToHart(origin, retval.toString(), "", "")
+					sendToHart(origin, instr.toString(), ", ", retval.toString())
 				}
 				$g[37]=0
 			}
