@@ -19,7 +19,12 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //
 
-class ALU(num x, num y, num w, num h) {
+class ALU(num _x, num _y, num _w, num _h) {
+
+    num x = _x;
+    num y = _y;
+    num w = _w;
+    num h = _h;
 
     Polygon alu = Polygon(0, ABSOLUTE, blackPen, componentBrush,
             x, y,
@@ -41,6 +46,20 @@ class ALU(num x, num y, num w, num h) {
     Rectangle txtResult = Rectangle(activePipesLayer, 0, blackPen, yellowBrush, x+3*w/4, y+h/2, 0, -h/12, w/2, h/6, blackPen, componentFont);	// {joj 16/10/16}
     txtResult.setOpacity(0);
 	txtResult.setRounded(2, 2); // {joj 17/10/16}
+
+    function setTxtOpStr(string s){
+      op = s;
+      txtOp.setTxt(op);
+      txtOp.setOpacity(1);
+    }
+
+    function expand(){
+      txtOp = Rectangle(valuesLayer, 0, 0, redBrush, x, y+h/2, 0, -h/12, 3*w/3, h/6, whitePen, componentFont, op);		// {joj 16/10/16}
+      txtOp.setOpacity(0);
+  	  txtOp.setRounded(2, 2);
+    }
+
+
 
     //
     // setTxtOp

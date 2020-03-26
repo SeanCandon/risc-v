@@ -327,8 +327,9 @@ num function instrExecute(num instr, num op1, num op2) {
 num function arithShiftLeft(num a, num b){
   num mask = 0x01;
   for(num i=0; i<b; i++){
-    a = a << 1;
-    a = a | mask;
+    num temp = a & mask;
+    a = (a << 1) & 0xFF;
+    a = a | temp;
   }
   return a;
 }
@@ -336,8 +337,9 @@ num function arithShiftLeft(num a, num b){
 num function arithShiftRight(num a, num b){
   num mask = 0x80;
   for(num i=0; i<b; i++){
-    a = a >> 1;
-    a = a | mask;
+    num temp = a & mask;
+    a = (a >> 1) & 0xFF;
+    a = a | temp;
   }
   return a;
 }
