@@ -444,9 +444,9 @@ apOUT0_MUX6.addPoint(500, 190);
 
 AnimPipe apOUT0_LPAR = AnimPipe();
 apOUT0_LPAR.addPoint(610, 210);
-apOUT0_LPAR.addPoint(610, 90);
-apOUT0_LPAR.addPoint(480, 90);
-apOUT0_LPAR.addPoint(480, 110);
+apOUT0_LPAR.addPoint(610, 100);
+apOUT0_LPAR.addPoint(420, 100);
+apOUT0_LPAR.addPoint(420, 115);
 
 // AnimPipe apOUT0_A = AnimPipe();
 // apOUT0_A.addPoint(530, 210);
@@ -565,10 +565,10 @@ Txt(valuesLayer, HLEFT | VTOP, 633, 100, 0, font, "memory\naddress");        // 
 Txt(valuesLayer, HLEFT | VTOP, 685, 320, 0, font, "memory\ndata-in");        // {joj}
 Txt(valuesLayer, HLEFT | VTOP, 695, 100, 0, font, "memory\ndata-out");       // {joj}
 
-Register regLPAR = Register(460, 110, 40, 30, LEFT, "LPAR");
-Register regLF = Register(510, 110, 20, 30, TOP, "LF");
+Register regLPAR = Register(400, 115, 40, 30, LEFT, "LPAR");
+Register regLF = Register(510, 115, 20, 30, TOP, "LF");
 Line clALU4 = Line2(valuesLayer, ABSOLUTE, controlPen,
-	520, 140,
+	520, 145,
 	520, 200,
 	530, 200
 );
@@ -582,6 +582,23 @@ AnimPipe apOne_LF = AnimPipe();
 apOne_LF.addPoint(550, 130);
 apOne_LF.addPoint(530, 130);
 Txt(valuesLayer, HLEFT | VTOP, 552, 125, 0, font, "1");
+
+Rectangle comparitor = Rectangle2(0, 0, blackPen, yellowBrush, 470, 120, 20, 20, blackPen, componentFont, sprintf("="));
+comparitor.setRounded(2, 2);
+
+AnimPipe apLPAR_Comp = AnimPipe();
+apLPAR_Comp.addPoint(440, 135);
+apLPAR_Comp.addPoint(470, 135);
+
+AnimPipe apMem_Comp = AnimPipe();
+apMem_Comp.addPoint(800, 90);
+apMem_Comp.addPoint(450, 90);
+apMem_Comp.addPoint(450, 125);
+apMem_Comp.addPoint(470, 125);
+
+AnimPipe apComp_LF = AnimPipe();
+apComp_LF.addPoint(490, 130);
+apComp_LF.addPoint(510, 130);
 
 // Stack
 Stack stack = Stack(800, 60);
@@ -762,6 +779,10 @@ function resetWires() {
 
 		apZero_LF.reset();
 		apOne_LF.reset();
+
+		apLPAR_Comp.reset();
+		apMem_Comp.reset();
+		apComp_LF.reset();
 		//apOUT1_B.reset();
 		//apOUT0_B.reset();
     alu.txtOp.setOpacity(0);                            // hide ALU txtOp {joj 29/10/06}
@@ -1291,7 +1312,8 @@ if (example == 0) {
 		im.setValue(0, LR, 4, 0, 3);
 		im.setValue(4, NOP, 0, 0, 0);
 		im.setValue(8, NOP, 0, 0, 0);
-		im.setValue(12, SC, 1, 5, 3);
+		im.setValue(12, NOP, 0, 0, 0);
+		im.setValue(16, SC, 1, 5, 3);
 
 
 } else if (example == 4) {

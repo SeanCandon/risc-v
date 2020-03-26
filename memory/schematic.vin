@@ -102,12 +102,13 @@ when obj ~> eventMessage(string m){
 			num regv2 = stringToNum(m);
 
 			num retval;
-
-			if(origin == HART_1){
-				sendToHart(HART_2, instr.toString(), ", ", regv1.toString());
-			}
-			else{
-				sendToHart(HART_1, instr.toString(), ", ", regv1.toString());
+			if(instr == SC){
+				if(origin == HART_1){
+					sendToHart(HART_2, instr.toString(), ", ", regv1.toString());
+				}
+				else{
+					sendToHart(HART_1, instr.toString(), ", ", regv1.toString());
+				}
 			}
 
 			curr_ins = instr;

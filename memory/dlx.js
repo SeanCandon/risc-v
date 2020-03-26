@@ -96,7 +96,7 @@ function dlx(vplayer) {
 	const NO_ZERO_INTERLOCK = 2
 	const HART_1 = 1
 	const HART_2 = 2
-	const MAX_INSTR = 38
+	const MAX_INSTR = 42
 	const NOP = 0
 	const ADD = 1
 	const SUB = 2
@@ -105,39 +105,43 @@ function dlx(vplayer) {
 	const XOR = 5
 	const SLL = 6
 	const SRL = 7
-	const SLT = 8
-	const SGT = 9
-	const SLE = 10
-	const SGE = 11
-	const ADDi = 12
-	const SUBi = 13
-	const ANDi = 14
-	const ORi = 15
-	const XORi = 16
-	const SLLi = 17
-	const SRLi = 18
-	const SLTi = 19
-	const SGTi = 20
-	const SLEi = 21
-	const SGEi = 22
-	const LD = 23
-	const ST = 24
-	const BEQ = 25
-	const BNE = 26
-	const BLT = 27
-	const BGE = 28
-	const J = 29
-	const JAL = 30
-	const JR = 31
-	const JALR = 32
-	const MUL = 33
-	const DIV = 34
-	const REM = 35
-	const LR = 36
-	const SC = 37
-	const HALT = 38
-	const STALL = 39
-	const EMPTY = 40
+	const SLA = 8
+	const SRA = 9
+	const SLT = 10
+	const SGT = 11
+	const SLE = 12
+	const SGE = 13
+	const ADDi = 14
+	const SUBi = 15
+	const ANDi = 16
+	const ORi = 17
+	const XORi = 18
+	const SLLi = 19
+	const SRLi = 20
+	const SLAi = 21
+	const SRAi = 22
+	const SLTi = 23
+	const SGTi = 24
+	const SLEi = 25
+	const SGEi = 26
+	const LD = 27
+	const ST = 28
+	const BEQ = 29
+	const BNE = 30
+	const BLT = 31
+	const BGE = 32
+	const J = 33
+	const JAL = 34
+	const JR = 35
+	const JALR = 36
+	const MUL = 37
+	const DIV = 38
+	const REM = 39
+	const LR = 40
+	const SC = 41
+	const HALT = 42
+	const STALL = 43
+	const EMPTY = 44
 	const OP_TYPE_UNUSED = 0
 	const OP_TYPE_REG = 1
 	const OP_TYPE_IMM = 2
@@ -243,7 +247,7 @@ function dlx(vplayer) {
 	}
 
 	function instrIsArRR(instr) {
-		return ((instr>=ADD && instr<=SGE) || instrIsMulti(instr)) ? 1 : 0
+		return ((instr>=ADD && instr<=SGE) || instrIsMulti(instr) || (instr==SC)) ? 1 : 0
 	}
 
 	function instrIsArRI(instr) {
@@ -290,7 +294,7 @@ function dlx(vplayer) {
 	}
 
 	function instrOpTypeRs1(instr) {
-		if (instrIsNop(instr) || instrIsJumpR(instr) || isJorJAL(instr))
+		if (instrIsNop(instr) || instrIsJumpR(instr) || isJorJAL(instr) || instr==LR)
 		return OP_TYPE_UNUSED
 		else 
 		return OP_TYPE_REG
@@ -300,7 +304,7 @@ function dlx(vplayer) {
 		if (instrIsNop(instr))
 		return OP_TYPE_UNUSED
 		else 
-		if (instrIsArRR(instr) || instrIsJumpR(instr))
+		if (instrIsArRR(instr) || instrIsJumpR(instr) || instr==LR)
 		return OP_TYPE_REG
 		else 
 		return OP_TYPE_IMM
@@ -316,11 +320,17 @@ function dlx(vplayer) {
 		if (instrIsArRI(instr))
 		return sprintf("%s x%d,x%d,%02X", $g[38][instr], rdt, rs1, rs2)
 		else 
-		if (instrIsLoadOrStore(instr))
-		return sprintf("%s x%d,x%d+%02X", $g[38][instr], rdt, rs1, rs2)
+		if (instr==LD)
+		return sprintf("LD x%d,x%d+%02X", rdt, rs1, rs2)
+		else 
+		if (instr==ST)
+		return sprintf("ST x%d,x%d+%02X", rdt, rs1, rs2)
 		else 
 		if (instrIsBranch(instr))
 		return sprintf("%s x%d,x%d,%02X", $g[38][instr], rdt, rs1, rs2)
+		else 
+		if (instr==LR)
+		return sprintf("%s x%d, x%d", $g[38][instr], rdt, rs2)
 		else 
 		if (instr==J)
 		return sprintf("%s %02X", $g[38][instr], rs2)
@@ -365,6 +375,12 @@ function dlx(vplayer) {
 		if (instr==SRL || instr==SRLi)
 		return (op1>>op2)&255
 		else 
+		if (instr==SLA || instr==SLAi)
+		return arithShiftLeft(op1, op2)
+		else 
+		if (instr==SRA || instr==SRAi)
+		return arithShiftRight(op1, op2)
+		else 
 		if (instr==SLT || instr==SLTi)
 		return op1<op2 ? 1 : 0
 		else 
@@ -389,13 +405,31 @@ function dlx(vplayer) {
 		if (instr==BGE)
 		return op2>=op1 ? 1 : 0
 		else 
-		if (instrIsLoadOrStore(instr))
+		if (instr==LD || instr==ST || instr==LR)
 		return (se8(op1)+se8(op2))&255
 		else 
 		if (instr==JAL || instr==JALR)
 		return op2
 		else 
 		return 238
+	}
+
+	function arithShiftLeft(a, b) {
+		let mask = 1
+		for (let i = 0; i<b; i++) {
+			a=a<<1
+			a=a|mask
+		}
+		return a
+	}
+
+	function arithShiftRight(a, b) {
+		let mask = 128
+		for (let i = 0; i<b; i++) {
+			a=a>>1
+			a=a|mask
+		}
+		return a
 	}
 
 	function Instruction(_x, _y, _w, _h, _addr) {
@@ -1195,10 +1229,12 @@ function dlx(vplayer) {
 				m=m.right(-p-2)
 				let regv2 = stringToNum(m)
 				let retval
-				if (origin==HART_1) {
-					sendToHart(HART_2, instr.toString(), ", ", regv1.toString())
-				} else {
-					sendToHart(HART_1, instr.toString(), ", ", regv1.toString())
+				if (instr==SC) {
+					if (origin==HART_1) {
+						sendToHart(HART_2, instr.toString(), ", ", regv1.toString())
+					} else {
+						sendToHart(HART_1, instr.toString(), ", ", regv1.toString())
+					}
 				}
 				$g[58]=instr
 				$g[59]=regv1
@@ -1290,7 +1326,7 @@ function dlx(vplayer) {
 				$g[37] = 0
 				getMessage()
 				newHart()
-				$g[38] = newArray(40)
+				$g[38] = newArray(44)
 				$g[38][NOP]="NOP"
 				$g[38][ADD]="ADD"
 				$g[38][SUB]="SUB"
@@ -1299,6 +1335,8 @@ function dlx(vplayer) {
 				$g[38][XOR]="XOR"
 				$g[38][SLL]="SLL"
 				$g[38][SRL]="SRL"
+				$g[38][SLA]="SLA"
+				$g[38][SRA]="SRA"
 				$g[38][SLT]="SLT"
 				$g[38][SGT]="SGT"
 				$g[38][SLE]="SLE"
@@ -1310,6 +1348,8 @@ function dlx(vplayer) {
 				$g[38][XORi]="XORi"
 				$g[38][SLLi]="SLLi"
 				$g[38][SRLi]="SRLi"
+				$g[38][SLAi]="SLAi"
+				$g[38][SRAi]="SRAi"
 				$g[38][SLTi]="SLTi"
 				$g[38][SGTi]="SGTi"
 				$g[38][SLEi]="SLEi"

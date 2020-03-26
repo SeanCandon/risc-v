@@ -1842,9 +1842,10 @@ when obj ~> eventMessage(string m){
         bus_stall = 1;
         m = m.right(-p-2);
         num value = stringToNum(m);
-        if(value == regLPAR.value){
-          fork(clearLF());
-        }
+        // if(value == regLPAR.value){
+        //   fork(clearLF());
+        // }
+        fork(checkLPAR(value));
       }
       else{
         num ins = stringToNum(nm);
@@ -1852,9 +1853,7 @@ when obj ~> eventMessage(string m){
         num val = stringToNum(m);
 
         if(ins == SC){
-          if(val == regLPAR.value){
-            fork(clearLF());
-          }
+          fork(checkLPAR(val));
         }
         else if(ins == LD || ins == LR){
           fork(parLoad(val));
@@ -1889,16 +1888,26 @@ function pollBus(num ins, num val1, num val2){
 }
 
 function clearLF(){
-  fork(apZero_LF.animate(5));
+  //fork(apZero_LF.animate(5));
   regLF.setNewValue(0);
   regLF.update();
 }
 
 function parLoad(num val){
-  wait(5);
-  apMem_MUX9.animate(5);
+  //wait(5);
+  apMem_MUX9.animate(10);
   regOUT1.setNewValue(val);
   regOUT1.update();
+}
+
+function checkLPAR(num v){
+  fork(apMem_Comp.animate(5));
+  apLPAR_Comp.animate(5);
+  wait(5);
+  fork(apComp_LF.animate(5));
+  if(v == regLPAR.value){
+    fork(clearLF());
+  }
 }
 
 // eof
