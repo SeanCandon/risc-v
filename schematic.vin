@@ -573,10 +573,10 @@ Line clALU4 = Line2(valuesLayer, ABSOLUTE, controlPen,
 	530, 200
 );
 
-AnimPipe apZero_LF = AnimPipe();
-apZero_LF.addPoint(550, 120);
-apZero_LF.addPoint(530, 120);
-Txt(valuesLayer, HLEFT | VTOP, 552, 115, 0, font, "0");
+// AnimPipe apZero_LF = AnimPipe();
+// apZero_LF.addPoint(550, 120);
+// apZero_LF.addPoint(530, 120);
+// Txt(valuesLayer, HLEFT | VTOP, 552, 115, 0, font, "0");
 
 AnimPipe apOne_LF = AnimPipe();
 apOne_LF.addPoint(550, 130);
@@ -777,7 +777,7 @@ function resetWires() {
     apMUX7_ALU.reset();
 		apALU_OUT0.reset();
 
-		apZero_LF.reset();
+		//apZero_LF.reset();
 		apOne_LF.reset();
 
 		apLPAR_Comp.reset();
