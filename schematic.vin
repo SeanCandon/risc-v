@@ -581,7 +581,7 @@ Line clALU4 = Line2(valuesLayer, ABSOLUTE, controlPen,
 AnimPipe apOne_LF = AnimPipe();
 apOne_LF.addPoint(550, 130);
 apOne_LF.addPoint(530, 130);
-Txt(valuesLayer, HLEFT | VTOP, 552, 125, 0, font, "1");
+Rectangle oneTxt = Txt(valuesLayer, HLEFT | VTOP, 552, 125, 0, font, "1");
 
 Rectangle comparitor = Rectangle2(0, 0, blackPen, yellowBrush, 470, 120, 20, 20, blackPen, componentFont, sprintf("="));
 comparitor.setRounded(2, 2);
@@ -930,14 +930,14 @@ function showALUForwarding(num opacity) {  // {joj 20/8/10}
         //
         // NOT pipelined
         //
-        apA_MUX6.setPoint(0, 440, 205);
-        apA_MUX6.setPoint(1, 501, 205);
+        apA_MUX6.setPoint(0, 440, 210);
+        apA_MUX6.setPoint(1, 510, 210);
 
-        apB_MUX7.setPoint(0, (afMode) ? 440 : 430, 250);    // {joj 28/10/06}
-        apB_MUX7.setPoint(1, 490, 250);
+        apB_MUX7.setPoint(0, (afMode) ? 440 : 430, 240);    // {joj 28/10/06}
+        apB_MUX7.setPoint(1, 500, 240);
 
         apEX_MUX7.setPoint(2, 450, 260);
-        apEX_MUX7.setPoint(3, 410, 260);
+        apEX_MUX7.setPoint(3, 500, 260);
 
         apA_MUX6.setHead(0);
 
@@ -973,7 +973,7 @@ function showSMDRForwarding(num opacity) { // {joj 20/8/10}
     if (opacity == 0) {
 
         apB_MUX8.setPoint(1, 435, 330);
-        apB_MUX8.setPoint(2, 500, 330);
+        apB_MUX8.setPoint(2, 510, 330);
         apB_MUX8.setHead(0);
 
     } else {
@@ -988,6 +988,19 @@ function showSMDRForwarding(num opacity) { // {joj 20/8/10}
     apOUT0_MUX8.setOpacity(opacity);
     apOUT1_MUX8.setOpacity(opacity);
 
+}
+
+function showParallelComponents(num opacity){
+	regLPAR.setOpacity(opacity);
+	regLF.setOpacity(opacity);
+	apOUT0_LPAR.setOpacity(opacity);
+	apLPAR_Comp.setOpacity(opacity);
+	apOne_LF.setOpacity(opacity);
+	apMem_Comp.setOpacity(opacity);
+	comparitor.setOpacity(opacity);
+	apComp_LF.setOpacity(opacity);
+	oneTxt.setOpacity(opacity);
+	clALU4.setOpacity(opacity);
 }
 
 //
@@ -1026,25 +1039,28 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         //
         // not pipelined
         //
-        apPC_PC1.setPoint(1, 180, 230);
-        apPC_PC1.setPoint(2, 180, 240);
+        apPC_PC1.setPoint(1, 260, 230);
+        apPC_PC1.setPoint(2, 260, 240);
 
         apPC1_ADD4.setPoint(0, 260, 230);
         apPC1_ADDi.setPoint(0, 260, 230);
 
-        apID_EX.setPoint(1, 380, 390);
+        apID_EX.setPoint(1, 410, 390);
 
-        apRF_A.setPoint(1, 375, 205);
-        apRF_A.setPoint(2, 440, 205);
+        apRF_A.setPoint(1, 375, 210);
+        apRF_A.setPoint(2, 440, 210);
         apMUX5_B.setPoint(1, 440, 240);             // {joj 28/10/06}
-        apB_MUX8.setPoint(0, 435, 250);
+        apB_MUX8.setPoint(0, 435, 240);
+
+				apB_MUX7.setPoint(0, 440, 240);
 
         //apMUX6_ALU.setPoint(3, 580, 230);
         //apMUX7_ALU.setPoint(3, 580, 230);
-				apALU_OUT0.setPoint(3, 600, 240);
+				apALU_OUT0.setPoint(0, 570, 230);
+				apALU_OUT0.setPoint(1, 620, 230);
 
-        apMUX8_SMDR.setPoint(1, 530, 330);
-        apMUX9_OUT1.setPoint(1, 640, 230);
+        apMUX8_SMDR.setPoint(1, 640, 330);
+        apMUX9_OUT1.setPoint(1, 720, 230);
 
         apID_EX.setHead(0);
         apPC_PC1.setHead(0);
@@ -1062,6 +1078,7 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         showALUForwarding(opacity);
         showSMDRForwarding(opacity);
         showZeroForwarding(opacity);
+				showParallelComponents(opacity);
 
     } else {
 
@@ -1080,7 +1097,9 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
 
         //apMUX6_ALU.setPoint(3, 560, 230);
         //apMUX7_ALU.setPoint(3, 560, 230);
-				apALU_OUT0.setPoint(3, 600, 240);
+				//apALU_OUT0.setPoint(3, 600, 240);
+				apALU_OUT0.setPoint(0, 570, 240);
+				apALU_OUT0.setPoint(1, 600, 240);
 
         apMUX8_SMDR.setPoint(1, 600, 330);
         apMUX9_OUT1.setPoint(1, 700, 230);
@@ -1101,6 +1120,7 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         showALUForwarding(afMode == ALU_FORWARDING ? 1 : 0);
         showSMDRForwarding(sfMode == FORWARDING_TO_SMDR ? 1 : 0);
         showZeroForwarding(zfMode == ZERO_FORWARDING ? 1 : 0);
+				showParallelComponents(opacity);
 
     }
 
