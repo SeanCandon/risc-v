@@ -59,8 +59,6 @@ class ALU(num _x, num _y, num _w, num _h) {
   	  txtOp.setRounded(2, 2);
     }
 
-
-
     //
     // setTxtOp
     //
@@ -94,7 +92,19 @@ class ALU(num _x, num _y, num _w, num _h) {
             op = "SLE"
         else if (vIns == SGE || vIns == SGEi)
             op = "SGE"
-        else if (vIns == LD || vIns == ST)          // joj
+        else if (vIns == BEQ)
+            op = "BEQ"
+        else if (vIns == BNE)
+            op = "BNE"
+        else if (vIns == BLT)
+            op = "BLT"
+        else if (vIns == BGE)
+            op = "BGE"
+        else if (vIns == MUL)
+            op = "ADD"
+        else if(vIns == DIV || vIns == REM)
+            op = "SUB"
+        else if (vIns == LD || vIns == ST || vIns == LR || vIns == SC)          // joj
             op = "ADD"
         else if (vIns == JAL || vIns == JALR)
             op = "ADD"

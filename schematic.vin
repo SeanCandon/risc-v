@@ -1080,6 +1080,8 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         showZeroForwarding(opacity);
 				showParallelComponents(opacity);
 
+				clZeroA.setOpacity(opacity);
+
     } else {
 
         apPC_PC1.setPoint(1, 240, 230);
@@ -1122,6 +1124,8 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
         showZeroForwarding(zfMode == ZERO_FORWARDING ? 1 : 0);
 				showParallelComponents(opacity);
 
+				clZeroA.setOpacity(opacity);
+
     }
 
     apPC_ADD4.setOpacity(opacity);
@@ -1147,6 +1151,7 @@ function showPipeline(num opacity) {   // {joj 20/8/10}
     buttonAF.label.setOpacity(opacity);
     buttonSF.label.setOpacity(opacity);
     buttonZF.label.setOpacity(opacity);
+		buttonPar.label.setOpacity(opacity);
 
 }
 
