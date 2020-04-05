@@ -935,7 +935,7 @@ function exExec() {														// {joj 14/11/17}
         if(regEX.vIns == MUL){
           if(startMulti == 1){
             dispTxt = "";
-            if((op1 > 0x0F) || (op2 > 0x0F)){
+            if((op1 > 0x07) || (op2 > 0x07)){
               bit4mul = 0;
               noCycles = 8;
             }
@@ -1324,7 +1324,7 @@ function maExec() {													// {joj 14/11/17}
 
       }
       else{
-        if(sc_go == 1){
+        if((sc_go == 1 && regMA.vIns == SC) || regMA.vIns == ST){
           fork(apSMDR_Mem.animate(10));                          		// {joj 1/2/06}
           apOUT0_Mem.animate(10);
         }
@@ -1339,7 +1339,7 @@ function maExec() {													// {joj 14/11/17}
         }
       }
       else{
-        if(sc_go == 1){
+        if((sc_go == 1 && regMA.vIns == SC) || regMA.vIns == ST){
           if(parallel == 0){
               //memory[regOUT0.value % 4].update();
               stack.store(regOUT0.value, regSMDR.value);
@@ -1740,7 +1740,7 @@ function execNonPipelined() {													// {joj 14/11/17}
     regFile[2].unHighlight();
     regFile[3].unHighlight();
 
-    if ((instrOpTypeRdt(regID.vIns) == OP_TYPE_REG) && (regID.vIns != ST) && (regID.vIns != SC)) { 
+    if ((instrOpTypeRdt(regID.vIns) == OP_TYPE_REG) && (regID.vIns != ST) && (regID.vIns != SC)) {
         apOUT1_RF.animate(40);
         regFile[regID.vRdt].setNewValue(result);
         regFile[regID.vRdt].update();

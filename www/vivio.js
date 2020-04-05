@@ -180,6 +180,8 @@ function VPlayer(canvasID, VCode, args) {
 	var mem = window;
 	var memwin = false;
 
+	var parallel = false;
+
 	var layer = [];									// layers
 	var nlayer = 0;									// number of layers
 	var canvas;										// canvas
@@ -7610,6 +7612,7 @@ function VPlayer(canvasID, VCode, args) {
 		h1win = true;
 		h2win = false;
 		memwin = false;
+		parallel = true;
 	}
 
 	function endParallel(){
@@ -7620,6 +7623,7 @@ function VPlayer(canvasID, VCode, args) {
 			h2.close();
 			window.close();
 		}
+		parallel = false;
 		// else if(h2win == true){
 		// 	mem.close();
 		// 	window.close();

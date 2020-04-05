@@ -34,6 +34,7 @@ function dlx(vplayer) {
 	var endParallel = vplayer.endParallel
 	var floor = vplayer.floor
 	var Font = vplayer.Font
+	var fork = vplayer.fork
 	var getArg = vplayer.getArg
 	var getMessage = vplayer.getMessage
 	var Group = vplayer.Group
@@ -868,12 +869,6 @@ function dlx(vplayer) {
 		this.updateLabel()
 	}
 
-	Register.prototype.update = function() {
-		this.value=this.newValue
-		this.tag=this.newTag
-		this.updateLabel()
-	}
-
 	Register.prototype.setInvalid = function(i) {
 		this.useTag=1
 		this.invalid=i
@@ -983,7 +978,7 @@ function dlx(vplayer) {
 	Memory.prototype.store = function(addr, val) {
 		let pos = floor((addr/4))%MEMORY_ADDRESSES
 		this.stack[pos].setNewValue(val)
-		this.stack[pos].update()
+		fork(4, this.stack[pos])
 	}
 
 	Memory.prototype.load = function(addr) {
@@ -1257,22 +1252,7 @@ function dlx(vplayer) {
 		}
 	}
 
-	function executeInstr(orig, ins, r1, r2) {
-		let retval
-		if (ins==ST) {
-			$g[60].store(r1, r2)
-		} else
-		if (ins==SC) {
-			$g[60].store(r1, r2)
-		} else
-		if (ins==LD) {
-			retval=$g[60].load(r1)
-			sendToHart(orig, ins.toString(), ", ", retval.toString())
-		} else
-		if (ins==LR) {
-			retval=$g[60].load(r1)
-			sendToHart(orig, ins.toString(), ", ", retval.toString())
-		}
+	function animatePipes(instr) {
 	}
 
 	function execute(thread) {
@@ -1422,6 +1402,21 @@ function dlx(vplayer) {
 				returnf(0)
 				continue
 			case 4:
+				enterf(0);	// update
+				$obj.value=$obj.newValue
+				$obj.tag=$obj.newTag
+				$obj.updateLabel()
+				$obj.bg1.setBrush($g[13])
+				$obj.bg2.setBrush($g[13])
+				if (wait(16))
+				return
+				$pc = 5
+			case 5:
+				$obj.bg1.setBrush($g[12])
+				$obj.bg2.setBrush($g[12])
+				returnf(0)
+				continue
+			case 6:
 				enterf(5);	// animate
 				$stack[$fp+1] = 0, $stack[$fp+3] = 0
 				$stack[$fp+4] = 0
@@ -1429,10 +1424,10 @@ function dlx(vplayer) {
 				$obj.fgLine.setPt(0, $obj.px[0], $obj.py[0])
 				$obj.fgLine.setPen($obj.fgPen0)
 				$stack[$fp+5] = 1
-				$pc = 5
-			case 5:
+				$pc = 7
+			case 7:
 				if (!($stack[$fp+5]<$obj.n)) {
-					$pc = 8
+					$pc = 10
 					continue
 				}
 				$obj.fgLine.setPt($stack[$fp+5], $obj.px[$stack[$fp+5]-1], $obj.py[$stack[$fp+5]-1])
@@ -1440,25 +1435,25 @@ function dlx(vplayer) {
 				$stack[$fp+2]=round($stack[$fp+1]*$stack[$fp-3]/$obj.ll)
 				if ($obj.fgLine.setPt($stack[$fp+5], $obj.px[$stack[$fp+5]], $obj.py[$stack[$fp+5]], $stack[$fp+2]-$stack[$fp+3], 1, 1))
 				return
-				$pc = 6
-			case 6:
-				$stack[$fp+3]=$stack[$fp+2]
-				$pc = 7
-			case 7:
-				$stack[$fp+5]++
-				$pc = 5
-				continue
+				$pc = 8
 			case 8:
+				$stack[$fp+3]=$stack[$fp+2]
+				$pc = 9
+			case 9:
+				$stack[$fp+5]++
+				$pc = 7
+				continue
+			case 10:
 				if (!($obj.head)) {
-					$pc = 9
+					$pc = 11
 					continue
 				}
 				$obj.fgLine.setPen($obj.fgPen1)
-				$pc = 9
-			case 9:
+				$pc = 11
+			case 11:
 				returnf(1)
 				continue
-			case 10:
+			case 12:
 				enterf(4);	// clockCycle
 				$stack[$fp+1] = $stack[$fp-3]/2
 				$stack[$fp+2] = $stack[$fp-3]/5
@@ -1469,32 +1464,32 @@ function dlx(vplayer) {
 				$obj.dot.translate(0, -$obj.ch, $stack[$fp+2], 1, 0)
 				if (wait($stack[$fp+1]))
 				return
-				$pc = 11
-			case 11:
+				$pc = 13
+			case 13:
 				$obj.prev_clock.translate(-$obj.chw, 0, $stack[$fp+1], 1, 0)
 				$obj.next_clock.translate(-$obj.chw, 0, $stack[$fp+1], 1, 0)
 				$obj.dot.translate(0, $obj.ch, $stack[$fp+2], 1, 0)
 				if (wait($stack[$fp+3]))
 				return
-				$pc = 12
-			case 12:
+				$pc = 14
+			case 14:
 				$obj.canUpdate=1
 				$obj.prev_clock.translate(2*$obj.cw, 0)
 				$obj.prev_clock.setPen($obj.stall ? ($obj.type ? $g[50] : $g[48]) : $g[49])
 				if (wait($stack[$fp+2]*2))
 				return
-				$pc = 13
-			case 13:
+				$pc = 15
+			case 15:
 				$stack[$fp+4] = $obj.next_clock
 				$obj.next_clock=$obj.prev_clock
 				$obj.prev_clock=$stack[$fp+4]
 				if (!($obj.stall)) {
-					$pc = 14
+					$pc = 16
 					continue
 				}
 				$obj.stall--
-				$pc = 14
-			case 14:
+				$pc = 16
+			case 16:
 				returnf(1)
 				continue
 			}

@@ -207,11 +207,11 @@ class Register(num x, num y, num w, num h, num labelPos, string caption) {
         value = newValue;
         tag = newTag;
         updateLabel();
-        // bg1.setBrush(yellowBrush);  // joj
-        // bg2.setBrush(yellowBrush);  // joj
-        // //wait(16);
-        // bg1.setBrush(whiteBrush);   // joj
-        // bg2.setBrush(whiteBrush);   // joj
+        bg1.setBrush(yellowBrush);  // joj
+        bg2.setBrush(yellowBrush);  // joj
+        wait(16);
+        bg1.setBrush(whiteBrush);   // joj
+        bg2.setBrush(whiteBrush);   // joj
     }
 
     //

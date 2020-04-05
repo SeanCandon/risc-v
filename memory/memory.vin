@@ -69,7 +69,7 @@ class Memory(num _x, num _y){
   function store(num addr, num val) {
 		num pos = floor((addr/4))%MEMORY_ADDRESSES;
 		stack[pos].setNewValue(val);
-		stack[pos].update();
+		fork(stack[pos].update());
 	}
 
   // function store_cond(num addr, num val, num hart){

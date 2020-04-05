@@ -2225,9 +2225,13 @@ function dlx(vplayer) {
 		if (down && (flags&MB_LEFT)) {
 			$g[16]=($g[16]==maxexample) ? 0 : $g[16]+1
 			setArg("example", $g[16].toString())
-			reset()
 			if ($g[35]==1) {
-				$g[183].setAll(0)
+				reset()
+				$g[35]=1
+				$g[72].setCaption("Non-parallel")
+				parallelMode()
+			} else {
+				reset()
 			}
 		}
 		return 0
@@ -2455,7 +2459,7 @@ function dlx(vplayer) {
 				$g[99].addPoint(390, 390)
 				$g[100] = new InstructionRegister(250, 350, 20, 85, "ID")
 				$g[101] = new Register(250, 210, 20, 40, TOP, "PC1")
-				new Txt($g[0], 0, HLEFT|VTOP, 480, 40, 0, $g[17], "Register\nFile")
+				new Txt($g[0], 0, HLEFT|VTOP, 570, 40, 0, $g[17], "Register\nFile")
 				$g[102] = newArray(NUM_REGS)
 				$g[103] = 240
 				$g[104] = 25
@@ -2572,7 +2576,7 @@ function dlx(vplayer) {
 				$g[140].addPoint(280, 83)
 				$g[140].addPoint(280, 110)
 				$g[140].addPoint(260, 110)
-				$g[141] = new Rectangle($g[0], $g[21], 0, 0, $g[11], 300, 44, -12, 0, 24, 12, $g[4], $g[17])
+				$g[141] = new Rectangle($g[0], $g[21], 0, 0, $g[11], 200, 44, -12, 0, 24, 12, $g[4], $g[17])
 				$g[142] = new AnimPipe()
 				$g[142].addPoint(385, 240)
 				$g[142].addPoint(420, 240)
@@ -2671,9 +2675,9 @@ function dlx(vplayer) {
 				$g[171] = new InstructionRegister(610, 350, 20, 85, "MA")
 				$g[172] = new Register(600, 210, 20, 40, TOP, "O0")
 				$g[173] = new Register(600, 320, 40, 20, RIGHT, "SMR")
-				new Txt($g[0], $g[19], HLEFT|VTOP, 633, 100, 0, $g[17], "memory\naddress")
-				new Txt($g[0], $g[19], HLEFT|VTOP, 685, 320, 0, $g[17], "memory\ndata-in")
-				new Txt($g[0], $g[19], HLEFT|VTOP, 695, 100, 0, $g[17], "memory\ndata-out")
+				new Txt($g[0], $g[19], HLEFT|VTOP, 658, 120, 0, $g[17], "memory\naddress")
+				new Txt($g[0], $g[19], HLEFT|VTOP, 755, 300, 0, $g[17], "memory\ndata-in")
+				new Txt($g[0], $g[19], HLEFT|VTOP, 755, 65, 0, $g[17], "memory\ndata-out")
 				$g[174] = new Register(400, 115, 40, 30, LEFT, "LPAR")
 				$g[175] = new Register(510, 115, 20, 30, TOP, "LF")
 				$g[176] = new Line2($g[0], $g[19], ABSOLUTE, $g[112], 520, 145, 520, 200, 530, 200)
@@ -3941,7 +3945,7 @@ function dlx(vplayer) {
 					continue
 				}
 				$g[226]=""
-				if (!(($stack[$fp+4]>15) || ($stack[$fp+5]>15))) {
+				if (!(($stack[$fp+4]>7) || ($stack[$fp+5]>7))) {
 					$pc = 202
 					continue
 				}
@@ -4595,7 +4599,7 @@ function dlx(vplayer) {
 				$pc = 315
 				continue
 			case 312:
-				if (!($g[228]==1)) {
+				if (!(($g[228]==1 && $g[171].vIns==SC) || $g[171].vIns==ST)) {
 					$pc = 314
 					continue
 				}
@@ -4633,7 +4637,7 @@ function dlx(vplayer) {
 				$pc = 328
 				continue
 			case 320:
-				if (!($g[228]==1)) {
+				if (!(($g[228]==1 && $g[171].vIns==SC) || $g[171].vIns==ST)) {
 					$pc = 327
 					continue
 				}

@@ -186,12 +186,7 @@ InstructionRegister regID = InstructionRegister(250, 350, 20, 85, "ID");
 Register regPC1 = Register(250, 210, 20, 40, TOP, "PC1");
 
 // Register file
-Txt(0, HLEFT | VTOP, 480, 40, 0, font, "Register\nFile");		// {joj}
-// Register regFile[4];
-// regFile[0] = Register(315, 30, 20, 30, TOP, "R0"); regFile[0].setFixed();                  // {joj 29/10/06}
-// regFile[1] = Register(315, 50, 20, 30, TOP, "R1");
-// regFile[2] = Register(355, 30, 20, 30, TOP, "R2");
-// regFile[3] = Register(355, 50, 20, 30, TOP, "R3");
+Txt(0, HLEFT | VTOP, 570, 40, 0, font, "Register\nFile");		// {joj}
 
 Register regFile[NUM_REGS];
 num xpos = 240;
@@ -221,21 +216,6 @@ Rectangle2(0, 0, 0, 0, 280, 365, 20, 10, 0, font, "4");
 Pen controlPen = SolidPen(SOLID, 0, PURPLE, ARROW60_END);
 Pen controlHLPen = SolidPen(SOLID, 2, RED, ARROW60_END);
 Pen muxPen = SolidPen(SOLID, MEDIUM, BLACK);															// {joj}
-
-// inputs to cZeroMux
-//Line clALU = Line2(valuesLayer, ABSOLUTE, controlPen, 548,230, 548,150, 335,150, 335,160);		// {joj 8/12/16}
-//Line clOUT0 = Line2(valuesLayer, ABSOLUTE, controlPen, 646,230, 646,145, 330,145, 330,160);		// {joj 8/12/16}
-//Line clOUT1 = Line2(valuesLayer, ABSOLUTE, controlPen, 690,140, 325,140, 325,160);				// {joj 8/12/16}
-//Line clA = Line(valuesLayer, ABSOLUTE, controlPen, 0,0, 340,135, 315,135, 315,160);
-//Line clMUX = Line2(valuesLayer, ABSOLUTE, controlPen, 325,160, 325,175, 295,175);
-
-//Line cZeroMux = Line2(valuesLayer, ABSOLUTE, muxPen, 314, 160, 336, 160);
-//Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 316, 162, 0, font, "zero");			// {joj}
-
-// Line clDM1 = Line2(valuesLayer, ABSOLUTE, controlPen, 320, 390,
-// 	320, 305,
-// 	308, 305
-// 	);
 
 //zero input to alu for comparison during multiply operation
 Rectangle cZeroTxt = Txt(valuesLayer,HLEFT | VTOP, 542, 376, 0, font, "zero");
@@ -356,7 +336,7 @@ apRF_MUX4.addPoint(220, 83);
 apRF_MUX4.addPoint(280, 83);
 apRF_MUX4.addPoint(280, 110);
 apRF_MUX4.addPoint(260, 110);
-Rectangle txtRF_MUX1 = Rectangle(activePipesLayer, 0, 0, redBrush, 300,44, -12,0, 24,12, whitePen, font);   // {joj 4/11/12}
+Rectangle txtRF_MUX1 = Rectangle(activePipesLayer, 0, 0, redBrush, 200,44, -12,0, 24,12, whitePen, font);   // {joj 4/11/12}
 
 // MUX5 to A
 AnimPipe apMUX5_B = AnimPipe();
@@ -561,9 +541,9 @@ apALU_OUT0.addPoint(600, 240);
 InstructionRegister regMA = InstructionRegister(610, 350, 20, 85, "MA");
 Register regOUT0 = Register(600, 210, 20, 40, TOP, "O0");
 Register regSMDR = Register(600, 320, 40, 20, RIGHT, "SMR");
-Txt(valuesLayer, HLEFT | VTOP, 633, 100, 0, font, "memory\naddress");        // {joj}
-Txt(valuesLayer, HLEFT | VTOP, 685, 320, 0, font, "memory\ndata-in");        // {joj}
-Txt(valuesLayer, HLEFT | VTOP, 695, 100, 0, font, "memory\ndata-out");       // {joj}
+Txt(valuesLayer, HLEFT | VTOP, 658, 120, 0, font, "memory\naddress");        // {joj}
+Txt(valuesLayer, HLEFT | VTOP, 755, 300, 0, font, "memory\ndata-in");        // {joj}
+Txt(valuesLayer, HLEFT | VTOP, 755, 65, 0, font, "memory\ndata-out");       // {joj}
 
 Register regLPAR = Register(400, 115, 40, 30, LEFT, "LPAR");
 Register regLF = Register(510, 115, 20, 30, TOP, "LF");

@@ -243,9 +243,15 @@ when imLabel ~> eventMB(num down, num flags, num x, num y) {			// {joj 24/9/17}
 	if (down && (flags & MB_LEFT)) {
 		example = (example == maxexample) ? 0 : example + 1;
 		setArg("example", example.toString());							// {joj 6/11/16}
-		reset();
 		if(parallel == 1){
-			stack.setAll(0);
+			//parallel = 1;
+			reset();
+			parallel = 1;
+			buttonPar.setCaption("Non-parallel");
+			parallelMode();
+		}
+		else{
+			reset();
 		}
 	}
 	return 0;
