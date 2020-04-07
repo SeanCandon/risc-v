@@ -62,8 +62,7 @@ Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
 // loaded value back to the original hart.
 when obj ~> eventMessage(string m){
 
-	obj.setTxt(m);
-	//sendToHart(0, "not busy");
+	//obj.setTxt(m);
 
 	if(m == "close"){ // if message "close" arrives in the event the user wants
 		endParallel();	// the parallelism feature closed.
@@ -114,8 +113,6 @@ when obj ~> eventMessage(string m){
 			curr_ins = instr;
 			curr_loc = regv1;
 
-			//fork(animatePipes(instr));
-
 			if(instr == ST){
 				memory.store(regv1, regv2);
 			}
@@ -133,15 +130,6 @@ when obj ~> eventMessage(string m){
 			bus_busy = 0;
 		}
 	}
-}
-
-function animatePipes(num instr){
-
-	//toMem.animate(10);
-	// if(instr == LR || instr == LD){
-	// 	wait(2);
-	// 	fromMem.animate(5);
-	// }
 }
 
 

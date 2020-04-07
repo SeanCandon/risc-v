@@ -570,12 +570,6 @@ AnimPipe apLPAR_Comp = AnimPipe();
 apLPAR_Comp.addPoint(440, 135);
 apLPAR_Comp.addPoint(470, 135);
 
-AnimPipe apMem_Comp = AnimPipe();
-apMem_Comp.addPoint(800, 90);
-apMem_Comp.addPoint(450, 90);
-apMem_Comp.addPoint(450, 125);
-apMem_Comp.addPoint(470, 125);
-
 AnimPipe apComp_LF = AnimPipe();
 apComp_LF.addPoint(490, 130);
 apComp_LF.addPoint(510, 130);
@@ -648,6 +642,12 @@ apMem_MUX9.addPoint(650, 90);
 apMem_MUX9.addPoint(650, 220);
 apMem_MUX9.addPoint(670, 220);
 
+AnimPipe apMem_Comp = AnimPipe();
+apMem_Comp.addPoint(800, 90);
+apMem_Comp.addPoint(450, 90);
+apMem_Comp.addPoint(450, 125);
+apMem_Comp.addPoint(470, 125);
+
 
 //
 // Write Back
@@ -708,6 +708,7 @@ function resetWires() {
     apDM1_MUX3.reset(); txtDM1_MUX3.setOpacity(0);
 		apDM1_MUX5.reset();
 		apDM1_REGM.reset();     // {joj 29/10/06}
+		apREGM_MUX3.reset();
 		apADDi_DM1.reset();
     apMUX3_MUX4.reset(); txtMUX3_MUX4.setOpacity(0);        // {joj 29/10/06}
     apRF_MUX4.reset();

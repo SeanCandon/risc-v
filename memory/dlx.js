@@ -1193,7 +1193,6 @@ function dlx(vplayer) {
 	}
 
 	function $eh12(m) {
-		$g[61].setTxt(m)
 		if (m=="close") {
 			endParallel()
 		} else {
@@ -1250,9 +1249,6 @@ function dlx(vplayer) {
 				$g[37]=0
 			}
 		}
-	}
-
-	function animatePipes(instr) {
 	}
 
 	function execute(thread) {
