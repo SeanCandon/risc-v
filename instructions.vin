@@ -297,7 +297,7 @@ num function instrExecute(num instr, num op1, num op2) {
     else if (instr == SRL || instr == SRLi)
         return (op1 >> op2) & 0xFF;
     else if (instr == SLA || instr == SLAi)
-        return arithShiftLeft(op1, op2);
+        return return (op1 << op2) & 0xFF;
     else if (instr == SRA || instr == SRAi)
         return arithShiftRight(op1, op2);
     else if (instr == SLT || instr == SLTi)
@@ -322,16 +322,6 @@ num function instrExecute(num instr, num op1, num op2) {
         return op2;
     else
         return 0xEE;
-}
-
-num function arithShiftLeft(num a, num b){
-  num mask = 0x01;
-  for(num i=0; i<b; i++){
-    num temp = a & mask;
-    a = (a << 1) & 0xFF;
-    a = a | temp;
-  }
-  return a;
 }
 
 num function arithShiftRight(num a, num b){
