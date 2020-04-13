@@ -36,6 +36,8 @@ const num BORDEAU = rgba(0.375, 0.0, 0.0);
 const num MARINE = rgba(0.375, 0.625, 0.375);
 const num LIGHT_YELLOW = rgba(1.0, 1.0, 0.75);
 const num ORANGE = 0xffa500;
+const num LIGHT_RED = rgba(1.0, 0.8, 0.79);
+const num LIGHT_GREEN = rgba(0.56, 0.93, 0.56);
 
 const num MEMORY_ADDRESSES = 18;
 
@@ -53,6 +55,8 @@ Pen whitePen = SolidPen(0, 0, WHITE);				// {joj 2/10/16}
 Brush blackBrush = SolidBrush(BLACK);				// {joj 2/10/16}
 Brush darkGrayBrush = SolidBrush(GRAY64);
 Brush lightBlueBrush = SolidBrush(LIGHT_BLUE);
+Brush lightRedBrush = SolidBrush(LIGHT_RED);
+Brush lightGreenBrush = SolidBrush(LIGHT_GREEN);
 Brush gray192Brush = SolidBrush(GRAY192);			// {joj 17/10/16}
 Brush gray224Brush = SolidBrush(GRAY224);			// {joj 17/10/16}
 Brush marineBrush = SolidBrush(MARINE);

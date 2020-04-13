@@ -28,9 +28,9 @@ class Stack(num _x, num _y) {
 	num currFrame = 0;
 
 	Brush frameColours[3];
-	frameColours[0] = redBrush;
-	frameColours[1] = blueBrush;
-	frameColours[2] = greenBrush;
+	frameColours[0] = lightRedBrush;
+	frameColours[1] = lightBlueBrush;
+	frameColours[2] = lightGreenBrush;
 
 	Frame frames[3];
 	frames[0] = Frame(0, 0);
