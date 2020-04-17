@@ -6006,26 +6006,23 @@ function VPlayer(canvasID, VCode, args) {
 					continue;
 				for (let j = layer[i].gobjs.length - 1; j >= 0 ; j--) {
 					if (layer[i].gobjs[j].handler["eventMessage"]) {
-						//if ((layer[i].gobjs[j].hit(x, y))) {
-							if (asyncPhase == 0)			// first hit indicates a new path so...
-								removeFutureAsyncEvents();	// need to remove future ASYNC events
+							if (asyncPhase == 0)		
+								removeFutureAsyncEvents();
 							let handler = layer[i].gobjs[j].handler["eventMessage"];
 							for (let k = 0; k < handler.length; k++) {
 								addToAsyncEventQ(new AsyncEvent(tick, callEventHandler.bind(null, handler[k].pc, handler[k].obj, mess)));
 								let r = callEventHandler(handler[k].pc, handler[k].obj, mess);
 								asyncPhase = 1;
-	//								if (r & REMEMBER)
-	//									addToAsyncEventQ(new AsyncEvent(tick, callEventHandler.bind(null, handler[k].pc, handler[k].obj, down, flags, x, y)));
 								if ((r & PROPAGATE) == 0)
 									break FOR;
 							}
-						//}
+
 					}
 				}
 			}
 		}
-		if (asyncPhase) {	// event handled
-			drawChanges();	// clears asyncPhase {joj 28/11/17}
+		if (asyncPhase) {
+			drawChanges();
 			return;
 		}
 	}
@@ -7569,10 +7566,6 @@ function VPlayer(canvasID, VCode, args) {
 	function sendToMem(s1, s2, s3, s4, s5, s6, s7){
 		var mess = s1.concat(s2, s3, s4, s5, s6, s7);
 		mem.postMessage(mess, '*');
-		// }
-		// else{
-		// 	window.opener.postMessage(mess, '*');
-		// }
 	}
 
 	function sendToHart(no, s1, s2, s3){

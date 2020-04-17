@@ -238,22 +238,13 @@ class Stack(num _x, num _y) {
 			apSP.setPoint(0, ax+aw+15, ay+10);
 			apSP.setPoint(1, ax+aw+2, ay+10);
 			apSP.setOpacity(1);
-			//currFrame++;
 		}
-
-		// apSP.setOpacity(0);
-		// apSP.reset();
-		// apSP.setPoint(0, ax+aw+15, ay+10);
-		// apSP.setPoint(1, ax+aw+2, ay+10);
-		// apSP.setOpacity(1);
 
 		apFP.setOpacity(0);
 		apFP.reset();
 		apFP.setPoint(0, ax+aw+15, ay+10);
 		apFP.setPoint(1, ax+aw+2, ay+10);
 		apFP.setOpacity(1);
-
-		//createFrame();
 	}
 
 	function setAll(num v){

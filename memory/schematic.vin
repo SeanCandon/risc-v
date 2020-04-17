@@ -62,8 +62,6 @@ Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 20, 20,
 // loaded value back to the original hart.
 when obj ~> eventMessage(string m){
 
-	//obj.setTxt(m);
-
 	if(m == "close"){ // if message "close" arrives in the event the user wants
 		endParallel();	// the parallelism feature closed.
 	}
@@ -73,7 +71,6 @@ when obj ~> eventMessage(string m){
 		if(nm == "busy?"){
 			m = m.right(-p-2);
 			num orig = stringToNum(m);
-			//obj.setTxt(orig.toString());
 			if(bus_busy == 0){
 				sendToHart(orig, "not busy" ,"", "");
 				bus_busy = 1;
@@ -83,11 +80,9 @@ when obj ~> eventMessage(string m){
 					sendToHart(orig, "busy1", ", ", curr_loc.toString());
 				}
 				sendToHart(orig, "busy2", "", "");
-				//bus_busy = 0;
 			}
 		}
 		else{
-			//obj.setTxt(m);
 			num origin = stringToNum(nm);
 			m = m.right(-p-2);
 			p = m.find(", ");

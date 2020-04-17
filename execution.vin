@@ -1795,11 +1795,9 @@ function exec() {
 }
 
 Rectangle obj = Rectangle2(0, 0, whitePen, whiteBrush, 950, 450,
-  10, 10, blackPen, font, sprintf(""));
+  0, 0, blackPen, font, sprintf(""));
 
 when obj ~> eventMessage(string m){
-
-  //obj.setTxt(m);
 
   if(m == "not busy"){
     bus_stall = 0;
@@ -1817,9 +1815,6 @@ when obj ~> eventMessage(string m){
         bus_stall = 1;
         m = m.right(-p-2);
         num value = stringToNum(m);
-        // if(value == regLPAR.value){
-        //   fork(clearLF());
-        // }
         fork(checkLPAR(value));
       }
       else{
@@ -1835,8 +1830,6 @@ when obj ~> eventMessage(string m){
         }
       }
     }
-    //num v = stringToNum(m);
-    //regOUT1.setNewValue(v);
   }
 }
 
