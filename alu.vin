@@ -80,8 +80,6 @@ class ALU(num _x, num _y, num _w, num _h) {
             op = "SLL"
         else if (vIns == SRL || vIns == SRLi)
             op = "SRL"
-        else if (vIns == SLA || vIns == SLAi)
-            op = "SLA"
         else if (vIns == SRA || vIns == SRAi)
             op = "SRA"
         else if (vIns == SLT || vIns == SLTi)
@@ -98,6 +96,10 @@ class ALU(num _x, num _y, num _w, num _h) {
             op = "BNE"
         else if (vIns == BLT)
             op = "BLT"
+        else if (vIns == BLE)
+            op = "BLE"
+        else if (vIns == BGT)
+            op = "BGT"
         else if (vIns == BGE)
             op = "BGE"
         else if (vIns == MUL)

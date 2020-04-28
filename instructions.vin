@@ -37,36 +37,36 @@ const num OR    = 4;    // Logical OR
 const num XOR   = 5;    // Logical exclusive OR
 const num SLL   = 6;    // Logical shift left
 const num SRL   = 7;    // Logical shift right
-const num SLA   = 8;
-const num SRA   = 9;
-const num SLT   = 10;    // Set if less than
-const num SGT   = 11;    // Set if greater than
-const num SLE   = 12;   // Set if less or equal
-const num SGE   = 13;   // Set if greater or equal
+const num SRA   = 8;
+const num SLT   = 9;    // Set if less than
+const num SGT   = 10;    // Set if greater than
+const num SLE   = 11;   // Set if less or equal
+const num SGE   = 12;   // Set if greater or equal
 
 // Arithmetic instructions (register-immediate)
-const num ADDi  = 14;
-const num SUBi  = 15;
-const num ANDi  = 16;
-const num ORi   = 17;
-const num XORi  = 18;
-const num SLLi  = 19;
-const num SRLi  = 20;
-const num SLAi  = 21;
-const num SRAi  = 22;
-const num SLTi  = 23;
-const num SGTi  = 24;
-const num SLEi  = 25;
-const num SGEi  = 26;
+const num ADDi  = 13;
+const num SUBi  = 14;
+const num ANDi  = 15;
+const num ORi   = 16;
+const num XORi  = 17;
+const num SLLi  = 18;
+const num SRLi  = 19;
+const num SRAi  = 20;
+const num SLTi  = 21;
+const num SGTi  = 22;
+const num SLEi  = 23;
+const num SGEi  = 24;
 
 // Load/store instructions
-const num LD    = 27;   // Load             // joj
-const num ST    = 28;   // Store            // joj
+const num LD    = 25;   // Load             // joj
+const num ST    = 26;   // Store            // joj
 
 // Control instructions
-const num BEQ = 29;     // Branch if equal to
-const num BNE = 30;     // Branch if not equal to
-const num BLT = 31;     // Branch if less than
+const num BEQ = 27;     // Branch if equal to
+const num BNE = 28;     // Branch if not equal to
+const num BLT = 29;     // Branch if less than
+const num BLE = 30;
+const num BGT = 31;
 const num BGE = 32;     // Branch if greater than or equal to
 
 const num J     = 33;   // Jump
@@ -105,7 +105,6 @@ instrNames[OR]  = "OR";     // Logical OR
 instrNames[XOR] = "XOR";    // Logical exclusive OR
 instrNames[SLL] = "SLL";    // Logical shift left
 instrNames[SRL] = "SRL";    // Logical shift right
-instrNames[SLA] = "SLA";
 instrNames[SRA] = "SRA";
 instrNames[SLT] = "SLT";    // Set if less than
 instrNames[SGT] = "SGT";    // Set if greater than
@@ -120,7 +119,6 @@ instrNames[ORi]     = "ORi";
 instrNames[XORi]    = "XORi";
 instrNames[SLLi]    = "SLLi";
 instrNames[SRLi]    = "SRLi";
-instrNames[SLAi]    = "SLAi";
 instrNames[SRAi]    = "SRAi";
 instrNames[SLTi]    = "SLTi";
 instrNames[SGTi]    = "SGTi";
@@ -135,6 +133,8 @@ instrNames[ST]      = "ST";     // Store            // joj
 instrNames[BEQ]     = "BEQ";
 instrNames[BNE]     = "BNE";
 instrNames[BLT]     = "BLT";
+instrNames[BLE]     = "BLE";
+instrNames[BGT]     = "BGT";
 instrNames[BGE]     = "BGE";
 
 instrNames[J]       = "J";      // Jump
@@ -296,8 +296,6 @@ num function instrExecute(num instr, num op1, num op2) {
         return (op1 << op2) & 0xFF;
     else if (instr == SRL || instr == SRLi)
         return (op1 >> op2) & 0xFF;
-    else if (instr == SLA || instr == SLAi)
-        return (op1 << op2) & 0xFF;
     else if (instr == SRA || instr == SRAi)
         return arithShiftRight(op1, op2);
     else if (instr == SLT || instr == SLTi)
@@ -313,9 +311,13 @@ num function instrExecute(num instr, num op1, num op2) {
     else if (instr == BNE)
         return op1 != op2 ? 1 : 0;
     else if (instr == BLT)
-        return op2 < op1 ? 1 : 0;
+        return op1 < op2 ? 1 : 0;
+    else if (instr == BLE)
+        return op1 <= op2 ? 1 : 0;
+    else if (instr == BGT)
+        return op1 > op2 ? 1 : 0;
     else if (instr == BGE)
-        return op2 >= op1 ? 1 : 0;
+        return op1 >= op2 ? 1 : 0;
     else if (instr == LD || instr == ST || instr == LR)                 // joj
         return (se8(op1) + se8(op2)) & 0xFF;
     else if (instr == JAL || instr == JALR)
