@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Built_with_Qt_RGB_logo.png</file>
+        <file>vivioLogo.png</file>
+        <file>tcd.png</file>
+    </qresource>
+</RCC>
